@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
 
 import Footer from './components/Footer';
 import Header from './components/Header';
+import Page404 from './pages/404Page';
 import Cart from './pages/cart';
 import Checkout from './pages/checkout';
 import ForgotPassword from './pages/forgotpass';
@@ -24,6 +25,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="*" element={<Page404 />} />
         </Routes>
         <Footer></Footer>
       </BrowserRouter>
