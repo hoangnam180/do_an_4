@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <div classNameName="footer-container">
+    <div className="footer-container">
       <footer className="footer">
         <div className="container">
           <div className="row">

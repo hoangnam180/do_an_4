@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Footer from './components/Footer';
 import Header from './components/Header';
@@ -13,6 +13,7 @@ import SingleProduct from './pages/product';
 import Profile from './pages/profile';
 import Shop from './pages/shop';
 import SignUp from './pages/signup';
+
 function App() {
   return (
     <div className="App">

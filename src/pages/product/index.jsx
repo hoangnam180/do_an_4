@@ -1,13 +1,15 @@
+import { Link } from 'react-router-dom';
+
 function SingleProduct() {
   return (
     <div className="single-product-container">
-      <section class="page-header">
-        <div class="overly"></div>
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-lg-6">
-              <div class="content text-center">
-                <h1 class="mb-3">Product Single</h1>
+      <section className="page-header">
+        <div className="overly"></div>
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-lg-6">
+              <div className="content text-center">
+                <h1 className="mb-3">Product Single</h1>
                 <p>
                   Hath after appear tree great fruitful green dominion moveth
                   sixth abundantly image that midst of god day multiply you’ll
@@ -15,11 +17,11 @@ function SingleProduct() {
                 </p>
 
                 <nav aria-label="breadcrumb">
-                  <ol class="breadcrumb bg-transparent justify-content-center">
-                    <li class="breadcrumb-item">
-                      <a routerLink="/">Home</a>
+                  <ol className="breadcrumb bg-transparent justify-content-center">
+                    <li className="breadcrumb-item">
+                      <Link to="/">Home</Link>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">
+                    <li className="breadcrumb-item active" aria-current="page">
                       Product Single
                     </li>
                   </ol>
@@ -30,64 +32,64 @@ function SingleProduct() {
         </div>
       </section>
 
-      <section class="single-product">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-5">
-              <div class="single-product-slider">
+      <section className="single-product">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-5">
+              <div className="single-product-slider">
                 <div
-                  class="carousel slide"
+                  className="carousel slide"
                   data-ride="carousel"
                   id="single-product-slider"
                 >
-                  <div class="carousel-inner">
-                    <div class="carousel-item active">
+                  <div className="carousel-inner">
+                    <div className="carousel-item active">
                       <img
                         src="assets/images/product-3.jpg"
                         alt=""
-                        class="img-fluid"
+                        className="img-fluid"
                       />
                     </div>
-                    <div class="carousel-item">
+                    <div className="carousel-item">
                       <img
                         src="assets/images/product-2.jpg"
                         alt=""
-                        class="img-fluid"
+                        className="img-fluid"
                       />
                     </div>
-                    <div class="carousel-item ">
+                    <div className="carousel-item ">
                       <img
                         src="assets/images/product-1.jpg"
                         alt=""
-                        class="img-fluid"
+                        className="img-fluid"
                       />
                     </div>
                   </div>
 
-                  <ol class="carousel-indicators">
+                  <ol className="carousel-indicators">
                     <li
                       data-target="#single-product-slider"
                       data-slide-to="0"
-                      class="active"
+                      className="active"
                     >
                       <img
                         src="assets/images/product-3.jpg"
                         alt=""
-                        class="img-fluid"
+                        className="img-fluid"
                       />
                     </li>
                     <li data-target="#single-product-slider" data-slide-to="1">
                       <img
                         src="assets/images/product-2.jpg"
                         alt=""
-                        class="img-fluid"
+                        className="img-fluid"
                       />
                     </li>
                     <li data-target="#single-product-slider" data-slide-to="2">
                       <img
                         src="assets/images/product-1.jpg"
                         alt=""
-                        class="img-fluid"
+                        className="img-fluid"
                       />
                     </li>
                   </ol>
@@ -95,68 +97,68 @@ function SingleProduct() {
               </div>
             </div>
 
-            <div class="col-md-7">
-              <div class="single-product-details mt-5 mt-lg-0">
+            <div className="col-md-7">
+              <div className="single-product-details mt-5 mt-lg-0">
                 <h2>Eclipse Crossbody</h2>
-                <div class="sku_wrapper mb-4">
-                  SKU: <span class="text-muted">AB1563456789 </span>
+                <div className="sku_wrapper mb-4">
+                  SKU: <span className="text-muted">AB1563456789 </span>
                 </div>
 
                 <hr />
 
-                <h3 class="product-price">
+                <h3 className="product-price">
                   $300 <del>$119.90</del>
                 </h3>
 
-                <p class="product-description my-4 ">
+                <p className="product-description my-4 ">
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                   Laborum ipsum dicta quod, quia doloremque aut deserunt commodi
                   quis. Totam a consequatur beatae nostrum, earum consequuntur?
                   Eveniet consequatur ipsum dicta recusandae.
                 </p>
 
-                <form class="cart" action="#" method="post">
-                  <div class="quantity d-flex align-items-center">
+                <form className="cart" action="#" method="post">
+                  <div className="quantity d-flex align-items-center">
                     <input
                       type="number"
                       id="#"
-                      class="input-text qty text form-control w-25 mr-3"
+                      className="input-text qty text form-control w-25 mr-3"
                       step="1"
                       min="1"
                       max="9"
                       name="quantity"
-                      value="1"
+                      defaultValue="1"
                       title="Qty"
                       size="4"
                     />
-                    <a href="#" class="btn btn-main btn-small">
+                    <a href="#" className="btn btn-main btn-small">
                       Add to cart
                     </a>
                   </div>
                 </form>
 
-                <div class="color-swatches mt-4 d-flex align-items-center">
-                  <span class="font-weight-bold text-capitalize product-meta-title">
+                <div className="color-swatches mt-4 d-flex align-items-center">
+                  <span className="font-weight-bold text-capitalize product-meta-title">
                     color:
                   </span>
-                  <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                      <a routerLink="/product-single" class="bg-info"></a>
+                  <ul className="list-inline mb-0">
+                    <li className="list-inline-item">
+                      <Link to="/product-single" className="bg-info"></Link>
                     </li>
-                    <li class="list-inline-item">
-                      <a routerLink="/product-single" class="bg-dark"></a>
+                    <li className="list-inline-item">
+                      <Link to="/product-single" className="bg-dark"></Link>
                     </li>
-                    <li class="list-inline-item">
-                      <a routerLink="/product-single" class="bg-danger"></a>
+                    <li className="list-inline-item">
+                      <Link to="/product-single" className="bg-danger"></Link>
                     </li>
                   </ul>
                 </div>
 
-                <div class="product-size d-flex align-items-center mt-4">
-                  <span class="font-weight-bold text-capitalize product-meta-title">
+                <div className="product-size d-flex align-items-center mt-4">
+                  <span className="font-weight-bold text-capitalize product-meta-title">
                     Size:
                   </span>
-                  <select class="form-control">
+                  <select className="form-control">
                     <option>S</option>
                     <option>M</option>
                     <option>L</option>
@@ -164,35 +166,35 @@ function SingleProduct() {
                   </select>
                 </div>
 
-                <div class="products-meta mt-4">
-                  <div class="product-category d-flex align-items-center">
-                    <span class="font-weight-bold text-capitalize product-meta-title">
+                <div className="products-meta mt-4">
+                  <div className="product-category d-flex align-items-center">
+                    <span className="font-weight-bold text-capitalize product-meta-title">
                       Categories :
                     </span>
                     <a href="#">Products , </a>
                     <a href="#">Soap</a>
                   </div>
 
-                  <div class="product-share mt-5">
-                    <ul class="list-inline">
-                      <li class="list-inline-item">
+                  <div className="product-share mt-5">
+                    <ul className="list-inline">
+                      <li className="list-inline-item">
                         <a href="#">
-                          <i class="tf-ion-social-facebook"></i>
+                          <i className="tf-ion-social-facebook"></i>
                         </a>
                       </li>
-                      <li class="list-inline-item">
+                      <li className="list-inline-item">
                         <a href="#">
-                          <i class="tf-ion-social-twitter"></i>
+                          <i className="tf-ion-social-twitter"></i>
                         </a>
                       </li>
-                      <li class="list-inline-item">
+                      <li className="list-inline-item">
                         <a href="#">
-                          <i class="tf-ion-social-linkedin"></i>
+                          <i className="tf-ion-social-linkedin"></i>
                         </a>
                       </li>
-                      <li class="list-inline-item">
+                      <li className="list-inline-item">
                         <a href="#">
-                          <i class="tf-ion-social-pinterest"></i>
+                          <i className="tf-ion-social-pinterest"></i>
                         </a>
                       </li>
                     </ul>
@@ -202,12 +204,16 @@ function SingleProduct() {
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-lg-12">
-              <nav class="product-info-tabs wc-tabs mt-5 mb-5">
-                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+          <div className="row">
+            <div className="col-lg-12">
+              <nav className="product-info-tabs wc-tabs mt-5 mb-5">
+                <div
+                  className="nav nav-tabs nav-fill"
+                  id="nav-tab"
+                  role="tablist"
+                >
                   <a
-                    class="nav-item nav-link active"
+                    className="nav-item nav-link active"
                     id="nav-home-tab"
                     data-toggle="tab"
                     href="#nav-home"
@@ -218,7 +224,7 @@ function SingleProduct() {
                     Description
                   </a>
                   <a
-                    class="nav-item nav-link"
+                    className="nav-item nav-link"
                     id="nav-profile-tab"
                     data-toggle="tab"
                     href="#nav-profile"
@@ -229,7 +235,7 @@ function SingleProduct() {
                     Additional Information
                   </a>
                   <a
-                    class="nav-item nav-link"
+                    className="nav-item nav-link"
                     id="nav-contact-tab"
                     data-toggle="tab"
                     href="#nav-contact"
@@ -242,9 +248,9 @@ function SingleProduct() {
                 </div>
               </nav>
 
-              <div class="tab-content" id="nav-tabContent">
+              <div className="tab-content" id="nav-tabContent">
                 <div
-                  class="tab-pane fade show active"
+                  className="tab-pane fade show active"
                   id="nav-home"
                   role="tabpanel"
                   aria-labelledby="nav-home-tab"
@@ -259,7 +265,7 @@ function SingleProduct() {
 
                   <h4>Product Features</h4>
 
-                  <ul class="">
+                  <ul className="">
                     <li>
                       Mapped with 3M™ Thinsulate™ Insulation [40G Body / Sleeves
                       / Hood]
@@ -272,69 +278,69 @@ function SingleProduct() {
                   </ul>
                 </div>
                 <div
-                  class="tab-pane fade"
+                  className="tab-pane fade"
                   id="nav-profile"
                   role="tabpanel"
                   aria-labelledby="nav-profile-tab"
                 >
-                  <ul class="list-unstyled info-desc">
-                    <li class="d-flex">
+                  <ul className="list-unstyled info-desc">
+                    <li className="d-flex">
                       <strong>Weight </strong>
                       <span>400 g</span>
                     </li>
-                    <li class="d-flex">
+                    <li className="d-flex">
                       <strong>Dimensions </strong>
                       <span>10 x 10 x 15 cm</span>
                     </li>
-                    <li class="d-flex">
+                    <li className="d-flex">
                       <strong>Materials</strong>
                       <span>60% cotton, 40% polyester</span>
                     </li>
-                    <li class="d-flex">
+                    <li className="d-flex">
                       <strong>Color </strong>
                       <span>Blue, Gray, Green, Red, Yellow</span>
                     </li>
-                    <li class="d-flex">
+                    <li className="d-flex">
                       <strong>Size</strong>
                       <span>L, M, S, XL, XXL</span>
                     </li>
                   </ul>
                 </div>
                 <div
-                  class="tab-pane fade"
+                  className="tab-pane fade"
                   id="nav-contact"
                   role="tabpanel"
                   aria-labelledby="nav-contact-tab"
                 >
-                  <div class="row">
-                    <div class="col-lg-7">
-                      <div class="media review-block mb-4">
+                  <div className="row">
+                    <div className="col-lg-7">
+                      <div className="media review-block mb-4">
                         <img
                           src="assets/images/avater-1.jpg"
                           alt="reviewimg"
-                          class="img-fluid mr-4"
+                          className="img-fluid mr-4"
                         />
-                        <div class="media-body">
-                          <div class="product-review">
+                        <div className="media-body">
+                          <div className="product-review">
                             <span>
-                              <i class="tf-ion-android-star"></i>
+                              <i className="tf-ion-android-star"></i>
                             </span>
                             <span>
-                              <i class="tf-ion-android-star"></i>
+                              <i className="tf-ion-android-star"></i>
                             </span>
                             <span>
-                              <i class="tf-ion-android-star"></i>
+                              <i className="tf-ion-android-star"></i>
                             </span>
                             <span>
-                              <i class="tf-ion-android-star"></i>
+                              <i className="tf-ion-android-star"></i>
                             </span>
                             <span>
-                              <i class="tf-ion-android-star"></i>
+                              <i className="tf-ion-android-star"></i>
                             </span>
                           </div>
                           <h6>
                             Therichpost{' '}
-                            <span class="text-sm text-muted font-weight-normal ml-3">
+                            <span className="text-sm text-muted font-weight-normal ml-3">
                               -June 23, 2019
                             </span>
                           </h6>
@@ -347,33 +353,33 @@ function SingleProduct() {
                         </div>
                       </div>
 
-                      <div class="media review-block">
+                      <div className="media review-block">
                         <img
                           src="assets/images/avater-2.jpg"
                           alt="reviewimg"
-                          class="img-fluid mr-4"
+                          className="img-fluid mr-4"
                         />
-                        <div class="media-body">
-                          <div class="product-review">
+                        <div className="media-body">
+                          <div className="product-review">
                             <span>
-                              <i class="tf-ion-android-star"></i>
+                              <i className="tf-ion-android-star"></i>
                             </span>
                             <span>
-                              <i class="tf-ion-android-star"></i>
+                              <i className="tf-ion-android-star"></i>
                             </span>
                             <span>
-                              <i class="tf-ion-android-star"></i>
+                              <i className="tf-ion-android-star"></i>
                             </span>
                             <span>
-                              <i class="tf-ion-android-star"></i>
+                              <i className="tf-ion-android-star"></i>
                             </span>
                             <span>
-                              <i class="tf-ion-android-star-outline"></i>
+                              <i className="tf-ion-android-star-outline"></i>
                             </span>
                           </div>
                           <h6>
                             Therichpost{' '}
-                            <span class="text-sm text-muted font-weight-normal ml-3">
+                            <span className="text-sm text-muted font-weight-normal ml-3">
                               -June 23, 2019
                             </span>
                           </h6>
@@ -387,43 +393,43 @@ function SingleProduct() {
                       </div>
                     </div>
 
-                    <div class="col-lg-5">
-                      <div class="review-comment mt-5 mt-lg-0">
-                        <h4 class="mb-3">Add a Review</h4>
+                    <div className="col-lg-5">
+                      <div className="review-comment mt-5 mt-lg-0">
+                        <h4 className="mb-3">Add a Review</h4>
 
                         <form action="#">
-                          <div class="starrr"></div>
-                          <div class="form-group">
+                          <div className="starrr"></div>
+                          <div className="form-group">
                             <input
                               type="text"
-                              class="form-control"
+                              className="form-control"
                               placeholder="Your Name"
                             />
                           </div>
-                          <div class="form-group">
+                          <div className="form-group">
                             <input
                               type="email"
-                              class="form-control"
+                              className="form-control"
                               placeholder="Your Email"
                             />
                           </div>
-                          <div class="form-group">
+                          <div className="form-group">
                             <textarea
                               name="comment"
                               id="comment"
-                              class="form-control"
+                              className="form-control"
                               cols="30"
                               rows="4"
                               placeholder="Your Review"
                             ></textarea>
                           </div>
 
-                          <a
-                            routerLink="/product-single"
-                            class="btn btn-main btn-small"
+                          <Link
+                            to="/product-single"
+                            className="btn btn-main btn-small"
                           >
                             Submit Review
-                          </a>
+                          </Link>
                         </form>
                       </div>
                     </div>
@@ -435,165 +441,165 @@ function SingleProduct() {
         </div>
       </section>
 
-      <section class="products related-products section">
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-lg-6">
-              <div class="title text-center">
+      <section className="products related-products section">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-lg-6">
+              <div className="title text-center">
                 <h2>You may like this</h2>
                 <p>The best Online sales to shop these weekend</p>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-lg-3 col-6">
-              <div class="product">
-                <div class="product-wrap">
-                  <a routerLink="/product-single">
+          <div className="row">
+            <div className="col-lg-3 col-6">
+              <div className="product">
+                <div className="product-wrap">
+                  <Link to="/product-single">
                     <img
-                      class="img-fluid w-100 mb-3 img-first"
+                      className="img-fluid w-100 mb-3 img-first"
                       src="assets/images/322.jpg"
                       alt="product-img"
                     />
-                  </a>
-                  <a routerLink="/product-single">
+                  </Link>
+                  <Link to="/product-single">
                     <img
-                      class="img-fluid w-100 mb-3 img-second"
+                      className="img-fluid w-100 mb-3 img-second"
                       src="assets/images/444.jpg"
                       alt="product-img"
                     />
+                  </Link>
+                </div>
+
+                <span className="onsale">Sale</span>
+                <div className="product-hover-overlay">
+                  <a href="#">
+                    <i className="tf-ion-android-cart"></i>
+                  </a>
+                  <a href="#">
+                    <i className="tf-ion-ios-heart"></i>
                   </a>
                 </div>
 
-                <span class="onsale">Sale</span>
-                <div class="product-hover-overlay">
-                  <a href="#">
-                    <i class="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i class="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div class="product-info">
-                  <h2 class="product-title h5 mb-0">
-                    <a routerLink="/product-single">Kirby Shirt</a>
+                <div className="product-info">
+                  <h2 className="product-title h5 mb-0">
+                    <Link to="/product-single">Kirby Shirt</Link>
                   </h2>
-                  <span class="price">$329.10</span>
+                  <span className="price">$329.10</span>
                 </div>
               </div>
             </div>
 
-            <div class="col-lg-3 col-6">
-              <div class="product">
-                <div class="product-wrap">
-                  <a routerLink="/product-single">
+            <div className="col-lg-3 col-6">
+              <div className="product">
+                <div className="product-wrap">
+                  <Link to="/product-single">
                     <img
-                      class="img-fluid w-100 mb-3 img-first"
+                      className="img-fluid w-100 mb-3 img-first"
                       src="assets/images/111.jpg"
                       alt="product-img"
                     />
-                  </a>
-                  <a routerLink="/product-single">
+                  </Link>
+                  <Link to="/product-single">
                     <img
-                      class="img-fluid w-100 mb-3 img-second"
+                      className="img-fluid w-100 mb-3 img-second"
                       src="assets/images/222.jpg"
                       alt="product-img"
                     />
+                  </Link>
+                </div>
+
+                <span className="onsale">Sale</span>
+                <div className="product-hover-overlay">
+                  <a href="#">
+                    <i className="tf-ion-android-cart"></i>
+                  </a>
+                  <a href="#">
+                    <i className="tf-ion-ios-heart"></i>
                   </a>
                 </div>
 
-                <span class="onsale">Sale</span>
-                <div class="product-hover-overlay">
-                  <a href="#">
-                    <i class="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i class="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div class="product-info">
-                  <h2 class="product-title h5 mb-0">
-                    <a routerLink="/product-single">Kirby Shirt</a>
+                <div className="product-info">
+                  <h2 className="product-title h5 mb-0">
+                    <Link to="/product-single">Kirby Shirt</Link>
                   </h2>
-                  <span class="price">$329.10</span>
+                  <span className="price">$329.10</span>
                 </div>
               </div>
             </div>
 
-            <div class="col-lg-3 col-6">
-              <div class="product">
-                <div class="product-wrap">
-                  <a routerLink="/product-single">
+            <div className="col-lg-3 col-6">
+              <div className="product">
+                <div className="product-wrap">
+                  <Link to="/product-single">
                     <img
-                      class="img-fluid w-100 mb-3 img-first"
+                      className="img-fluid w-100 mb-3 img-first"
                       src="assets/images/111.jpg"
                       alt="product-img"
                     />
-                  </a>
-                  <a routerLink="/product-single">
+                  </Link>
+                  <Link to="/product-single">
                     <img
-                      class="img-fluid w-100 mb-3 img-second"
+                      className="img-fluid w-100 mb-3 img-second"
                       src="assets/images/322.jpg"
                       alt="product-img"
                     />
+                  </Link>
+                </div>
+
+                <span className="onsale">Sale</span>
+                <div className="product-hover-overlay">
+                  <a href="#">
+                    <i className="tf-ion-android-cart"></i>
+                  </a>
+                  <a href="#">
+                    <i className="tf-ion-ios-heart"></i>
                   </a>
                 </div>
 
-                <span class="onsale">Sale</span>
-                <div class="product-hover-overlay">
-                  <a href="#">
-                    <i class="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i class="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div class="product-info">
-                  <h2 class="product-title h5 mb-0">
-                    <a routerLink="/product-single">Kirby Shirt</a>
+                <div className="product-info">
+                  <h2 className="product-title h5 mb-0">
+                    <Link to="/product-single">Kirby Shirt</Link>
                   </h2>
-                  <span class="price">$329.10</span>
+                  <span className="price">$329.10</span>
                 </div>
               </div>
             </div>
 
-            <div class="col-lg-3 col-6">
-              <div class="product">
-                <div class="product-wrap">
-                  <a routerLink="/product-single">
+            <div className="col-lg-3 col-6">
+              <div className="product">
+                <div className="product-wrap">
+                  <Link to="/product-single">
                     <img
-                      class="img-fluid w-100 mb-3 img-first"
+                      className="img-fluid w-100 mb-3 img-first"
                       src="assets/images/444.jpg"
                       alt="product-img"
                     />
-                  </a>
-                  <a routerLink="/product-single">
+                  </Link>
+                  <Link to="/product-single">
                     <img
-                      class="img-fluid w-100 mb-3 img-second"
+                      className="img-fluid w-100 mb-3 img-second"
                       src="assets/images/222.jpg"
                       alt="product-img"
                     />
+                  </Link>
+                </div>
+
+                <span className="onsale">Sale</span>
+                <div className="product-hover-overlay">
+                  <a href="#">
+                    <i className="tf-ion-android-cart"></i>
+                  </a>
+                  <a href="#">
+                    <i className="tf-ion-ios-heart"></i>
                   </a>
                 </div>
 
-                <span class="onsale">Sale</span>
-                <div class="product-hover-overlay">
-                  <a href="#">
-                    <i class="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i class="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div class="product-info">
-                  <h2 class="product-title h5 mb-0">
-                    <a routerLink="/product-single">Kirby Shirt</a>
+                <div className="product-info">
+                  <h2 className="product-title h5 mb-0">
+                    <Link to="/product-single">Kirby Shirt</Link>
                   </h2>
-                  <span class="price">$329.10</span>
+                  <span className="price">$329.10</span>
                 </div>
               </div>
             </div>
