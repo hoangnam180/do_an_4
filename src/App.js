@@ -1,14 +1,33 @@
-import UserLayout from './layouts/user';
-import Home from './pages/home';
+import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
 
+import Footer from './components/Footer';
+import Header from './components/Header';
+import Cart from './pages/cart';
+import Checkout from './pages/checkout';
+import ForgotPassword from './pages/forgotpass';
+import Home from './pages/home';
+import Login from './pages/login';
+import SingleProduct from './pages/product';
+import Shop from './pages/shop';
+import SignUp from './pages/signup';
 function App() {
   return (
     <div className="App">
-      <UserLayout>
-        <Home />
-      </UserLayout>
+      <BrowserRouter>
+        <Header></Header>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/single-product" element={<SingleProduct />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        </Routes>
+        <Footer></Footer>
+      </BrowserRouter>
     </div>
   );
 }
-
 export default App;
