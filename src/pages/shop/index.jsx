@@ -29,8 +29,15 @@ function Shop() {
           </div>
         </div>
       </section>
-
-      <section class="products-shop section">
+      <div className="input-group container mt-4">
+        <input
+          type="text"
+          className="form-control bg-white"
+          placeholder="Search....."
+        />
+        <div className="input-group-append" style={{ width: '100px' }}></div>
+      </div>
+      <section class="products-shop section" style={{ paddingTop: '10px' }}>
         <div class="container">
           <div class="row">
             <div class="col-md-9">

@@ -1,7 +1,7 @@
 import 'jquery/dist/jquery.slim.min.js';
 import 'popper.js/dist/umd/popper.min.js';
 import 'bootstrap/dist/js/bootstrap.min.js';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 function Header() {
   return (
     <nav
@@ -9,9 +9,12 @@ function Header() {
       id="navbar"
     >
       <div className="container">
-        <Link className="navbar-brand font-weight-bold" to={{ pathname: '/' }}>
+        <NavLink
+          className="navbar-brand font-weight-bold"
+          to={{ pathname: '/' }}
+        >
           E-Shop
-        </Link>
+        </NavLink>
         <button
           className="navbar-toggler"
           type="button"
@@ -26,50 +29,16 @@ function Header() {
         <div className="collapse navbar-collapse " id="main-navbar">
           <ul className="navbar-nav mx-auto">
             <li className="nav-item active">
-              <Link className="nav-link" to={{ pathname: '/' }}>
+              <NavLink className="nav-link" to={{ pathname: '/' }}>
                 Home
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <NavLink className="nav-link" to={{ pathname: '/about-us' }}>
                 About Us
-              </a>
+              </NavLink>
             </li>
 
-            <li className="nav-item dropdown dropdown-slide">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                id="navbarDropdown4"
-                role="button"
-                data-delay="350"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                Pages.
-              </a>
-              <ul className="dropdown-menu" aria-labelledby="navbarDropdown4">
-                <li>
-                  <a href="#">About Us</a>
-                </li>
-                <li>
-                  <a href="#">Blog</a>
-                </li>
-                <li>
-                  <a href="#">Blog Single</a>
-                </li>
-                <li>
-                  <a href="#">Contact</a>
-                </li>
-                <li>
-                  <a href="#">404 Page</a>
-                </li>
-                <li>
-                  <a href="#">FAQ</a>
-                </li>
-              </ul>
-            </li>
             <li className="nav-item dropdown dropdown-slide">
               <a
                 className="nav-link dropdown-toggle"
@@ -85,18 +54,18 @@ function Header() {
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown3">
                 <li>
-                  <Link to={{ pathname: '/shop' }}>Shop</Link>
+                  <NavLink to={{ pathname: '/shop' }}>Search</NavLink>
                 </li>
                 <li>
-                  <Link to={{ pathname: '/single-product' }}>
+                  <NavLink to={{ pathname: '/single-product' }}>
                     Product Details
-                  </Link>
+                  </NavLink>
                 </li>
                 <li>
-                  <Link to={{ pathname: '/checkout' }}>Checkout</Link>
+                  <NavLink to={{ pathname: '/checkout' }}>Checkout</NavLink>
                 </li>
                 <li>
-                  <Link to={{ pathname: '/cart' }}>Cart</Link>
+                  <NavLink to={{ pathname: '/cart' }}>Cart</NavLink>
                 </li>
               </ul>
             </li>
@@ -116,15 +85,15 @@ function Header() {
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown5">
                 <li>
-                  <Link to={{ pathname: '/login' }}>Login Page</Link>
+                  <NavLink to={{ pathname: '/login' }}>Login Page</NavLink>
                 </li>
                 <li>
-                  <Link to={{ pathname: '/signup' }}>SignUp Page</Link>
+                  <NavLink to={{ pathname: '/signup' }}>SignUp Page</NavLink>
                 </li>
                 <li>
-                  <Link to={{ pathname: '/forgot-password' }}>
+                  <NavLink to={{ pathname: '/forgot-password' }}>
                     Forgot Password
-                  </Link>
+                  </NavLink>
                 </li>
               </ul>
             </li>
@@ -136,9 +105,9 @@ function Header() {
           id="top-menu"
         >
           <li className="list-inline-item">
-            <a href="#" className="search_toggle" id="search-icon">
+            <Link to="/shop" className="search_toggle" id="search-icon">
               <i className="tf-ion-android-search"></i>
-            </a>
+            </Link>
           </li>
           <li className="dropdown cart-nav dropdown-slide list-inline-item">
             <a
@@ -193,23 +162,26 @@ function Header() {
                 <span className="h6">Total</span>
                 <span className="total-price h6">$1799.00</span>
                 <div className="text-center cart-buttons mt-3">
-                  <a
-                    href="#"
+                  <Link
+                    to="/cart"
                     className="btn btn-small btn-transparent btn-block"
                   >
                     View Cart
-                  </a>
-                  <a href="#" className="btn btn-small btn-main btn-block">
+                  </Link>
+                  <Link
+                    to="/checkout"
+                    className="btn btn-small btn-main btn-block"
+                  >
                     Checkout
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
           </li>
           <li className="list-inline-item">
-            <a href="#">
+            <Link to="/profile">
               <i className="tf-ion-ios-person mr-3"></i>
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
