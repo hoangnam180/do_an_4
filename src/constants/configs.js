@@ -1,9 +1,4 @@
 export const API_SERVER = process.env.NEXT_PUBLIC_SERVER_API;
-export const ASSETS_URL = process.env.NEXT_PUBLIC_ASSETS_URL;
-export const ACCESS_TOKEN = "_ac_tk_topaz";
-export const USER_INFO = "user_info";
-export const IS_AUTH = "is_auth";
-export const CATEGORY_ID = "category_id";
-export const DELIVERY_ID = "delivery_id";
-export const TUTORIAL = "tutorial";
-export const ORDER_PENDING = "order_pending";
+export const ACCESS_TOKEN = '_ac_tk_topaz';
+export const USER_INFO = 'user_info';
+export const IS_AUTH = 'is_auth';

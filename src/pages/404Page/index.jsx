@@ -9,6 +9,7 @@ const Page404 = () => {
             src="https://cdn.pixabay.com/photo/2017/03/09/12/31/error-2129569__340.jpg"
             alt
             className="img-fluid"
+            alt=""
           />
         </div>
         <div className=" col-md-6 mt-5">

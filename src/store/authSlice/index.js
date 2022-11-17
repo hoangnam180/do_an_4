@@ -1,13 +1,10 @@
 import webStorage from 'src/utils/webStorage';
-import { router } from 'next/router';
-
 import { USER_INFO, IS_AUTH } from '../../constants/configs';
-
+import { Navigate } from 'react-router-dom';
 const { createSlice } = require('@reduxjs/toolkit');
 
 const isAuthFromStorage = webStorage.get(IS_AUTH);
 const userInfoFromStorage = webStorage.get(USER_INFO);
-
 const initialState = {
   isAuth: isAuthFromStorage,
   isHandle: null,
@@ -41,7 +38,7 @@ const authSlice = createSlice({
       state.redirect = '/';
       state.error = {};
       webStorage.removeAll();
-      router.push('/');
+      <Navigate to="/" replace={true} />;
     },
   },
 

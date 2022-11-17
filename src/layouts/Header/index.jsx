@@ -1,7 +1,7 @@
 import 'jquery/dist/jquery.slim.min.js';
 import 'popper.js/dist/umd/popper.min.js';
 import 'bootstrap/dist/js/bootstrap.min.js';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 function Header() {
   return (
     <nav
@@ -9,12 +9,9 @@ function Header() {
       id="navbar"
     >
       <div className="container">
-        <NavLink
-          className="navbar-brand font-weight-bold"
-          to={{ pathname: '/' }}
-        >
+        <Link className="navbar-brand font-weight-bold" to={{ pathname: '/' }}>
           E-Shop
-        </NavLink>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -29,45 +26,24 @@ function Header() {
         <div className="collapse navbar-collapse " id="main-navbar">
           <ul className="navbar-nav mx-auto">
             <li className="nav-item active">
-              <NavLink className="nav-link" to={{ pathname: '/' }}>
+              <Link className="nav-link" to={{ pathname: '/' }}>
                 Home
-              </NavLink>
+              </Link>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to={{ pathname: '/about-us' }}>
-                About Us
-              </NavLink>
+            <li className="nav-item ">
+              <Link className="nav-link" to={{ pathname: '/shop' }}>
+                Search
+              </Link>
             </li>
-
-            <li className="nav-item dropdown dropdown-slide">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                id="navbarDropdown3"
-                role="button"
-                data-delay="350"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                Shop.
-              </a>
-              <ul className="dropdown-menu" aria-labelledby="navbarDropdown3">
-                <li>
-                  <NavLink to={{ pathname: '/shop' }}>Search</NavLink>
-                </li>
-                <li>
-                  <NavLink to={{ pathname: '/single-product' }}>
-                    Product Details
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to={{ pathname: '/checkout' }}>Checkout</NavLink>
-                </li>
-                <li>
-                  <NavLink to={{ pathname: '/cart' }}>Cart</NavLink>
-                </li>
-              </ul>
+            <li className="nav-item ">
+              <Link className="nav-link" to={{ pathname: '/about-us' }}>
+                About-Us
+              </Link>
+            </li>
+            <li className="nav-item ">
+              <Link className="nav-link" to={{ pathname: '/cart' }}>
+                Cart
+              </Link>
             </li>
 
             <li className="nav-item dropdown dropdown-slide">
@@ -85,15 +61,15 @@ function Header() {
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown5">
                 <li>
-                  <NavLink to={{ pathname: '/login' }}>Login Page</NavLink>
+                  <Link to={{ pathname: '/login' }}>Login Page</Link>
                 </li>
                 <li>
-                  <NavLink to={{ pathname: '/signup' }}>SignUp Page</NavLink>
+                  <Link to={{ pathname: '/signup' }}>SignUp Page</Link>
                 </li>
                 <li>
-                  <NavLink to={{ pathname: '/forgot-password' }}>
+                  <Link to={{ pathname: '/forgot-password' }}>
                     Forgot Password
-                  </NavLink>
+                  </Link>
                 </li>
               </ul>
             </li>
