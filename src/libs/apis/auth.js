@@ -1,61 +1,61 @@
-import request from "../bases/request";
+import request from '../bases/request';
 
-export const loginApi = async data =>
+export const loginApi = async (data) =>
   request({
-    url: "/core/auth/sign-in",
-    method: "POST",
-    data
-  });
-
-export const signUpApi = async data =>
-  request({
-    url: "/core/auth/sign-up",
-    method: "POST",
-    data
-  });
-
-export const updateProfileApi = async data =>
-  request({
-    url: "/core/user/me",
-    method: "PUT",
+    url: '/auth/login',
+    method: 'POST',
     data,
-    tokenClient: true
+  });
+
+export const signUpApi = async (data) =>
+  request({
+    url: '/core/auth/sign-up',
+    method: 'POST',
+    data,
+  });
+
+export const updateProfileApi = async (data) =>
+  request({
+    url: '/core/user/me',
+    method: 'PUT',
+    data,
+    tokenClient: true,
   });
 
 export const getMeApi = async () =>
   request({
-    url: "/core/user/me",
-    method: "GET",
-    tokenClient: true
+    url: '/core/user/me',
+    method: 'GET',
+    tokenClient: true,
   });
 
-export const changePasswordApi = async data =>
+export const changePasswordApi = async (data) =>
   request({
-    url: "/core/auth/change-password",
-    method: "POST",
+    url: '/core/auth/change-password',
+    method: 'POST',
     data,
-    tokenClient: true
+    tokenClient: true,
   });
 
-export const updateInfoApi = async data => {
+export const updateInfoApi = async (data) => {
   request({
-    url: "/core/user/me",
-    method: "PUT",
+    url: '/core/user/me',
+    method: 'PUT',
     data,
-    tokenClient: true
+    tokenClient: true,
   });
 };
 
-export const sendEmailApi = async data =>
+export const sendEmailApi = async (data) =>
   request({
-    url: "/core/auth/request-otp",
-    method: "POST",
-    data
+    url: '/core/auth/request-otp',
+    method: 'POST',
+    data,
   });
 
-export const confirmOptApi = async data =>
+export const confirmOptApi = async (data) =>
   request({
-    url: "/core/auth/check-otp",
-    method: "POST",
-    data
+    url: '/core/auth/check-otp',
+    method: 'POST',
+    data,
   });

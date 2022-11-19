@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React from 'react';
 import LayoutDefault from 'src/layouts/LayoutDefault';
 import { privateRoutes, publicRoutes } from 'src/router';
-import PrivateRoute from 'src/components/auth/PrivateRoute';
+import PrivateRoute from 'src/components/auth/privateRoute';
 const RouterComponent = () => {
   return (
     <div className="App">

@@ -1,4 +1,41 @@
+import { useForm } from 'react-hook-form';
+import { loginApi } from 'src/libs/apis/auth';
+import { useDispatch } from 'react-redux';
+import { actionLoading, actionLogin, actionToast } from 'src/store/authSlice';
+import { useNavigate } from 'react-router-dom';
+
 function Login() {
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+  const onSubmit = async (data) => {
+    try {
+      const res = await loginApi(data);
+      if (res?.errCode === 0) {
+        const payload = {
+          userInfo: res?.user,
+          isAuth: res?.errCode,
+        };
+        dispatch(actionLogin(payload));
+        dispatch(actionLoading({ loading: true }));
+        reset();
+        dispatch(
+          actionToast({ title: 'Login Successfully!', type: 'success' })
+        );
+        navigation('/');
+        dispatch(actionLoading({ loading: false }));
+      }
+    } catch (err) {
+      dispatch(
+        actionToast({ title: 'Wrong Password or UserName!', type: 'error' })
+      );
+    }
+  };
   return (
     <div className="login-container">
       <div className="account section">
@@ -13,30 +50,40 @@ function Login() {
                   </p>
                 </div>
 
-                <form action="#">
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="form-group mb-4">
-                    <label htmlFor="#">Enter username</label>
+                    <label htmlFor="username">Enter username</label>
                     <input
+                      {...register('username', { required: true })}
+                      id="username"
                       type="text"
                       className="form-control"
                       placeholder="Enter Username"
                     />
+                    {errors.username && (
+                      <span className="text-danger">Please type username</span>
+                    )}
                   </div>
                   <div className="form-group">
-                    <label htmlFor="#">Enter Password</label>
+                    <label htmlFor="password">Enter Password</label>
                     <a className="float-right" href="">
                       Forget password?
                     </a>
                     <input
-                      type="text"
+                      {...register('password', { required: true })}
+                      id="password"
+                      type="password"
                       className="form-control"
                       placeholder="Enter Password"
-                    />
+                    />{' '}
+                    {errors.password && (
+                      <span className="text-danger">Please type password</span>
+                    )}
                   </div>
 
-                  <a href="#" className="btn btn-main mt-3 btn-block">
+                  <button type="submit" className="btn btn-main mt-3 btn-block">
                     Login
-                  </a>
+                  </button>
                 </form>
               </div>
             </div>

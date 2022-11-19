@@ -1,8 +1,6 @@
 import { useSelector } from 'react-redux';
 
 function Home() {
-  const state = useSelector((state) => state);
-  console.log(state);
   return (
     <div className="home-container">
       <div className="main-slider slider slick-initialized slick-slider">

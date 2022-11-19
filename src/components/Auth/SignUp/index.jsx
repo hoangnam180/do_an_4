@@ -1,4 +1,16 @@
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import routes from 'src/configs/router';
+
 function SignUp() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm();
+  const onSubmit = (value) => console.log(value);
   return (
     <div className="signUp-container">
       <div className="account section">
@@ -9,50 +21,84 @@ function SignUp() {
                 <div className="text-center heading">
                   <h2 className="mb-2">Sign Up</h2>
                   <p className="lead">
-                    Already have an account? <a href="/login"> Login now</a>
+                    Already have an account? <Link to="/login"> Login now</Link>
                   </p>
                 </div>
 
-                <form action="#">
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="form-group mb-4">
-                    <label htmlFor="#">Enter Email Address</label>
+                    <label htmlFor="email">Enter Email Address</label>
                     <input
+                      {...register('email', { required: true })}
+                      id="email"
                       type="text"
                       className="form-control"
                       placeholder="Enter Email Address"
                     />
+                    {errors.email && (
+                      <span className="text-danger">Please type email</span>
+                    )}
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="#">Enter username</label>
-                    <a className="float-right" href="">
+                    <label htmlFor="username">Enter username</label>
+                    <Link className="float-right" to={routes.forgot}>
                       Forget password?
-                    </a>
+                    </Link>
                     <input
+                      {...register('username', { required: true })}
+                      id="username"
                       type="text"
                       className="form-control"
                       placeholder="Enter Password"
                     />
+                    {errors.username && (
+                      <span className="text-danger">Please type username</span>
+                    )}
                   </div>
                   <div className="form-group mb-4">
-                    <label htmlFor="#">Enter Password</label>
+                    <label htmlFor="password">Enter Password</label>
                     <input
-                      type="text"
+                      {...register('password', { required: true })}
+                      id="password"
+                      type="password"
                       className="form-control"
                       placeholder="Enter Password"
                     />
+                    {errors.password && (
+                      <span className="text-danger">Please type password</span>
+                    )}
                   </div>
                   <div className="form-group">
-                    <label htmlFor="#">Confirm Password</label>
+                    <label htmlFor="confirm">Confirm Password</label>
                     <input
+                      {...register('confirm', {
+                        required: true,
+                        validate: (val) => {
+                          if (watch('password') !== val) {
+                            return 'Your passwords do no match';
+                          }
+                        },
+                      })}
+                      id="confirm"
                       type="text"
                       className="form-control"
                       placeholder="Confirm Password"
                     />
+
+                    {errors.confirm && errors.confirm?.message ? (
+                      <span className="text-danger">
+                        {errors.confirm?.message}
+                      </span>
+                    ) : (
+                      <span className="text-danger">
+                        Please type confirm password
+                      </span>
+                    )}
                   </div>
 
-                  <a href="#" className="btn btn-main mt-3 btn-block">
+                  <button type="submit" className="btn btn-main mt-3 btn-block">
                     Signup
-                  </a>
+                  </button>
                 </form>
               </div>
             </div>
