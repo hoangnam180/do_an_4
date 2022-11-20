@@ -1,21 +1,19 @@
-import { router } from 'next/router';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-
-import webStorage from 'src/utils/webStorage';
+import { DATA_CART, STEP_CART } from 'src/constants/configs';
 
 import { getListProductCarClientApi } from 'src/libs/apis/cart';
-
-import { USER_INFO, IS_AUTH, ORDER_PENDING } from '../../constants/configs';
+import webStorage from 'src/utils/webStorage';
 
 const { createSlice } = require('@reduxjs/toolkit');
-
-const orderPendingId = webStorage.get(ORDER_PENDING);
+const stepCart = webStorage.get(STEP_CART);
+const dataCart = webStorage.get(DATA_CART);
 
 const initialState = {
-  step: 0,
-  orderPendingId: orderPendingId || null,
+  step: stepCart || 0,
+  data: dataCart ? dataCart : [],
   totalCart: 0,
-  pedding: false,
+  totalPrice: 0,
+  pending: false,
   error: {},
 };
 
@@ -36,28 +34,68 @@ const cartSlice = createSlice({
   initialState: initialState,
 
   reducers: {
-    actionStepCart: (state, action) => {
-      state.step = action.payload.step;
+    actionQuantity(state, action) {
+      const { id, quantity } = action.payload;
+      const index = state.data.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        state.data[index].quantity = quantity;
+      }
+      webStorage.set(DATA_CART, state.data);
     },
-    actionUpdateOrderPendingId: (state, action) => {
-      state.orderPendingId = action.payload.orderPendingId;
+    actionDelete(state, action) {
+      const { id } = action.payload;
+      const index = state.data.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        state.data.splice(index, 1);
+      }
+      state.step = state.step - 1;
+      webStorage.set(STEP_CART, state.step);
+      webStorage.set(DATA_CART, state.data);
+    },
+    actionTotalCart(state, action) {
+      state.totalCart = action.payload;
+    },
+    actionAddToCart: (state, action) => {
+      const check = state?.data?.find(
+        (item) => item.id === action.payload?.data?.id
+      );
+      if (check) {
+        state.data = state.data.map((item) =>
+          item.id === action.payload.data.id
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+              }
+            : item
+        );
+      } else {
+        state.step = state.step + 1;
+        state.data = [...state.data, { ...action.payload.data, quantity: 1 }];
+      }
+      webStorage.set(STEP_CART, state.step);
+      webStorage.set(DATA_CART, state.data);
     },
   },
 
   extraReducers: {
     [getTotalCart.pending]: (state) => {
-      state.pedding = true;
+      state.pending = true;
     },
     [getTotalCart.rejected]: (state, action) => {
-      state.pedding = false;
+      state.pending = false;
     },
     [getTotalCart.fulfilled]: (state, action) => {
       state.totalCart = action.payload.data.cart.item?.length;
-      state.pedding = false;
+      state.pending = false;
     },
   },
 });
 
 const { reducer: cartReducer } = cartSlice;
-export const { actionStepCart, actionUpdateOrderPendingId } = cartSlice.actions;
+export const {
+  actionAddToCart,
+  actionDelete,
+  actionQuantity,
+  actionTotalCart,
+} = cartSlice.actions;
 export default cartReducer;

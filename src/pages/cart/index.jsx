@@ -1,4 +1,37 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import routes from 'src/configs/router';
+import {
+  actionDelete,
+  actionQuantity,
+  actionTotalCart,
+} from 'src/store/cartSlice';
+
 function Cart() {
+  const dispatch = useDispatch();
+  const { data, totalCart } = useSelector((state) => state?.cartReducer);
+
+  const handleTotalPrice = () => {
+    let total = 0;
+    data.forEach((item) => {
+      total += item.price * item.quantity;
+    });
+    dispatch(actionTotalCart(total));
+  };
+
+  const handleIncrease = (id, quantity) => {
+    if (id) {
+      dispatch(actionQuantity({ id, quantity: Number(quantity || 0) }));
+    }
+  };
+  const handleDelete = (id) => {
+    dispatch(actionDelete({ id }));
+  };
+  useEffect(() => {
+    handleTotalPrice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, dispatch]);
   return (
     <div className="checkout-container">
       <section className="page-header">
@@ -42,134 +75,84 @@ function Cart() {
                         <th className="product-thumbnail"> </th>
                         <th className="product-name">Product</th>
                         <th className="product-price">Price</th>
-                        <th className="product-quantity">Quantity</th>
+                        <th className="product-quantity pl-4">Quantity</th>
                         <th className="product-subtotal">Total</th>
                         <th className="product-remove"> </th>
                       </tr>
                     </thead>
 
                     <tbody>
-                      <tr className="cart_item">
-                        <td
-                          className="product-thumbnail"
-                          data-title="Thumbnail"
-                        >
-                          <a href="/product-single">
-                            <img
-                              src="assets/images/cart-1.jpg"
-                              className="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
-                              alt=""
-                            />
-                          </a>
-                        </td>
+                      {data?.map((item, index) => {
+                        return (
+                          <tr className="cart_item" key={index}>
+                            <td
+                              className="product-thumbnail"
+                              data-title="Thumbnail"
+                            >
+                              <a href="/product-single">
+                                <img
+                                  src={item?.img}
+                                  className="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+                                  alt=""
+                                />
+                              </a>
+                            </td>
 
-                        <td className="product-name" data-title="Product">
-                          <a href="#">Trendy Cloth</a>
-                        </td>
+                            <td className="product-name" data-title="Product">
+                              <a href="#">{item?.name}</a>
+                            </td>
 
-                        <td className="product-price" data-title="Price">
-                          <span className="amount">
-                            <span className="currencySymbol">
-                              <pre wp-pre-tag-3=""></pre>
-                            </span>
-                            90.00
-                          </span>
-                        </td>
-                        <td className="product-quantity" data-title="Quantity">
-                          <div className="quantity">
-                            <label className="sr-only">Quantity</label>
-                            <input
-                              type="number"
-                              id="qty"
-                              className="input-text qty text"
-                              step="1"
-                              min="0"
-                              max="9"
-                              title="Qty"
-                              size="4"
-                            />
-                          </div>
-                        </td>
-                        <td className="product-subtotal" data-title="Total">
-                          <span className="amount">
-                            <span className="currencySymbol">
-                              <pre wp-pre-tag-3=""></pre>
-                            </span>
-                            90.00
-                          </span>
-                        </td>
-                        <td className="product-remove" data-title="Remove">
-                          <a
-                            href="#"
-                            className="remove"
-                            aria-label="Remove this item"
-                            data-product_id="30"
-                            data-product_sku=""
-                          >
-                            ×
-                          </a>
-                        </td>
-                      </tr>
-                      <tr className="cart_item">
-                        <td
-                          className="product-thumbnail"
-                          data-title="Thumbnail"
-                        >
-                          <a href="/product-single">
-                            <img
-                              src="assets/images/cart-2.jpg"
-                              className="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
-                              alt=""
-                            />
-                          </a>
-                        </td>
-                        <td className="product-name" data-title="Product">
-                          <a href="#">Sunglasses</a>
-                        </td>
-                        <td className="product-price" data-title="Price">
-                          <span className="amount">
-                            <span className="currencySymbol">
-                              <pre wp-pre-tag-3=""></pre>
-                            </span>
-                            90.00
-                          </span>
-                        </td>
-                        <td className="product-quantity" data-title="Quantity">
-                          <div className="quantity">
-                            <label className="sr-only">Quantity</label>
-                            <input
-                              type="number"
-                              id="quantity_5cc58182489a8"
-                              className="input-text qty text"
-                              step="1"
-                              min="0"
-                              max="9"
-                              name="#"
-                              title="Qty"
-                              size="4"
-                            />
-                          </div>
-                        </td>
-                        <td className="product-subtotal" data-title="Total">
-                          <span className="amount">
-                            <span className="currencySymbol">
-                              <pre wp-pre-tag-3=""></pre>
-                            </span>
-                            90.00
-                          </span>
-                        </td>
-                        <td className="product-remove" data-title="Remove">
-                          <a
-                            href="#"
-                            className="remove"
-                            aria-label="Remove this item"
-                            data-product_id="30"
-                            data-product_sku=""
-                          >
-                            ×
-                          </a>
-                        </td>
-                      </tr>
+                            <td className="product-price" data-title="Price">
+                              <span className="amount">
+                                <span className="currencySymbol">
+                                  <pre wp-pre-tag-3=""></pre>
+                                </span>
+                                {item?.price}
+                              </span>
+                            </td>
+                            <td
+                              className="product-quantity"
+                              data-title="Quantity"
+                            >
+                              <div className="quantity d-flex align-items-center">
+                                <label className="sr-only">Quantity</label>
+
+                                <input
+                                  type="number"
+                                  id="qty"
+                                  className="input-text qty text"
+                                  defaultValue={item?.quantity}
+                                  title="Qty"
+                                  onChange={(e) => {
+                                    handleIncrease(item?.id, e.target.value);
+                                  }}
+                                />
+                              </div>
+                            </td>
+                            <td className="product-subtotal" data-title="Total">
+                              <span className="amount">
+                                <span className="currencySymbol">
+                                  <pre wp-pre-tag-3=""></pre>
+                                </span>
+                                {item?.price}
+                              </span>
+                            </td>
+                            <td className="product-remove" data-title="Remove">
+                              <Link
+                                className="remove"
+                                aria-label="Remove this item"
+                                data-product_id="30"
+                                data-product_sku=""
+                                onClick={() => {
+                                  handleDelete(item?.id);
+                                }}
+                              >
+                                ×
+                              </Link>
+                            </td>
+                          </tr>
+                        );
+                      })}
                       <tr>
                         <td colSpan="6" className="actions">
                           <div className="coupon">
@@ -226,21 +209,17 @@ function Cart() {
                 <h4 className="mb-4">Cart totals</h4>
                 <ul className="list-unstyled mb-4">
                   <li className="d-flex justify-content-between pb-2 mb-3">
-                    <h5>Subtotal</h5>
-                    <span>$90.00</span>
-                  </li>
-                  <li className="d-flex justify-content-between pb-2 mb-3">
                     <h5>Shipping</h5>
                     <span>Free</span>
                   </li>
                   <li className="d-flex justify-content-between pb-2">
                     <h5>Total</h5>
-                    <span>$90.00</span>
+                    <span>${Number(totalCart || 0)?.toFixed(2) || 0}</span>
                   </li>
                 </ul>
-                <a href="#" className="btn btn-main btn-small">
+                <Link to={routes?.checkout} className="btn btn-main btn-small">
                   Proceed to checkout
-                </a>
+                </Link>
               </div>
             </div>
           </div>

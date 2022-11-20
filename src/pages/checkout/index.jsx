@@ -1,4 +1,8 @@
+import { useSelector } from 'react-redux';
+
 function Checkout() {
+  const { data } = useSelector((state) => state.cartReducer);
+  console.log(data);
   return (
     <div className="checkout-container">
       <section className="page-header">
@@ -263,10 +267,6 @@ function Checkout() {
                   </div>
 
                   <ul className="summary-prices list-unstyled mb-4">
-                    <li className="d-flex justify-content-between">
-                      <span>Subtotal:</span>
-                      <span className="h5">$190</span>
-                    </li>
                     <li className="d-flex justify-content-between">
                       <span>Shipping:</span>
                       <span className="h5">Free</span>

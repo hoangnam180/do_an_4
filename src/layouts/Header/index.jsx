@@ -1,11 +1,14 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import 'jquery/dist/jquery.slim.min.js';
 import 'popper.js/dist/umd/popper.min.js';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionLogout, actionToast } from 'src/store/authSlice';
+import routes from 'src/configs/router';
 function Header() {
   const data = useSelector((state) => state?.authReducer);
+  const cart = useSelector((state) => state?.cartReducer);
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(actionLogout());
@@ -66,78 +69,35 @@ function Header() {
           id="top-menu"
         >
           <li className="list-inline-item">
-            <Link to="/shop" className="search_toggle" id="search-icon">
+            <Link to={routes.search} className="search_toggle" id="search-icon">
               <i className="tf-ion-android-search"></i>
             </Link>
           </li>
-          <li className="dropdown cart-nav dropdown-slide list-inline-item">
+          <li className="cart-nav nav-item dropdown dropdown-slide list-inline-item ">
+            <span className="step">{cart?.step ? cart?.step : 0}</span>
             <a
+              className="nav-link dropdown-toggle pd-0"
               href="#"
-              className="dropdown-toggle cart-icon"
+              id="navbarDropdown5"
+              role="button"
+              data-delay="350"
               data-toggle="dropdown"
-              data-hover="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
             >
               <i className="tf-ion-android-cart"></i>
             </a>
-            <div className="dropdown-menu cart-dropdown">
-              <div className="media">
-                <a href="/product-single">
-                  <img
-                    className="media-object img- mr-3"
-                    src="assets/images/cart-1.jpg"
-                    alt="image"
-                  />
-                </a>
-                <div className="media-body">
-                  <h6>Ladies Bag</h6>
-                  <div className="cart-price">
-                    <span>1 x</span>
-                    <span>1250.00</span>
-                  </div>
-                </div>
-                <a href="#" className="remove">
-                  <i className="tf-ion-close"></i>
-                </a>
-              </div>
-
-              <div className="media">
-                <a href="/product-single">
-                  <img
-                    className="media-object img-fluid mr-3"
-                    src="assets/images/cart-2.jpg"
-                    alt="image"
-                  />
-                </a>
-                <div className="media-body">
-                  <h6>Skinny Jeans</h6>
-                  <div className="cart-price">
-                    <span>1 x</span>
-                    <span>1250.00</span>
-                  </div>
-                </div>
-                <a href="#" className="remove">
-                  <i className="tf-ion-close"></i>
-                </a>
-              </div>
-              <div className="cart-summary">
-                <span className="h6">Total</span>
-                <span className="total-price h6">$1799.00</span>
-                <div className="text-center cart-buttons mt-3">
-                  <Link
-                    to="/cart"
-                    className="btn btn-small btn-transparent btn-block"
-                  >
-                    View Cart
-                  </Link>
-                  <Link
-                    to="/checkout"
-                    className="btn btn-small btn-main btn-block"
-                  >
-                    Checkout
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <ul
+              className="dropdown-menu right-at"
+              aria-labelledby="navbarDropdown5"
+            >
+              <li>
+                <Link to={routes.cart}> View Cart</Link>
+              </li>
+              <li>
+                <Link to={routes.checkout}>Checkout</Link>
+              </li>
+            </ul>
           </li>
           <li className="nav-item dropdown dropdown-slide list-inline-item ">
             <a

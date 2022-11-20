@@ -1,7 +1,7 @@
 const routes = {
   home: '/',
   search: '/shop',
-  detail: '/single-product',
+  detail: '/product-single',
   checkout: '/checkout',
   cart: '/cart',
   login: '/login',

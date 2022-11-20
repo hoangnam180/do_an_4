@@ -1,95 +1,83 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination as Paginationn, Autoplay } from 'swiper';
+import dataHome from 'src/dataFake/home';
+import { Link } from 'react-router-dom';
+import { actionAddToCart } from 'src/store/cartSlice';
+import { actionToast } from 'src/store/authSlice';
 
 function Home() {
+  const dispatch = useDispatch();
+  const handleAddToCart = (data) => {
+    dispatch(actionAddToCart({ data }));
+  };
   return (
     <div className="home-container">
-      <div className="main-slider slider slick-initialized slick-slider">
-        <div
-          className="slider-item"
-          style={{
-            backgroundImage: "url('assets/images/slideshow1-2.jpg')",
-            backgroundPosition: '50%',
-            backgroundRepeat: 'no-repeat',
-          }}
-        >
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-6 col-12 offset-lg-6 offset-md-6">
-                <div className="slider-caption">
-                  <span className="lead">Trendy dress</span>
-                  <h1 className="mt-2 mb-5">
-                    <span className="text-color">Winter </span>Collection
-                  </h1>
-                  <a href="#" className="btn btn-main">
-                    Shop Now
-                  </a>
+      <Swiper
+        spaceBetween={1}
+        modules={[Navigation, Paginationn, Autoplay]}
+        slidesPerView={1}
+        navigation
+        autoplay={{ delay: 3000 }}
+        className="main-slider slider slick-initialized slick-slider section"
+        // scrollbar={{ draggable: true }}
+      >
+        {dataHome.banner?.map((item) => {
+          return (
+            <SwiperSlide
+              key={item?.id}
+              className="slider-item"
+              style={{
+                backgroundImage: `url('${item?.img}')`,
+                backgroundPosition: '50%',
+                backgroundRepeat: 'no-repeat',
+              }}
+            >
+              <div className="container">
+                <div className="row">
+                  <div className="col-lg-6 col-12 offset-lg-6 offset-md-6">
+                    <div className="slider-caption">
+                      <span className="lead">{item?.caption?.text_top}</span>
+                      <h1 className="mt-2 mb-5">
+                        <span className="text-color">
+                          {item?.caption?.text_center}
+                        </span>
+                        {item?.caption?.text_bottom}
+                      </h1>
+                      <a href="#" className="btn btn-main">
+                        Shop Now
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
       <section className="category section pt-3 pb-0">
         <div className="container">
           <div className="row">
-            <div className="col-lg-4 col-sm-12 col-md-6">
-              <div className="cat-item mb-4 mb-lg-0">
-                <img
-                  src="assets/images/cat-1.jpg"
-                  alt=""
-                  className="img-fluid"
-                />
-                <div className="item-info">
-                  <p className="mb-0">Stylish Leather watch</p>
-                  <h4 className="mb-4">
-                    up to <strong>50% </strong>off
-                  </h4>
-                  <a href="#" className="read-more">
-                    Shop now
-                  </a>
+            {dataHome?.category?.map((item) => (
+              <div className="col-lg-4 col-sm-12 col-md-6" key={item?.id}>
+                <div className="cat-item mb-4 mb-lg-0">
+                  <img src={item?.img} alt="" className="img-fluid" />
+                  <div className="item-info">
+                    <p className="mb-0">{item?.name}</p>
+                    <h4 className="mb-4">
+                      up to <strong>{item?.upto} </strong>off
+                    </h4>
+                    <a href="#" className="read-more">
+                      Shop now
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-lg-4 col-sm-12 col-md-6">
-              <div className="cat-item mb-4 mb-lg-0">
-                <img
-                  src="assets/images/cat-2.jpg"
-                  alt=""
-                  className="img-fluid"
-                />
-                <div className="item-info">
-                  <p className="mb-0">Ladies hand bag</p>
-                  <h4 className="mb-4">
-                    up to <strong>40% </strong>off
-                  </h4>
-                  <a href="#" className="read-more">
-                    Shop now
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 col-sm-12 col-md-6">
-              <div className="cat-item">
-                <img
-                  src="assets/images/cat-3.jpg"
-                  alt=""
-                  className="img-fluid"
-                />
-                <div className="item-info">
-                  <p className="mb-0">Trendy shoe</p>
-                  <h4 className="mb-4">
-                    up to <strong>50% </strong>off
-                  </h4>
-                  <a href="#" className="read-more">
-                    Shop now
-                  </a>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
-      <section className="section products-main">
+      <section className="section products-main pb-0">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8">
@@ -99,335 +87,59 @@ function Home() {
               </div>
             </div>
           </div>
-
           <div className="row">
-            <div className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5">
-              <div className="product">
-                <div className="product-wrap">
-                  <a href="/product-single">
-                    <img
-                      className="img-fluid w-100 mb-3 img-first"
-                      src="assets/images/322.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                  <a href="/product-single">
-                    <img
-                      className="img-fluid w-100 mb-3 img-second"
-                      src="assets/images/444.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                </div>
+            {dataHome?.products?.map((item) => {
+              return (
+                <div
+                  className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5"
+                  key={item?.id}
+                >
+                  <div className="product">
+                    <div className="product-wrap">
+                      <a href="/product-single">
+                        <img
+                          className="img-fluid w-100 mb-3 img-first"
+                          src={item?.img}
+                          alt="product-img"
+                        />
+                      </a>
+                      <a href="/product-single">
+                        <img
+                          className="img-fluid w-100 mb-3 img-second"
+                          src={item?.img}
+                          alt="product-img"
+                        />
+                      </a>
+                    </div>
+                    {item?.sale === true ? (
+                      <span className="onsale">sale</span>
+                    ) : (
+                      ''
+                    )}
 
-                <span className="onsale">Sale</span>
-                <div className="product-hover-overlay">
-                  <a href="#">
-                    <i className="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i className="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
+                    <div className="product-hover-overlay">
+                      <Link onClick={() => handleAddToCart(item)}>
+                        <i className="tf-ion-android-cart"></i>
+                      </Link>
+                      <Link>
+                        <i className="tf-ion-ios-heart"></i>
+                      </Link>
+                    </div>
 
-                <div className="product-info">
-                  <h2 className="product-title h5 mb-0">
-                    <a href="#">Floral Kirby</a>
-                  </h2>
-                  <span className="price">$329.10</span>
+                    <div className="product-info">
+                      <h2 className="product-title h5 mb-0">
+                        <Link>{item?.name}</Link>
+                      </h2>
+                      <span className="price">${item?.price}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5">
-              <div className="product">
-                <div className="product-wrap">
-                  <a href="/product-single">
-                    <img
-                      className="img-fluid w-100 mb-3 img-first"
-                      src="assets/images/111.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                  <a href="/product-single">
-                    <img
-                      className="img-fluid w-100 mb-3 img-second"
-                      src="assets/images/444.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                </div>
-
-                <div className="product-hover-overlay">
-                  <a href="#">
-                    <i className="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i className="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div className="product-info">
-                  <h2 className="product-title h5 mb-0">
-                    <a href="#">Open knit switer</a>
-                  </h2>
-                  <span className="price">$29.10</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5">
-              <div className="product">
-                <div className="product-wrap">
-                  <a href="/product-single">
-                    <img
-                      className="img-fluid w-100 mb-3 img-first"
-                      src="assets/images/222.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                  <a href="/product-single">
-                    <img
-                      className="img-fluid w-100 mb-3 img-second"
-                      src="assets/images/322.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                </div>
-
-                <span className="onsale">Sale</span>
-                <div className="product-hover-overlay">
-                  <a href="#">
-                    <i className="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i className="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div className="product-info">
-                  <h2 className="product-title h5 mb-0">
-                    <a href="#">Official trendy</a>
-                  </h2>
-                  <span className="price">$350.00 – $355.00</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5">
-              <div className="product">
-                <div className="product-wrap">
-                  <a href="/product-single">
-                    <img
-                      className="img-fluid w-100 mb-3 img-first"
-                      src="assets/images/322.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                  <a href="/product-single">
-                    <img
-                      className="img-fluid w-100 mb-3 img-second"
-                      src="assets/images/111.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                </div>
-
-                <div className="product-hover-overlay">
-                  <a href="#">
-                    <i className="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i className="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div className="product-info">
-                  <h2 className="product-title h5 mb-0">
-                    <a href="#">Frock short</a>
-                  </h2>
-                  <span className="price">$249</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5">
-              <div className="product">
-                <div className="product-wrap">
-                  <a href="#">
-                    <img
-                      className="img-fluid w-100 mb-3 img-first"
-                      src="assets/images/444.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid w-100 mb-3 img-second"
-                      src="assets/images/222.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                </div>
-
-                <div className="product-hover-overlay">
-                  <a href="#">
-                    <i className="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i className="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div className="product-info">
-                  <h2 className="product-title h5 mb-0">
-                    <a href="#">Sleeve dress</a>
-                  </h2>
-                  <span className="price">$59.10</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5">
-              <div className="product">
-                <div className="product-wrap">
-                  <a href="#">
-                    <img
-                      className="img-fluid w-100 mb-3 img-first"
-                      src="assets/images/322.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid w-100 mb-3 img-second"
-                      src="assets/images/222.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                </div>
-
-                <div className="product-hover-overlay">
-                  <a href="#">
-                    <i className="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i className="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div className="product-info">
-                  <h2 className="product-title h5 mb-0">
-                    <a href="#">Stylish dress</a>
-                  </h2>
-                  <span className="price">$99.00</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5 ">
-              <div className="product">
-                <div className="product-wrap">
-                  <a href="#">
-                    <img
-                      className="img-fluid w-100 mb-3 img-first"
-                      src="assets/images/111.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid w-100 mb-3 img-second"
-                      src="assets/images/444.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                </div>
-
-                <div className="product-hover-overlay">
-                  <a href="#">
-                    <i className="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i className="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div className="product-info">
-                  <h2 className="product-title h5 mb-0">
-                    <a href="#">Body suite</a>
-                  </h2>
-                  <span className="price">$329.10</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5 ">
-              <div className="product">
-                <div className="product-wrap">
-                  <a href="#">
-                    <img
-                      className="img-fluid w-100 mb-3 img-first"
-                      src="assets/images/222.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid w-100 mb-3 img-second"
-                      src="assets/images/322.jpg"
-                      alt="product-img"
-                    />
-                  </a>
-                </div>
-
-                <div className="product-hover-overlay">
-                  <a href="#">
-                    <i className="tf-ion-android-cart"></i>
-                  </a>
-                  <a href="#">
-                    <i className="tf-ion-ios-heart"></i>
-                  </a>
-                </div>
-
-                <div className="product-info">
-                  <h2 className="product-title h5 mb-0">
-                    <a href="#">Sleeve linen shirt</a>
-                  </h2>
-                  <span className="price">
-                    <del>
-                      60<pre wp-pre-tag-3=""></pre>
-                    </del>
-                    $50.10
-                  </span>
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
-
-      <section className="ads section">
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-lg-6 offset-lg-6">
-              <div className="ads-content">
-                <span className="h5 deal">Deal of the day 50% Off</span>
-                <h2 className="mt-3 text-white">Trendy Suit</h2>
-                <p className="text-md mt-3 text-white">
-                  Hurry up! Limited time offer.Grab ot now!
-                </p>
-
-                <div id="simple-timer" className="syotimer mb-5"></div>
-                <a href="#" className="btn btn-main">
-                  <i className="ti-bag mr-2"></i>Shop Now{' '}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="section products-list">
+      <section className="section products-list pt-0">
         <div className="container">
           <div className="row">
             <div className="col-lg-4 col-sm-12 col-md-12">

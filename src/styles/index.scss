@@ -192,3 +192,40 @@
     transform: rotate(360deg);
   }
 }
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: unset;
+}
+.section {
+  padding: 40px 0;
+}
+.cart-nav {
+  position: relative;
+  .step {
+    position: absolute;
+    padding: 2px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid red;
+    background-color: #ff0000ab;
+    color: #fff;
+    right: -10px;
+    top: -10px;
+    font-size: 9px;
+    z-index: 1;
+    font-weight: 600;
+  }
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: block !important;
+  margin: 10;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: block !important;
+}

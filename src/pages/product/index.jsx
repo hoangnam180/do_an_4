@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import routes from 'src/configs/router';
 
 function SingleProduct() {
   return (
@@ -143,13 +144,13 @@ function SingleProduct() {
                   </span>
                   <ul className="list-inline mb-0">
                     <li className="list-inline-item">
-                      <Link to="/product-single" className="bg-info"></Link>
+                      <Link to={routes.detail} className="bg-info"></Link>
                     </li>
                     <li className="list-inline-item">
-                      <Link to="/product-single" className="bg-dark"></Link>
+                      <Link to={routes.detail} className="bg-dark"></Link>
                     </li>
                     <li className="list-inline-item">
-                      <Link to="/product-single" className="bg-danger"></Link>
+                      <Link to={routes.detail} className="bg-danger"></Link>
                     </li>
                   </ul>
                 </div>
@@ -425,7 +426,7 @@ function SingleProduct() {
                           </div>
 
                           <Link
-                            to="/product-single"
+                            to={routes.detail}
                             className="btn btn-main btn-small"
                           >
                             Submit Review
@@ -455,14 +456,14 @@ function SingleProduct() {
             <div className="col-lg-3 col-6">
               <div className="product">
                 <div className="product-wrap">
-                  <Link to="/product-single">
+                  <Link to={routes.detail}>
                     <img
                       className="img-fluid w-100 mb-3 img-first"
                       src="assets/images/322.jpg"
                       alt="product-img"
                     />
                   </Link>
-                  <Link to="/product-single">
+                  <Link to={routes.detail}>
                     <img
                       className="img-fluid w-100 mb-3 img-second"
                       src="assets/images/444.jpg"
@@ -483,7 +484,7 @@ function SingleProduct() {
 
                 <div className="product-info">
                   <h2 className="product-title h5 mb-0">
-                    <Link to="/product-single">Kirby Shirt</Link>
+                    <Link to={routes.detail}>Kirby Shirt</Link>
                   </h2>
                   <span className="price">$329.10</span>
                 </div>
@@ -493,14 +494,14 @@ function SingleProduct() {
             <div className="col-lg-3 col-6">
               <div className="product">
                 <div className="product-wrap">
-                  <Link to="/product-single">
+                  <Link to={routes.detail}>
                     <img
                       className="img-fluid w-100 mb-3 img-first"
                       src="assets/images/111.jpg"
                       alt="product-img"
                     />
                   </Link>
-                  <Link to="/product-single">
+                  <Link to={routes.detail}>
                     <img
                       className="img-fluid w-100 mb-3 img-second"
                       src="assets/images/222.jpg"
@@ -521,7 +522,7 @@ function SingleProduct() {
 
                 <div className="product-info">
                   <h2 className="product-title h5 mb-0">
-                    <Link to="/product-single">Kirby Shirt</Link>
+                    <Link to={routes.detail}>Kirby Shirt</Link>
                   </h2>
                   <span className="price">$329.10</span>
                 </div>
@@ -531,14 +532,14 @@ function SingleProduct() {
             <div className="col-lg-3 col-6">
               <div className="product">
                 <div className="product-wrap">
-                  <Link to="/product-single">
+                  <Link to={routes.detail}>
                     <img
                       className="img-fluid w-100 mb-3 img-first"
                       src="assets/images/111.jpg"
                       alt="product-img"
                     />
                   </Link>
-                  <Link to="/product-single">
+                  <Link to={routes.detail}>
                     <img
                       className="img-fluid w-100 mb-3 img-second"
                       src="assets/images/322.jpg"
@@ -559,7 +560,7 @@ function SingleProduct() {
 
                 <div className="product-info">
                   <h2 className="product-title h5 mb-0">
-                    <Link to="/product-single">Kirby Shirt</Link>
+                    <Link to={routes.detail}>Kirby Shirt</Link>
                   </h2>
                   <span className="price">$329.10</span>
                 </div>
@@ -569,14 +570,14 @@ function SingleProduct() {
             <div className="col-lg-3 col-6">
               <div className="product">
                 <div className="product-wrap">
-                  <Link to="/product-single">
+                  <Link to={routes.detail}>
                     <img
                       className="img-fluid w-100 mb-3 img-first"
                       src="assets/images/444.jpg"
                       alt="product-img"
                     />
                   </Link>
-                  <Link to="/product-single">
+                  <Link to={routes.detail}>
                     <img
                       className="img-fluid w-100 mb-3 img-second"
                       src="assets/images/222.jpg"
@@ -597,7 +598,7 @@ function SingleProduct() {
 
                 <div className="product-info">
                   <h2 className="product-title h5 mb-0">
-                    <Link to="/product-single">Kirby Shirt</Link>
+                    <Link to={routes.detail}>Kirby Shirt</Link>
                   </h2>
                   <span className="price">$329.10</span>
                 </div>

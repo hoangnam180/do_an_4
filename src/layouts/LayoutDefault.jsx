@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 
 function LayoutDefault({ children }) {
   const loading = useSelector((state) => state.authReducer?.loading);
-  console.log(loading);
   return (
     <>
       {loading ? (

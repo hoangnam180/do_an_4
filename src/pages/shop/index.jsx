@@ -35,7 +35,14 @@ function Shop() {
           className="form-control bg-white"
           placeholder="Search....."
         />
-        <div className="input-group-append" style={{ width: '100px' }}></div>
+        <div className="input-group-append" style={{ width: '100px' }}>
+          <button type="button" class="btn btn-primary p-0 pl-4 pr-4">
+            <i
+              style={{ fontSize: '25px' }}
+              className="tf-ion-android-search"
+            ></i>
+          </button>
+        </div>
       </div>
       <section className="products-shop section" style={{ paddingTop: '10px' }}>
         <div className="container">
