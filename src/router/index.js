@@ -7,9 +7,9 @@ import SingleProduct from 'src/pages/product';
 import Profile from 'src/pages/profile';
 import Shop from 'src/pages/shop';
 import AboutUs from 'src/pages/abouts';
-import ForgotPassword from 'src/components/Auth/forgotpass';
-import Login from 'src/components/Auth/Login';
-import SignUp from 'src/components/Auth/SignUp';
+import ForgotPassword from 'src/components/auth/forgotpass/ForgotPass';
+import SignUp from 'src/components/auth/signup';
+import Login from 'src/components/auth/login';
 // Public routes
 const publicRoutes = [
   {

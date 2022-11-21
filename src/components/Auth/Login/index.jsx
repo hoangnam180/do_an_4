@@ -1,12 +1,19 @@
 import { useForm } from 'react-hook-form';
 import { loginApi } from 'src/libs/apis/auth';
-import { useDispatch } from 'react-redux';
-import { actionLoading, actionLogin, actionToast } from 'src/store/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  actionLoading,
+  actionLogin,
+  actionRedirect,
+  actionToast,
+} from 'src/store/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 function Login() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
+  const redirect = useSelector((state) => state?.authReducer?.redirect);
   const {
     register,
     handleSubmit,
@@ -15,28 +22,37 @@ function Login() {
   } = useForm();
   const onSubmit = async (data) => {
     try {
+      dispatch(actionLoading({ loading: true }));
       const res = await loginApi(data);
-      console.log(res);
-      if (res?.errCode === 0) {
+      dispatch(actionLoading({ loading: false }));
+      if (res?.status === 'success') {
         const payload = {
           userInfo: res?.user,
-          isAuth: res?.errCode,
+          isAuth: true,
         };
         dispatch(actionLogin(payload));
-        dispatch(actionLoading({ loading: true }));
-        reset();
         dispatch(
           actionToast({ title: 'Login Successfully!', type: 'success' })
         );
-        navigation('/');
-        dispatch(actionLoading({ loading: false }));
+        dispatch(actionRedirect({ redirect: '/' }));
+        reset();
+      } else {
+        dispatch(
+          actionToast({ title: 'Wrong Password or UserName!', type: 'error' })
+        );
       }
     } catch (err) {
       dispatch(
         actionToast({ title: 'Wrong Password or UserName!', type: 'error' })
       );
+      dispatch(actionLoading({ loading: false }));
     }
   };
+  useEffect(() => {
+    if (redirect !== '/login') {
+      navigation(redirect);
+    }
+  }, [dispatch, navigation, redirect]);
   return (
     <div className="login-container">
       <div className="account section">

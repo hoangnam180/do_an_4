@@ -10,6 +10,9 @@ function Home() {
   const dispatch = useDispatch();
   const handleAddToCart = (data) => {
     dispatch(actionAddToCart({ data }));
+    dispatch(
+      actionToast({ type: 'success', title: 'Thêm vào giỏ hàng thành công' })
+    );
   };
   return (
     <div className="home-container">

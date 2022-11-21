@@ -8,7 +8,7 @@ const isAuthFromStorage = webStorage.get(IS_AUTH);
 const userInfoFromStorage = webStorage.get(USER_INFO);
 const initialState = {
   isAuth: isAuthFromStorage,
-  redirect: '/',
+  redirect: '/login',
   userInfo: userInfoFromStorage,
   error: {},
   toast: '',
@@ -20,6 +20,9 @@ const authSlice = createSlice({
   initialState: initialState,
 
   reducers: {
+    actionRedirect: (state, action) => {
+      state.redirect = action.payload;
+    },
     actionAuthentication: (state, action) => {
       state.isHandle = action.payload?.isHandle;
       state.redirect = action.payload?.redirect;
@@ -61,5 +64,6 @@ export const {
   actionLogout,
   actionToast,
   actionLoading,
+  actionRedirect,
 } = authSlice.actions;
 export default authReducer;

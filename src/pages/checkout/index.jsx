@@ -1,73 +1,74 @@
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import routes from 'src/configs/router';
 
 function Checkout() {
-  const { data } = useSelector((state) => state.cartReducer);
-
+  const { data, totalCart } = useSelector((state) => state.cartReducer);
   const states = [
-    { value: 'An Giang', name: '' },
-    { value: 'Bac Giang', name: '' },
-    { value: 'Bac Kan', name: '' },
-    { value: 'Bac Lieu', name: '' },
-    { value: 'Bac Ninh', name: '' },
-    { value: 'Ba Ria-Vung Tau', name: '' },
-    { value: 'Ben Tre', name: '' },
-    { value: 'Binh Dinh', name: '' },
-    { value: 'Binh Duong', name: '' },
-    { value: 'Binh Phuoc', name: '' },
-    { value: 'Binh Thuan', name: '' },
-    { value: 'Ca Mau', name: '' },
-    { value: 'Cao Bang', name: '' },
-    { value: 'Dac Lak', name: '' },
-    { value: 'Dac Nong', name: '' },
-    { value: 'Dien Bien', name: '' },
-    { value: 'Dong Nai', name: '' },
-    { value: 'Dong Thap', name: '' },
-    { value: 'Gia Lai', name: '' },
-    { value: 'Ha Giang', name: '' },
-    { value: 'Hai Duong', name: '' },
-    { value: 'Ha Nam', name: '' },
-    { value: 'Ha Tay', name: '' },
-    { value: 'Ha Tinh', name: '' },
-    { value: 'Hau Giang', name: '' },
-    { value: 'Hoa Binh', name: '' },
-    { value: 'Hung Yen', name: '' },
-    { value: 'Khanh Hoa', name: '' },
-    { value: 'Kien Giang', name: '' },
-    { value: 'Kon Tum', name: '' },
-    { value: 'Lai Chau', name: '' },
-    { value: 'Lam Dong', name: '' },
-    { value: 'Lang Son', name: '' },
-    { value: 'Lao Cai', name: '' },
-    { value: 'Long An', name: '' },
-    { value: 'Nam Dinh', name: '' },
-    { value: 'Nghe An', name: '' },
-    { value: 'Ninh Binh', name: '' },
-    { value: 'Ninh Thuan', name: '' },
-    { value: 'Phu Tho', name: '' },
-    { value: 'Phu Yen', name: '' },
-    { value: 'Quang Binh', name: '' },
-    { value: 'Quang Nam', name: '' },
-    { value: 'Quang Ngai', name: '' },
-    { value: 'Quang Ninh', name: '' },
-    { value: 'Quang Tri', name: '' },
-    { value: 'Soc Trang', name: '' },
-    { value: 'Son La', name: '' },
-    { value: 'Tay Ninh', name: '' },
-    { value: 'Thai Binh', name: '' },
-    { value: 'Thai Nguyen', name: '' },
-    { value: 'Thanh Hoa', name: '' },
-    { value: 'Thua Thien-Hue', name: '' },
-    { value: 'Tien Giang', name: '' },
-    { value: 'Tra Vinh', name: '' },
-    { value: 'Tuyen Quang', name: '' },
-    { value: 'Vinh Long', name: '' },
-    { value: 'Vinh Phuc', name: '' },
-    { value: 'Yen Bai', name: '' },
-    { value: 'Can Tho', name: '' },
-    { value: 'Da Nang', name: '' },
-    { value: 'Hai Phong', name: '' },
-    { value: 'Hanoi', name: '' },
-    { value: 'Ho Chi Minh', name: '' },
+    'An Giang',
+    'Bac Giang',
+    'Bac Kan',
+    'Bac Lieu',
+    'Bac Ninh',
+    'Ba Ria-Vung Tau',
+    'Ben Tre',
+    'Binh Dinh',
+    'Binh Duong',
+    'Binh Phuoc',
+    'Binh Thuan',
+    'Ca Mau',
+    'Cao Bang',
+    'Dac Lak',
+    'Dac Nong',
+    'Dien Bien',
+    'Dong Nai',
+    'Dong Thap',
+    'Gia Lai',
+    'Ha Giang',
+    'Hai Duong',
+    'Ha Nam',
+    'Ha Tay',
+    'Ha Tinh',
+    'Hau Giang',
+    'Hoa Binh',
+    'Hung Yen',
+    'Khanh Hoa',
+    'Kien Giang',
+    'Kon Tum',
+    'Lai Chau',
+    'Lam Dong',
+    'Lang Son',
+    'Lao Cai',
+    'Long An',
+    'Nam Dinh',
+    'Nghe An',
+    'Ninh Binh',
+    'Ninh Thuan',
+    'Phu Tho',
+    'Phu Yen',
+    'Quang Binh',
+    'Quang Nam',
+    'Quang Ngai',
+    'Quang Ninh',
+    'Quang Tri',
+    'Soc Trang',
+    'Son La',
+    'Tay Ninh',
+    'Thai Binh',
+    'Thai Nguyen',
+    'Thanh Hoa',
+    'Thua Thien-Hue',
+    'Tien Giang',
+    'Tra Vinh',
+    'Tuyen Quang',
+    'Vinh Long',
+    'Vinh Phuc',
+    'Yen Bai',
+    'Can Tho',
+    'Da Nang',
+    'Hai Phong',
+    'Hanoi',
+    'Ho Chi Minh',
   ];
   return (
     <div className="checkout-container">
@@ -143,23 +144,10 @@ function Checkout() {
                           />
                         </div>
                       </div>
-                      <div className="col-lg-12">
-                        <div className="form-group mb-4">
-                          <label htmlFor="company_name">
-                            Company Name(Optional)
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="company_name"
-                            placeholder=""
-                          />
-                        </div>
-                      </div>
 
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="company_name">Country</label>
+                          <label htmlFor="company_name">Province</label>
                           <select
                             className="form-control"
                             onChange={(e) => {
@@ -167,18 +155,11 @@ function Checkout() {
                             }}
                           >
                             <option value="">Select an Option</option>
-                            <option value="January">January</option>
-                            <option value="February">February</option>
-                            <option value="March">March</option>
-                            <option value="April">April</option>
-                            <option value="May">May</option>
-                            <option value="June">June</option>
-                            <option value="July">July</option>
-                            <option value="August">August</option>
-                            <option value="September">September</option>
-                            <option value="October">October</option>
-                            <option value="November">November</option>
-                            <option value="December">December</option>
+                            {states.map((state, index) => (
+                              <option key={index} value={state}>
+                                {state}
+                              </option>
+                            ))}
                           </select>
                         </div>
                       </div>
@@ -196,6 +177,17 @@ function Checkout() {
                       </div>
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
+                          <label htmlFor="first_name">District</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="city"
+                            placeholder="Apartment"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-12">
+                        <div className="form-group mb-4">
                           <label htmlFor="first_name">
                             Apartment, suite, unit etc. (optional) (optional)
                           </label>
@@ -208,52 +200,6 @@ function Checkout() {
                         </div>
                       </div>
 
-                      <div className="col-lg-12">
-                        <div className="form-group mb-4">
-                          <label htmlFor="first_name">Town / City </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="city"
-                            placeholder="Apartment"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-lg-12">
-                        <div className="form-group mb-4">
-                          <label htmlFor="company_name">District </label>
-                          <select className="form-control">
-                            <option value="">Select an Option</option>
-                            <option value="January">January</option>
-                            <option value="February">February</option>
-                            <option value="March">March</option>
-                            <option value="April">April</option>
-                            <option value="May">May</option>
-                            <option value="June">June</option>
-                            <option value="July">July</option>
-                            <option value="August">August</option>
-                            <option value="September">September</option>
-                            <option value="October">October</option>
-                            <option value="November">November</option>
-                            <option value="December">December</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="col-lg-12">
-                        <div className="form-group mb-4">
-                          <label htmlFor="first_name">
-                            Postcode / ZIP (optional)
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="postcode"
-                            placeholder=""
-                          />
-                        </div>
-                      </div>
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="first_name">Phone </label>
@@ -278,35 +224,18 @@ function Checkout() {
                       </div>
 
                       <div className="col-lg-12">
-                        <div className="form-check mb-4">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="exampleCheck1"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="exampleCheck1"
-                          >
-                            Create an account?
-                          </label>
+                        <div className="form-check mb-4 pl-0">
+                          <Link to={routes.signup}>Create an account?</Link>
                         </div>
                       </div>
                       <div className="col-lg-12">
-                        <div className="form-check mb-4">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="exampleCheck2"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="exampleCheck2"
-                          >
+                        <div className="form-check mb-4 pl-0">
+                          <Link to={routes.signup}>
                             Ship to a different address?
-                          </label>
+                          </Link>
                         </div>
                       </div>
+
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="first_name">
@@ -330,12 +259,16 @@ function Checkout() {
                 <div className="product-checkout-details mt-5 mt-lg-0">
                   <h4 className="mb-4 border-bottom pb-4">Order Summary</h4>
 
-                  <div className="media product-card">
-                    <p>Kirby Shirt</p>
-                    <div className="media-body text-right">
-                      <p className="h5">1 x $249</p>
+                  {data?.map((item) => (
+                    <div className="media product-card" key={item?.id}>
+                      <p>{item?.name}</p>
+                      <div className="media-body text-right">
+                        <p className="h5">
+                          {item?.quantity} x ${item?.price}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  ))}
 
                   <ul className="summary-prices list-unstyled mb-4">
                     <li className="d-flex justify-content-between">
@@ -344,7 +277,7 @@ function Checkout() {
                     </li>
                     <li className="d-flex justify-content-between">
                       <span>Total</span>
-                      <span className="h5">$250</span>
+                      <span className="h5">${totalCart || 0}</span>
                     </li>
                   </ul>
 
