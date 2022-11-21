@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
+import { signUpApi } from 'src/libs/apis/auth';
 
 function SignUp() {
   const {
@@ -10,7 +11,12 @@ function SignUp() {
     reset,
     watch,
   } = useForm();
-  const onSubmit = (value) => console.log(value);
+  const onSubmit = async (value) => {
+    try {
+      const res = await signUpApi(value);
+      console.log(res);
+    } catch (err) {}
+  };
   return (
     <div className="signUp-container">
       <div className="account section">
@@ -69,9 +75,9 @@ function SignUp() {
                     )}
                   </div>
                   <div className="form-group">
-                    <label htmlFor="confirm">Confirm Password</label>
+                    <label htmlFor="re_password">Confirm Password</label>
                     <input
-                      {...register('confirm', {
+                      {...register('re_password', {
                         required: true,
                         validate: (val) => {
                           if (watch('password') !== val) {
@@ -85,11 +91,12 @@ function SignUp() {
                       placeholder="Confirm Password"
                     />
 
-                    {errors.confirm && errors.confirm?.message ? (
+                    {errors.confirm?.message && (
                       <span className="text-danger">
-                        {errors.confirm?.message}
+                        {errors.re_password?.message}
                       </span>
-                    ) : (
+                    )}
+                    {errors.re_password && (
                       <span className="text-danger">
                         Please type confirm password
                       </span>

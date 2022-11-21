@@ -16,6 +16,7 @@ function Login() {
   const onSubmit = async (data) => {
     try {
       const res = await loginApi(data);
+      console.log(res);
       if (res?.errCode === 0) {
         const payload = {
           userInfo: res?.user,

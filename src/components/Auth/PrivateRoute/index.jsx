@@ -12,7 +12,7 @@ export default function PrivateRoute({ children }) {
     },
   };
   const data = useSelector((state) => state?.authReducer);
-  return fakeData.userInfo && Number(fakeData.isAuth) === 0 ? (
+  return data.userInfo && Number(data.isAuth) === 0 ? (
     <LayoutDefault>{children}</LayoutDefault>
   ) : (
     <Navigate to={routes.login} replace={true} />

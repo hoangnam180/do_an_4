@@ -2,7 +2,73 @@ import { useSelector } from 'react-redux';
 
 function Checkout() {
   const { data } = useSelector((state) => state.cartReducer);
-  console.log(data);
+
+  const states = [
+    { value: 'An Giang', name: '' },
+    { value: 'Bac Giang', name: '' },
+    { value: 'Bac Kan', name: '' },
+    { value: 'Bac Lieu', name: '' },
+    { value: 'Bac Ninh', name: '' },
+    { value: 'Ba Ria-Vung Tau', name: '' },
+    { value: 'Ben Tre', name: '' },
+    { value: 'Binh Dinh', name: '' },
+    { value: 'Binh Duong', name: '' },
+    { value: 'Binh Phuoc', name: '' },
+    { value: 'Binh Thuan', name: '' },
+    { value: 'Ca Mau', name: '' },
+    { value: 'Cao Bang', name: '' },
+    { value: 'Dac Lak', name: '' },
+    { value: 'Dac Nong', name: '' },
+    { value: 'Dien Bien', name: '' },
+    { value: 'Dong Nai', name: '' },
+    { value: 'Dong Thap', name: '' },
+    { value: 'Gia Lai', name: '' },
+    { value: 'Ha Giang', name: '' },
+    { value: 'Hai Duong', name: '' },
+    { value: 'Ha Nam', name: '' },
+    { value: 'Ha Tay', name: '' },
+    { value: 'Ha Tinh', name: '' },
+    { value: 'Hau Giang', name: '' },
+    { value: 'Hoa Binh', name: '' },
+    { value: 'Hung Yen', name: '' },
+    { value: 'Khanh Hoa', name: '' },
+    { value: 'Kien Giang', name: '' },
+    { value: 'Kon Tum', name: '' },
+    { value: 'Lai Chau', name: '' },
+    { value: 'Lam Dong', name: '' },
+    { value: 'Lang Son', name: '' },
+    { value: 'Lao Cai', name: '' },
+    { value: 'Long An', name: '' },
+    { value: 'Nam Dinh', name: '' },
+    { value: 'Nghe An', name: '' },
+    { value: 'Ninh Binh', name: '' },
+    { value: 'Ninh Thuan', name: '' },
+    { value: 'Phu Tho', name: '' },
+    { value: 'Phu Yen', name: '' },
+    { value: 'Quang Binh', name: '' },
+    { value: 'Quang Nam', name: '' },
+    { value: 'Quang Ngai', name: '' },
+    { value: 'Quang Ninh', name: '' },
+    { value: 'Quang Tri', name: '' },
+    { value: 'Soc Trang', name: '' },
+    { value: 'Son La', name: '' },
+    { value: 'Tay Ninh', name: '' },
+    { value: 'Thai Binh', name: '' },
+    { value: 'Thai Nguyen', name: '' },
+    { value: 'Thanh Hoa', name: '' },
+    { value: 'Thua Thien-Hue', name: '' },
+    { value: 'Tien Giang', name: '' },
+    { value: 'Tra Vinh', name: '' },
+    { value: 'Tuyen Quang', name: '' },
+    { value: 'Vinh Long', name: '' },
+    { value: 'Vinh Phuc', name: '' },
+    { value: 'Yen Bai', name: '' },
+    { value: 'Can Tho', name: '' },
+    { value: 'Da Nang', name: '' },
+    { value: 'Hai Phong', name: '' },
+    { value: 'Hanoi', name: '' },
+    { value: 'Ho Chi Minh', name: '' },
+  ];
   return (
     <div className="checkout-container">
       <section className="page-header">
@@ -94,7 +160,12 @@ function Checkout() {
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="company_name">Country</label>
-                          <select className="form-control">
+                          <select
+                            className="form-control"
+                            onChange={(e) => {
+                              console.log(e.target.value);
+                            }}
+                          >
                             <option value="">Select an Option</option>
                             <option value="January">January</option>
                             <option value="February">February</option>
