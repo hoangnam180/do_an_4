@@ -7,7 +7,6 @@ const Page404 = () => {
         <div className=" col-md-6">
           <img
             src="https://cdn.pixabay.com/photo/2017/03/09/12/31/error-2129569__340.jpg"
-            alt
             className="img-fluid"
             alt=""
           />

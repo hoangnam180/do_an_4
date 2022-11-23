@@ -11,7 +11,7 @@ function Home() {
   const handleAddToCart = (data) => {
     dispatch(actionAddToCart({ data }));
     dispatch(
-      actionToast({ type: 'success', title: 'Thêm vào giỏ hàng thành công' })
+      actionToast({ type: 'success', title: 'Add to cart successfully' })
     );
   };
   return (

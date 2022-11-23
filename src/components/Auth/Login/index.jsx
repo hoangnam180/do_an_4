@@ -1,19 +1,13 @@
 import { useForm } from 'react-hook-form';
 import { loginApi } from 'src/libs/apis/auth';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  actionLoading,
-  actionLogin,
-  actionRedirect,
-  actionToast,
-} from 'src/store/authSlice';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { actionLoading, actionLogin, actionToast } from 'src/store/authSlice';
+import { Link, useNavigate } from 'react-router-dom';
+import routes from 'src/configs/router';
 
 function Login() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
-  const redirect = useSelector((state) => state?.authReducer?.redirect);
   const {
     register,
     handleSubmit,
@@ -34,7 +28,7 @@ function Login() {
         dispatch(
           actionToast({ title: 'Login Successfully!', type: 'success' })
         );
-        dispatch(actionRedirect({ redirect: '/' }));
+        navigation('/');
         reset();
       } else {
         dispatch(
@@ -48,11 +42,7 @@ function Login() {
       dispatch(actionLoading({ loading: false }));
     }
   };
-  useEffect(() => {
-    if (redirect !== '/login') {
-      navigation(redirect);
-    }
-  }, [dispatch, navigation, redirect]);
+
   return (
     <div className="login-container">
       <div className="account section">
@@ -63,7 +53,8 @@ function Login() {
                 <div className="text-center heading">
                   <h2 className="mb-2">Login</h2>
                   <p className="lead">
-                    Don’t have an account? <a href="#">Create a free account</a>
+                    Don’t have an account?{' '}
+                    <Link to={routes.signup}>Create a free account</Link>
                   </p>
                 </div>
 
@@ -71,6 +62,7 @@ function Login() {
                   <div className="form-group mb-4">
                     <label htmlFor="username">Enter username</label>
                     <input
+                      tabIndex={1}
                       {...register('username', { required: true })}
                       id="username"
                       type="text"
@@ -83,10 +75,11 @@ function Login() {
                   </div>
                   <div className="form-group">
                     <label htmlFor="password">Enter Password</label>
-                    <a className="float-right" href="">
+                    <Link className="float-right" to={routes.forgot}>
                       Forget password?
-                    </a>
+                    </Link>
                     <input
+                      tabIndex={2}
                       {...register('password', { required: true })}
                       id="password"
                       type="password"

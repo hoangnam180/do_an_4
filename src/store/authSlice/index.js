@@ -36,10 +36,10 @@ const authSlice = createSlice({
     },
 
     actionLogout: (state) => {
-      state.isAuth = 1;
+      state.isAuth = false;
       state.userInfo = {};
       webStorage.removeAll();
-      <Navigate to="/" replace={true} />;
+      <Navigate to="/login" replace={true} />;
     },
     actionLoading: (state, action) => {
       state.loading = action.payload?.loading;

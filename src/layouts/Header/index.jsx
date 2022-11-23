@@ -6,7 +6,9 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionLogout, actionToast } from 'src/store/authSlice';
 import routes from 'src/configs/router';
+import { useEffect, useState } from 'react';
 function Header() {
+  const [width, setWidth] = useState(window.innerWidth);
   const data = useSelector((state) => state?.authReducer);
   const cart = useSelector((state) => state?.cartReducer);
   const dispatch = useDispatch();
@@ -14,6 +16,12 @@ function Header() {
     dispatch(actionLogout());
     dispatch(actionToast({ title: 'Logout Successfully!', type: 'success' }));
   };
+
+  useEffect(() => {
+    window.addEventListener('resize', () => setWidth(window.innerWidth));
+    return () =>
+      window.removeEventListener('resize', () => setWidth(window.innerWidth));
+  }, []);
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-white w-100 navigation"
@@ -42,28 +50,64 @@ function Header() {
               </Link>
             </li>
             <li className="nav-item ">
-              <Link className="nav-link" to={{ pathname: '/shop' }}>
+              <Link className="nav-link" to={{ pathname: routes.search }}>
                 Search
               </Link>
             </li>
             <li className="nav-item ">
-              <Link className="nav-link" to={{ pathname: '/about-us' }}>
+              <Link className="nav-link" to={{ pathname: routes.aboutUs }}>
                 About-Us
               </Link>
             </li>
             <li className="nav-item ">
-              <Link className="nav-link" to={{ pathname: '/cart' }}>
+              <Link className="nav-link" to={{ pathname: routes.cart }}>
                 Cart
               </Link>
             </li>
-            <li className="nav-item ">
-              <Link className="nav-link" to={{ pathname: '/profile' }}>
+            <li className="nav-item">
+              <Link className="nav-link" to={{ pathname: routes.profile }}>
                 Profile
               </Link>
             </li>
+            {width <= 768 && (
+              <>
+                {data.userInfo && data.isAuth === true ? (
+                  <>
+                    <li className="nav-item">
+                      <Link
+                        className="nav-link"
+                        to={{ pathname: routes.forgot }}
+                      >
+                        Forgot Password
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" onClick={handleLogout}>
+                        Logout
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li className="nav-item">
+                      <Link
+                        className="nav-link"
+                        to={{ pathname: routes.login }}
+                      >
+                        Login
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to={routes.signup}>
+                        SignUp
+                      </Link>
+                    </li>
+                  </>
+                )}
+              </>
+            )}
           </ul>
         </div>
-
         <ul
           className="top-menu list-inline mb-0 d-none d-lg-block"
           id="top-menu"
@@ -75,9 +119,8 @@ function Header() {
           </li>
           <li className="cart-nav nav-item dropdown dropdown-slide list-inline-item ">
             <span className="step">{cart?.step ? cart?.step : 0}</span>
-            <a
+            <Link
               className="nav-link dropdown-toggle pd-0"
-              href="#"
               id="navbarDropdown5"
               role="button"
               data-delay="350"
@@ -86,7 +129,7 @@ function Header() {
               aria-expanded="false"
             >
               <i className="tf-ion-android-cart"></i>
-            </a>
+            </Link>
             <ul
               className="dropdown-menu right-at"
               aria-labelledby="navbarDropdown5"
@@ -100,9 +143,8 @@ function Header() {
             </ul>
           </li>
           <li className="nav-item dropdown dropdown-slide list-inline-item ">
-            <a
+            <Link
               className="nav-link dropdown-toggle pd-0"
-              href="#"
               id="navbarDropdown5"
               role="button"
               data-delay="350"
@@ -111,18 +153,18 @@ function Header() {
               aria-expanded="false"
             >
               <i className="tf-ion-ios-person mr-3"></i>
-            </a>
+            </Link>
             <ul
               className="dropdown-menu right-at"
               aria-labelledby="navbarDropdown5"
             >
-              {data.userInfo && Number(data.isAuth) === 0 ? (
+              {data.userInfo && data.isAuth === true ? (
                 <>
                   <li>
-                    <Link to={{ pathname: '/profile' }}>profile</Link>
+                    <Link to={{ pathname: routes.profile }}>profile</Link>
                   </li>
                   <li>
-                    <Link to={{ pathname: '/forgot-password' }}>
+                    <Link to={{ pathname: routes.forgot }}>
                       Forgot Password
                     </Link>
                   </li>
@@ -133,10 +175,10 @@ function Header() {
               ) : (
                 <>
                   <li>
-                    <Link to={{ pathname: '/login' }}>Login</Link>
+                    <Link to={{ pathname: routes.login }}>Login</Link>
                   </li>
                   <li>
-                    <Link to={{ pathname: '/signup' }}>SignUp</Link>
+                    <Link to={{ pathname: routes.signup }}>SignUp</Link>
                   </li>
                 </>
               )}

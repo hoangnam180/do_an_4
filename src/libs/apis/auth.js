@@ -2,7 +2,7 @@ import request from '../bases/request';
 const prefix = '/api';
 export const loginApi = async (data) =>
   request({
-    url: `https://02d7-2402-800-629c-666c-1931-a74-4dcf-c12b.ap.ngrok.io/api/auth/login`,
+    url: `${prefix}/auth/login`,
     method: 'POST',
     data,
   });

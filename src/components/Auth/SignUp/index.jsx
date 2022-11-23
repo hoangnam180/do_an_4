@@ -1,9 +1,12 @@
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
 import { signUpApi } from 'src/libs/apis/auth';
+import { actionLoading, actionToast } from 'src/store/authSlice';
 
 function SignUp() {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -11,11 +14,24 @@ function SignUp() {
     reset,
     watch,
   } = useForm();
-  const onSubmit = async (value) => {
+  const onSubmit = async (data) => {
     try {
-      const res = await signUpApi(value);
-      console.log(res);
-    } catch (err) {}
+      dispatch(actionLoading({ loading: true }));
+      const res = await signUpApi(data);
+      dispatch(actionLoading({ loading: false }));
+      if (res?.status === 'success') {
+        dispatch(
+          actionToast({ title: 'Register Successfully!', type: 'success' })
+        );
+      } else {
+        dispatch(actionToast({ title: 'Register Error!', type: 'error' }));
+      }
+      reset();
+    } catch (err) {
+      dispatch(actionToast({ title: 'Register Error!', type: 'error' }));
+      dispatch(actionLoading({ loading: false }));
+      reset();
+    }
   };
   return (
     <div className="signUp-container">
