@@ -1,75 +1,66 @@
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
+import {
+  getDistrictDetail,
+  getDistricts,
+  getProvinceDetail,
+  getProvinces,
+  getWardDetail,
+  getWards,
+} from 'src/libs/apis/location';
 
 function Checkout() {
   const { data, totalCart } = useSelector((state) => state.cartReducer);
-  const states = [
-    'An Giang',
-    'Bac Giang',
-    'Bac Kan',
-    'Bac Lieu',
-    'Bac Ninh',
-    'Ba Ria-Vung Tau',
-    'Ben Tre',
-    'Binh Dinh',
-    'Binh Duong',
-    'Binh Phuoc',
-    'Binh Thuan',
-    'Ca Mau',
-    'Cao Bang',
-    'Dac Lak',
-    'Dac Nong',
-    'Dien Bien',
-    'Dong Nai',
-    'Dong Thap',
-    'Gia Lai',
-    'Ha Giang',
-    'Hai Duong',
-    'Ha Nam',
-    'Ha Tay',
-    'Ha Tinh',
-    'Hau Giang',
-    'Hoa Binh',
-    'Hung Yen',
-    'Khanh Hoa',
-    'Kien Giang',
-    'Kon Tum',
-    'Lai Chau',
-    'Lam Dong',
-    'Lang Son',
-    'Lao Cai',
-    'Long An',
-    'Nam Dinh',
-    'Nghe An',
-    'Ninh Binh',
-    'Ninh Thuan',
-    'Phu Tho',
-    'Phu Yen',
-    'Quang Binh',
-    'Quang Nam',
-    'Quang Ngai',
-    'Quang Ninh',
-    'Quang Tri',
-    'Soc Trang',
-    'Son La',
-    'Tay Ninh',
-    'Thai Binh',
-    'Thai Nguyen',
-    'Thanh Hoa',
-    'Thua Thien-Hue',
-    'Tien Giang',
-    'Tra Vinh',
-    'Tuyen Quang',
-    'Vinh Long',
-    'Vinh Phuc',
-    'Yen Bai',
-    'Can Tho',
-    'Da Nang',
-    'Hai Phong',
-    'Hanoi',
-    'Ho Chi Minh',
-  ];
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [location, setLocation] = useState({});
+  const handleGetDistricts = async (e) => {
+    const provinceId = e;
+    const res = await getProvinceDetail(provinceId);
+    if (res?.name) {
+      setLocation({
+        ...location,
+        province: res.name,
+      });
+    }
+    const districts = await getDistricts(provinceId);
+    setDistricts(districts.districts);
+  };
+
+  const handleGetWards = async (e) => {
+    const districtId = e;
+    const res = await getDistrictDetail(districtId);
+    if (res?.name) {
+      setLocation({
+        ...location,
+        district: res.name,
+      });
+    }
+    const wards = await getWards(districtId);
+    setWards(wards.wards);
+  };
+
+  const handleGetValueResult = async (id) => {
+    const res = await getWardDetail(id);
+    if (res?.name) {
+      setLocation({
+        ...location,
+        ward: res.name,
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getProvinces();
+      setProvinces(data);
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="checkout-container">
       <section className="page-header">
@@ -147,17 +138,18 @@ function Checkout() {
 
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="company_name">Province</label>
+                          <label htmlFor="province">Province</label>
                           <select
+                            id="province"
                             className="form-control"
                             onChange={(e) => {
-                              console.log(e.target.value);
+                              handleGetDistricts(e.target.value);
                             }}
                           >
                             <option value="">Select an Option</option>
-                            {states.map((state, index) => (
-                              <option key={index} value={state}>
-                                {state}
+                            {provinces?.map((province, index) => (
+                              <option key={index} value={province?.code}>
+                                {province?.name}
                               </option>
                             ))}
                           </select>
@@ -166,24 +158,41 @@ function Checkout() {
 
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="first_name">Street Address</label>
-                          <input
-                            type="text"
+                          <label htmlFor="districts">Districts</label>
+                          <select
+                            id="districts"
                             className="form-control"
-                            id="street"
-                            placeholder=""
-                          />
+                            onChange={(e) => {
+                              handleGetWards(e.target.value);
+                            }}
+                          >
+                            <option value="">Select an Option</option>
+                            {districts?.map((province, index) => (
+                              <option key={index} value={province?.code}>
+                                {province?.name}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="first_name">District</label>
-                          <input
-                            type="text"
+                          <label htmlFor="wards">Wards</label>
+                          <option value="">Select an Option</option>
+                          <select
+                            id="wards"
                             className="form-control"
-                            id="city"
-                            placeholder="Apartment"
-                          />
+                            onChange={(e) => {
+                              handleGetValueResult(e.target.value);
+                            }}
+                          >
+                            <option value="">Select an Option</option>
+                            {wards?.map((province, index) => (
+                              <option key={index} value={province?.code}>
+                                {province?.name}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
                       <div className="col-lg-12">
