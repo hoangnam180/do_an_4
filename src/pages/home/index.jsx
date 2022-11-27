@@ -1,19 +1,34 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination as Paginationn, Autoplay } from 'swiper';
-import dataHome from 'src/dataFake/home';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+import { getProducts } from '../../libs/apis/home';
+
 import { actionAddToCart } from 'src/store/cartSlice';
 import { actionToast } from 'src/store/authSlice';
+import dataHome from 'src/dataFake/home';
+import routes from 'src/configs/router';
 
 function Home() {
   const dispatch = useDispatch();
+  const navigation = useNavigate();
+  const [products, setProducts] = useState([]);
   const handleAddToCart = (data) => {
     dispatch(actionAddToCart({ data }));
     dispatch(
       actionToast({ type: 'success', title: 'Add to cart successfully' })
     );
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getProducts();
+      console.log(response);
+    };
+    fetchData();
+  }, []);
   return (
     <div className="home-container">
       <Swiper

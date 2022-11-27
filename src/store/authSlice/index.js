@@ -33,6 +33,7 @@ const authSlice = createSlice({
       state.userInfo = action.payload?.userInfo;
       webStorage.set(IS_AUTH, action.payload?.isAuth);
       webStorage.set(USER_INFO, action.payload?.userInfo);
+      webStorage.setToken(action.payload?.token);
     },
 
     actionLogout: (state) => {
