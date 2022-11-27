@@ -3,23 +3,43 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination as Paginationn, Autoplay } from 'swiper';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
 import { getProducts } from '../../libs/apis/home';
-
-import { actionAddToCart } from 'src/store/cartSlice';
 import { actionToast } from 'src/store/authSlice';
 import dataHome from 'src/dataFake/home';
 import routes from 'src/configs/router';
+import { addWishListApi } from 'src/libs/apis/wishlist';
+import { checkLogin } from 'src/utils/checkLogin';
 
 function Home() {
+  const dataUser = useSelector((state) => state?.authReducer);
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const [products, setProducts] = useState([]);
-  const handleAddToCart = (data) => {
-    dispatch(actionAddToCart({ data }));
-    dispatch(
-      actionToast({ type: 'success', title: 'Add to cart successfully' })
-    );
+  const isLogin = checkLogin(dataUser);
+  const handleListHeart = async (data) => {
+    console.log(isLogin);
+    if (!isLogin) {
+      dispatch(
+        actionToast({
+          type: 'error',
+          title: 'Please login to use this feature',
+        })
+      );
+      return;
+    }
+    try {
+      const res = await addWishListApi(data?.id);
+      if (res?.status === 200) {
+        dispatch(
+          actionToast({
+            type: 'success',
+            title: 'Add to wishlist successfully',
+          })
+        );
+      }
+    } catch (error) {
+      dispatch(actionToast({ type: 'error', title: 'Add to wishlist failed' }));
+    }
   };
 
   useEffect(() => {
@@ -27,7 +47,7 @@ function Home() {
       const response = await getProducts();
       console.log(response);
     };
-    fetchData();
+    // fetchData();
   }, []);
   return (
     <div className="home-container">
@@ -38,7 +58,6 @@ function Home() {
         navigation
         autoplay={{ delay: 3000 }}
         className="main-slider slider slick-initialized slick-slider section"
-        // scrollbar={{ draggable: true }}
       >
         {dataHome.banner?.map((item) => {
           return (
@@ -62,9 +81,7 @@ function Home() {
                         </span>
                         {item?.caption?.text_bottom}
                       </h1>
-                      <a href="#" className="btn btn-main">
-                        Shop Now
-                      </a>
+                      <Link className="btn btn-main">Shop Now</Link>
                     </div>
                   </div>
                 </div>
@@ -85,9 +102,7 @@ function Home() {
                     <h4 className="mb-4">
                       up to <strong>{item?.upto} </strong>off
                     </h4>
-                    <a href="#" className="read-more">
-                      Shop now
-                    </a>
+                    <Link className="read-more">Shop now</Link>
                   </div>
                 </div>
               </div>
@@ -114,20 +129,20 @@ function Home() {
                 >
                   <div className="product">
                     <div className="product-wrap">
-                      <a href="/product-single">
+                      <Link>
                         <img
                           className="img-fluid w-100 mb-3 img-first"
                           src={item?.img}
                           alt="product-img"
                         />
-                      </a>
-                      <a href="/product-single">
+                      </Link>
+                      <Link to={`${routes.detail}/${item?.id}`}>
                         <img
                           className="img-fluid w-100 mb-3 img-second"
                           src={item?.img}
                           alt="product-img"
                         />
-                      </a>
+                      </Link>
                     </div>
                     {item?.sale === true ? (
                       <span className="onsale">sale</span>
@@ -136,10 +151,10 @@ function Home() {
                     )}
 
                     <div className="product-hover-overlay">
-                      <Link onClick={() => handleAddToCart(item)}>
+                      <Link to={`${routes.detail}/${item?.id}`}>
                         <i className="tf-ion-android-cart"></i>
                       </Link>
-                      <Link>
+                      <Link onClick={() => handleListHeart(item)}>
                         <i className="tf-ion-ios-heart"></i>
                       </Link>
                     </div>
@@ -171,81 +186,81 @@ function Home() {
               <div className="widget-featured-entries mt-5 mt-lg-0">
                 <h4 className="mb-4 pb-3">Best selllers</h4>
                 <div className="media mb-3">
-                  <a className="featured-entry-thumb" href="/product-single">
+                  <Link className="featured-entry-thumb">
                     <img
                       src="assets/images/p-1.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Keds - Kickstart Pom Pom</a>
+                      <Link href="#">Keds - Kickstart Pom Pom</Link>
                     </h6>
                     <p className="featured-entry-meta">$42.99</p>
                   </div>
                 </div>
                 <div className="media mb-3">
-                  <a className="featured-entry-thumb" href="#">
+                  <Link className="featured-entry-thumb" href="#">
                     <img
                       src="assets/images/p-2.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Nike - Brasilia Medium Backpack</a>
+                      <Link href="#">Nike - Brasilia Medium Backpack</Link>
                     </h6>
                     <p className="featured-entry-meta">$27.99</p>
                   </div>
                 </div>
                 <div className="media mb-3">
-                  <a className="featured-entry-thumb" href="#">
+                  <Link className="featured-entry-thumb" href="#">
                     <img
                       src="assets/images/p-3.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Guess - GU7295</a>
+                      <Link href="#">Guess - GU7295</Link>
                     </h6>
                     <p>$38.00</p>
                   </div>
                 </div>
                 <div className="media mb-3">
-                  <a className="featured-entry-thumb" href="#">
+                  <Link className="featured-entry-thumb" href="#">
                     <img
                       src="assets/images/p-4.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Adidas Originals Cap</a>
+                      <Link href="#">Adidas Originals Cap</Link>
                     </h6>
                     <p className="featured-entry-meta">$35.00</p>
                   </div>
                 </div>
                 <div className="media">
-                  <a className="featured-entry-thumb" href="#">
+                  <Link className="featured-entry-thumb" href="#">
                     <img
                       src="assets/images/p-5.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Big Star Flip Tops</a>
+                      <Link href="#">Big Star Flip Tops</Link>
                     </h6>
                     <p className="featured-entry-meta">$10.60</p>
                   </div>
@@ -256,81 +271,81 @@ function Home() {
               <div className="widget-featured-entries mt-5 mt-lg-0">
                 <h4 className="mb-4 pb-3">New Arrivals</h4>
                 <div className="media mb-3">
-                  <a className="featured-entry-thumb" href="/product-single">
+                  <Link className="featured-entry-thumb">
                     <img
                       src="assets/images/p-7.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Keds - Kickstart Pom Pom</a>
+                      <Link href="#">Keds - Kickstart Pom Pom</Link>
                     </h6>
                     <p className="featured-entry-meta">$42.99</p>
                   </div>
                 </div>
                 <div className="media mb-3">
-                  <a className="featured-entry-thumb" href="#">
+                  <Link className="featured-entry-thumb" href="#">
                     <img
                       src="assets/images/p-8.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Nike - Brasilia Medium Backpack</a>
+                      <Link href="#">Nike - Brasilia Medium Backpack</Link>
                     </h6>
                     <p className="featured-entry-meta">$27.99</p>
                   </div>
                 </div>
                 <div className="media mb-3">
-                  <a className="featured-entry-thumb" href="#">
+                  <Link className="featured-entry-thumb" href="#">
                     <img
                       src="assets/images/p-1.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Guess - GU7295</a>
+                      <Link href="#">Guess - GU7295</Link>
                     </h6>
                     <p>$38.00</p>
                   </div>
                 </div>
                 <div className="media mb-3">
-                  <a className="featured-entry-thumb" href="#">
+                  <Link className="featured-entry-thumb" href="#">
                     <img
                       src="assets/images/p-2.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Adidas Originals Cap</a>
+                      <Link href="#">Adidas Originals Cap</Link>
                     </h6>
                     <p className="featured-entry-meta">$35.00</p>
                   </div>
                 </div>
                 <div className="media">
-                  <a className="featured-entry-thumb" href="#">
+                  <Link className="featured-entry-thumb" href="#">
                     <img
                       src="assets/images/p-4.jpg"
                       alt="Product thumb"
                       width="64"
                       className="img-fluid mr-3"
                     />
-                  </a>
+                  </Link>
                   <div className="media-body">
                     <h6 className="featured-entry-title mb-0">
-                      <a href="#">Big Star Flip Tops</a>
+                      <Link href="#">Big Star Flip Tops</Link>
                     </h6>
                     <p className="featured-entry-meta">$10.60</p>
                   </div>

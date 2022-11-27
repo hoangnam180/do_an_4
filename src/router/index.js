@@ -10,6 +10,7 @@ import AboutUs from 'src/pages/abouts';
 import ForgotPassword from 'src/components/Auth/forgotpass/ForgotPass';
 import SignUp from 'src/components/Auth/SignUp';
 import Login from 'src/components/Auth/Login';
+import WithList from 'src/pages/WithList';
 // Public routes
 const publicRoutes = [
   {
@@ -28,6 +29,12 @@ const publicRoutes = [
   {
     path: routes.detail,
     component: SingleProduct,
+    children: [
+      {
+        path: routes.singleProduct,
+        component: SingleProduct,
+      },
+    ],
   },
   {
     path: routes.login,
@@ -58,6 +65,10 @@ const privateRoutes = [
   {
     path: routes.profile,
     component: Profile,
+  },
+  {
+    path: routes.withList,
+    component: WithList,
   },
 ];
 

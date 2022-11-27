@@ -117,6 +117,15 @@ function Header() {
               <i className="tf-ion-android-search"></i>
             </Link>
           </li>
+          <li className="list-inline-item">
+            <Link
+              to={routes.withList}
+              className="wish_list"
+              id="wish_list-icon"
+            >
+              <i className="tf-ion-ios-heart"></i>
+            </Link>
+          </li>
           <li className="cart-nav nav-item dropdown dropdown-slide list-inline-item ">
             <span className="step">{cart?.step ? cart?.step : 0}</span>
             <Link
@@ -167,6 +176,9 @@ function Header() {
                     <Link to={{ pathname: routes.forgot }}>
                       Forgot Password
                     </Link>
+                  </li>
+                  <li>
+                    <Link to={{ pathname: routes.forgot }}>Wish List</Link>
                   </li>
                   <li>
                     <Link onClick={handleLogout}>Logout</Link>

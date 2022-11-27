@@ -23,6 +23,7 @@ function Login() {
         const payload = {
           userInfo: res?.user,
           isAuth: true,
+          token: res?.access_token,
         };
         dispatch(actionLogin(payload));
         dispatch(
