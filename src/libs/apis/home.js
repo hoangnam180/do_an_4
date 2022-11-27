@@ -1,35 +1,19 @@
 import request from '../bases/request';
-const prefix = '/v1';
-export const getViewHomeApi = async (params) =>
+const prefix = '/api';
+export const getProducts = async (params) =>
   request({
-    url: `${prefix}/product-high-view`,
+    url: `${prefix}/product/dataProduct`,
     method: 'GET',
-    params,
   });
-export const getImgsBannerApi = async (params) =>
+export const getProductDetail = async (id) =>
   request({
-    url: `${prefix}/slide`,
+    url: `${prefix}/product/detail/${id}`,
     method: 'GET',
-    params,
   });
 
-export const getImgsCategoryApi = async (params) =>
+export const getArrival = async (params) =>
   request({
-    url: `${prefix}/category`,
-    method: 'GET',
-    params,
-  });
-
-export const getListFeedbackApi = async (params) =>
-  request({
-    url: `${prefix}/comment`,
-    method: 'GET',
-    params,
-  });
-
-export const getListHighViewApi = async (params) =>
-  request({
-    url: `${prefix}/product-high-view`,
+    url: `${prefix}/product/arrival`,
     method: 'GET',
     params,
   });
