@@ -7,7 +7,7 @@ export const getProducts = async (params) =>
   });
 export const getProductDetail = async (id) =>
   request({
-    url: `${prefix}/product/detail/${id}`,
+    url: `${prefix}/detail/product/${id}`,
     method: 'GET',
   });
 
