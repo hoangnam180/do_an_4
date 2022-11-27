@@ -2,7 +2,7 @@ import request from '../bases/request';
 const prefix = '/api';
 export const getProducts = async (params) =>
   request({
-    url: `${prefix}/product/dataProduct`,
+    url: `${prefix}/home/product`,
     method: 'GET',
   });
 export const getProductDetail = async (id) =>
@@ -13,7 +13,7 @@ export const getProductDetail = async (id) =>
 
 export const getArrival = async (params) =>
   request({
-    url: `${prefix}/product/arrival`,
+    url: `${prefix}/home/arrival`,
     method: 'GET',
     params,
   });

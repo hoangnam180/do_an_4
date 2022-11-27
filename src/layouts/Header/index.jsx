@@ -16,7 +16,6 @@ function Header() {
     dispatch(actionLogout());
     dispatch(actionToast({ title: 'Logout Successfully!', type: 'success' }));
   };
-
   useEffect(() => {
     window.addEventListener('resize', () => setWidth(window.innerWidth));
     return () =>
@@ -73,6 +72,14 @@ function Header() {
               <>
                 {data.userInfo && data.isAuth === true ? (
                   <>
+                    <li className="nav-item">
+                      <Link
+                        className="nav-link"
+                        to={{ pathname: routes.withList }}
+                      >
+                        With List
+                      </Link>
+                    </li>
                     <li className="nav-item">
                       <Link
                         className="nav-link"
