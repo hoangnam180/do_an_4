@@ -10,6 +10,7 @@ import routes from 'src/configs/router';
 import { addWishListApi } from 'src/libs/apis/wishlist';
 import { checkLogin } from 'src/utils/checkLogin';
 import Loading from 'src/components/common/Loading';
+import { API_SERVER } from 'src/constants/configs';
 
 function Home() {
   const dataUser = useSelector((state) => state?.authReducer);
@@ -64,6 +65,9 @@ function Home() {
           dataProducts,
           dataArrivals,
         ]);
+        console.log(products);
+        console.log(arrivals);
+        setProducts(arrivals);
         setProducts(products?.product);
         setArrival(arrivals?.sanPham);
         setLoading(false);
@@ -151,7 +155,7 @@ function Home() {
                 </div>
               </div>
               <div className="row">
-                {dataHome?.products?.map((item) => {
+                {products?.map((item) => {
                   return (
                     <div
                       className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5"
@@ -161,15 +165,17 @@ function Home() {
                         <div className="product-wrap">
                           <Link>
                             <img
+                              style={{ height: '300px' }}
                               className="img-fluid w-100 mb-3 img-first"
-                              src={item?.img}
+                              src={`${API_SERVER}${item?.hinh_anh}`}
                               alt="product-img"
                             />
                           </Link>
                           <Link to={`${routes.detail}/${item?.id}`}>
                             <img
+                              style={{ height: '300px' }}
                               className="img-fluid w-100 mb-3 img-second"
-                              src={item?.img}
+                              src={`${API_SERVER}${item?.hinh_anh}`}
                               alt="product-img"
                             />
                           </Link>
@@ -191,9 +197,9 @@ function Home() {
 
                         <div className="product-info">
                           <h2 className="product-title h5 mb-0">
-                            <Link>{item?.name}</Link>
+                            <Link>{item?.ten_san_pham}</Link>
                           </h2>
-                          <span className="price">${item?.price}</span>
+                          <span className="price">${item?.gia_ban}</span>
                         </div>
                       </div>
                     </div>
@@ -300,86 +306,35 @@ function Home() {
                 <div className="col-lg-4 col-sm-6 col-md-6">
                   <div className="widget-featured-entries mt-5 mt-lg-0">
                     <h4 className="mb-4 pb-3">New Arrivals</h4>
-                    <div className="media mb-3">
-                      <Link className="featured-entry-thumb">
-                        <img
-                          src="assets/images/p-7.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Keds - Kickstart Pom Pom</Link>
-                        </h6>
-                        <p className="featured-entry-meta">$42.99</p>
-                      </div>
-                    </div>
-                    <div className="media mb-3">
-                      <Link className="featured-entry-thumb" href="#">
-                        <img
-                          src="assets/images/p-8.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Nike - Brasilia Medium Backpack</Link>
-                        </h6>
-                        <p className="featured-entry-meta">$27.99</p>
-                      </div>
-                    </div>
-                    <div className="media mb-3">
-                      <Link className="featured-entry-thumb" href="#">
-                        <img
-                          src="assets/images/p-1.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Guess - GU7295</Link>
-                        </h6>
-                        <p>$38.00</p>
-                      </div>
-                    </div>
-                    <div className="media mb-3">
-                      <Link className="featured-entry-thumb" href="#">
-                        <img
-                          src="assets/images/p-2.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Adidas Originals Cap</Link>
-                        </h6>
-                        <p className="featured-entry-meta">$35.00</p>
-                      </div>
-                    </div>
-                    <div className="media">
-                      <Link className="featured-entry-thumb" href="#">
-                        <img
-                          src="assets/images/p-4.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Big Star Flip Tops</Link>
-                        </h6>
-                        <p className="featured-entry-meta">$10.60</p>
-                      </div>
-                    </div>
+                    {arrival?.map(
+                      (item, index) =>
+                        index < 5 && (
+                          <div className="media mb-3" key={index}>
+                            <Link className="featured-entry-thumb">
+                              <img
+                                style={{
+                                  height: '64px',
+                                  width: '64px',
+                                  objectFit: 'cover',
+                                  overflow: 'hidden',
+                                }}
+                                src={`${API_SERVER}${item?.hinh_anh}`}
+                                alt="Product thumb"
+                                width="64"
+                                className="img-fluid mr-3"
+                              />
+                            </Link>
+                            <div className="media-body">
+                              <h6 className="featured-entry-title mb-0">
+                                <Link href="#">{item?.ten_san_pham || ''}</Link>
+                              </h6>
+                              <p className="featured-entry-meta">
+                                ${item?.gia_san_pham}
+                              </p>
+                            </div>
+                          </div>
+                        )
+                    )}
                   </div>
                 </div>
               </div>

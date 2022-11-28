@@ -11,9 +11,8 @@ function SingleProduct() {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      // setIsLoading(true);
+      setIsLoading(true);
       const data = await getProductDetail(id);
-      console.log(data);
       setProduct(data);
       setIsLoading(false);
     };
@@ -77,7 +76,7 @@ function SingleProduct() {
                               }`}
                             >
                               <img
-                                src={`${API_SERVER}${image?.anh}`}
+                                src={`${API_SERVER}${image?.hinh_anh}`}
                                 alt=""
                                 className="img-fluid"
                               />
@@ -95,7 +94,7 @@ function SingleProduct() {
                               className="carousel-item"
                             >
                               <img
-                                src={`${API_SERVER}${image?.anh}`}
+                                src={`${API_SERVER}${image?.hinh_anh}`}
                                 alt=""
                                 className={`carousel-item ${
                                   index === 0 && 'active'
@@ -452,20 +451,22 @@ function SingleProduct() {
               </div>
               <div className="row">
                 {product?.san_pham_lien_quan?.map((item, index) => (
-                  <div className="col-lg-3 col-6">
+                  <div className="col-lg-3 col-6" key={index}>
                     <div className="product">
                       <div className="product-wrap">
                         <Link to={`${routes.detail}/${item?.id}`}>
                           <img
                             className="img-fluid w-100 mb-3 img-first"
-                            src={item?.hinh_anh}
+                            src={`${API_SERVER}${item?.hinh_anh}`}
+                            style={{ height: '300px' }}
                             alt="product-img"
                           />
                         </Link>
                         <Link to={`${routes.detail}/${item?.id}`}>
                           <img
                             className="img-fluid w-100 mb-3 img-second"
-                            src="assets/images/444.jpg"
+                            src={`${API_SERVER}${item?.hinh_anh}`}
+                            style={{ height: '300px' }}
                             alt="product-img"
                           />
                         </Link>
