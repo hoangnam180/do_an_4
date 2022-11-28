@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Loading from 'src/components/common/Loading';
 import routes from 'src/configs/router';
+import { API_SERVER } from 'src/constants/configs';
 import { getWishlistApi } from 'src/libs/apis/wishlist';
 
 const WithList = () => {
@@ -41,10 +42,11 @@ const WithList = () => {
                           className="featured-entry-thumb"
                         >
                           <img
-                            src={item?.hinh_anh}
+                            src={`${API_SERVER}${item?.hinh_anh}`}
                             alt="Product thumb"
                             width="64"
                             className="img-fluid mr-3"
+                            style={{ height: '64px  ' }}
                           />
                         </Link>
                         <div className="media-body">
