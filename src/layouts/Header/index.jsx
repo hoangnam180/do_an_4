@@ -49,13 +49,13 @@ function Header() {
               </Link>
             </li>
             <li className="nav-item ">
-              <Link className="nav-link" to={{ pathname: routes.search }}>
-                Search
+              <Link className="nav-link" to={{ pathname: routes.shop }}>
+                Shop
               </Link>
             </li>
             <li className="nav-item ">
-              <Link className="nav-link" to={{ pathname: routes.aboutUs }}>
-                About-Us
+              <Link className="nav-link" to={{ pathname: routes.search }}>
+                Search
               </Link>
             </li>
             <li className="nav-item ">

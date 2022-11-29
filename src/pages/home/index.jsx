@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination as Paginationn, Autoplay } from 'swiper';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getArrival, getProducts } from '../../libs/apis/home';
+import { getArrival, getCategory, getProducts } from '../../libs/apis/home';
 import { actionToast } from 'src/store/authSlice';
 import dataHome from 'src/dataFake/home';
 import routes from 'src/configs/router';
@@ -18,6 +18,7 @@ function Home() {
   const navigation = useNavigate();
   const [products, setProducts] = useState([]);
   const [arrival, setArrival] = useState([]);
+  const [category, setCategory] = useState([]);
   const isLogin = checkLogin(dataUser);
   const [loading, setLoading] = useState(false);
   const handleListHeart = async (data) => {
@@ -60,14 +61,14 @@ function Home() {
       try {
         const dataProducts = getProducts();
         const dataArrivals = getArrival();
+        const dataCategory = getCategory();
 
-        const [products, arrivals] = await Promise.all([
+        const [products, arrivals, category] = await Promise.all([
           dataProducts,
           dataArrivals,
+          dataCategory,
         ]);
-        console.log(products);
-        console.log(arrivals);
-        setProducts(arrivals);
+        setCategory(category?.data);
         setProducts(products?.product);
         setArrival(arrivals?.sanPham);
         setLoading(false);
@@ -127,20 +128,36 @@ function Home() {
           <section className="category section pt-3 pb-0">
             <div className="container">
               <div className="row">
-                {dataHome?.category?.map((item) => (
-                  <div className="col-lg-4 col-sm-12 col-md-6" key={item?.id}>
-                    <div className="cat-item mb-4 mb-lg-0">
-                      <img src={item?.img} alt="" className="img-fluid" />
-                      <div className="item-info">
-                        <p className="mb-0">{item?.name}</p>
-                        <h4 className="mb-4">
-                          up to <strong>{item?.upto} </strong>off
-                        </h4>
-                        <Link className="read-more">Shop now</Link>
+                {category?.map(
+                  (item, index) =>
+                    index < 3 && (
+                      <div
+                        className="col-lg-4 col-sm-12 col-md-6"
+                        key={item?.id}
+                      >
+                        <div className="cat-item mb-4 mb-lg-0">
+                          <img
+                            style={{ height: '250px', width: '100%' }}
+                            src={`${API_SERVER}${item?.hinh_anh}`}
+                            alt=""
+                            className="img-fluid"
+                          />
+                          <div className="item-info">
+                            <p
+                              style={{ textTransform: 'capitalize' }}
+                              className="mb-0"
+                            >
+                              {item?.ten_danh_muc}
+                            </p>
+                            <h4 className="mb-4">
+                              up to <strong>{item?.upto} 50% </strong>off
+                            </h4>
+                            <Link className="read-more">Shop now</Link>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
+                    )
+                )}
               </div>
             </div>
           </section>
@@ -310,7 +327,10 @@ function Home() {
                       (item, index) =>
                         index < 5 && (
                           <div className="media mb-3" key={index}>
-                            <Link className="featured-entry-thumb">
+                            <Link
+                              className="featured-entry-thumb"
+                              to={`${routes.detail}/${item?.id}`}
+                            >
                               <img
                                 style={{
                                   height: '64px',
@@ -326,10 +346,12 @@ function Home() {
                             </Link>
                             <div className="media-body">
                               <h6 className="featured-entry-title mb-0">
-                                <Link href="#">{item?.ten_san_pham || ''}</Link>
+                                <Link to={`${routes.detail}/${item?.id}`}>
+                                  {item?.ten_san_pham || ''}
+                                </Link>
                               </h6>
                               <p className="featured-entry-meta">
-                                ${item?.gia_san_pham}
+                                ${item?.gia_ban || ''}
                               </p>
                             </div>
                           </div>

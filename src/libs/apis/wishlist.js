@@ -14,3 +14,9 @@ export const getWishlistApi = async () =>
     method: 'GET',
     tokenClient: true,
   });
+export const deleteWithList = async (id) =>
+  request({
+    url: `${prefix}/auth/yeu-thich/${id}`,
+    method: 'DELETE',
+    tokenClient: true,
+  });

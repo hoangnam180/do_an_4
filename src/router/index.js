@@ -7,10 +7,11 @@ import SingleProduct from 'src/pages/product';
 import Profile from 'src/pages/profile';
 import Shop from 'src/pages/shop';
 import AboutUs from 'src/pages/abouts';
-import WithList from 'src/pages/WithList';
+import WithList from 'src/pages/withlist';
 import SignUp from 'src/components/auth/signup';
 import Login from 'src/components/auth/login';
 import ForgotPassword from 'src/components/auth/forgotpass/ForgotPass';
+import Search from 'src/pages/search';
 // Public routes
 const publicRoutes = [
   {
@@ -41,7 +42,7 @@ const publicRoutes = [
     component: Login,
   },
   {
-    path: routes.search,
+    path: routes.shop,
     component: Shop,
   },
   {
@@ -51,6 +52,14 @@ const publicRoutes = [
   {
     path: routes.aboutUs,
     component: AboutUs,
+  },
+  {
+    path: routes.forgot,
+    component: ForgotPassword,
+  },
+  {
+    path: routes.search,
+    component: Search,
   },
 
   { path: '*', component: Page404 },

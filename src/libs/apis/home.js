@@ -17,3 +17,9 @@ export const getArrival = async (params) =>
     method: 'GET',
     params,
   });
+export const getCategory = async (params) =>
+  request({
+    url: `${prefix}/home/category`,
+    method: 'GET',
+    params,
+  });

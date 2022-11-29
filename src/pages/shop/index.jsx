@@ -29,21 +29,7 @@ function Shop() {
           </div>
         </div>
       </section>
-      <div className="input-group container mt-4">
-        <input
-          type="text"
-          className="form-control bg-white"
-          placeholder="Search....."
-        />
-        <div className="input-group-append" style={{ width: '100px' }}>
-          <button type="button" className="btn btn-primary p-0 pl-4 pr-4">
-            <i
-              style={{ fontSize: '25px' }}
-              className="tf-ion-android-search"
-            ></i>
-          </button>
-        </div>
-      </div>
+
       <section className="products-shop section" style={{ paddingTop: '10px' }}>
         <div className="container">
           <div className="row">
@@ -65,11 +51,11 @@ function Shop() {
                           aria-label="Shop order"
                         >
                           <option value="">Default sorting</option>
-                          <option value="">Sort by popularity</option>
-                          <option value="">Sort by average rating</option>
-                          <option value="">Sort by latest</option>
-                          <option value="">Sort by price: low to high</option>
-                          <option value="">Sort by price: high to low</option>
+                          <option value="0">Sort by popularity</option>
+                          <option value="1">Sort by average rating</option>
+                          <option value="2">Sort by latest</option>
+                          <option value="3">Sort by price: low to high</option>
+                          <option value="4">Sort by price: high to low</option>
                         </select>
                         <input type="hidden" name="paged" value="1" />
                       </form>

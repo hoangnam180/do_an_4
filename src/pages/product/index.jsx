@@ -1,20 +1,66 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import Loading from 'src/components/common/Loading';
 import routes from 'src/configs/router';
 import { API_SERVER } from 'src/constants/configs';
 import { getProductDetail } from 'src/libs/apis/home';
+import { addWishListApi } from 'src/libs/apis/wishlist';
+import { actionToast } from 'src/store/authSlice';
+import { checkLogin } from 'src/utils/checkLogin';
 
 function SingleProduct() {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const dataUser = useSelector((state) => state?.authReducer);
+  const isLogin = checkLogin(dataUser);
+
+  const handleListHeart = async (data) => {
+    if (!isLogin) {
+      dispatch(
+        actionToast({
+          type: 'error',
+          title: 'Please login to use this feature',
+        })
+      );
+      return;
+    }
+    try {
+      const body = { id_san_pham: data.id };
+      const res = await addWishListApi(body);
+      console.log(res);
+      if (res?.status === 'success') {
+        dispatch(
+          actionToast({
+            type: 'success',
+            title: 'Add to wishlist successfully',
+          })
+        );
+      } else if (res?.status === 'erorr' && res?.erorr === 'the same key') {
+        dispatch(
+          actionToast({
+            type: 'error',
+            title: 'This product is already in your wishlist',
+          })
+        );
+      }
+    } catch (error) {
+      dispatch(actionToast({ type: 'error', title: 'Add to wishlist failed' }));
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
-      const data = await getProductDetail(id);
-      setProduct(data);
-      setIsLoading(false);
+      try {
+        setIsLoading(true);
+        const data = await getProductDetail(id);
+        setProduct(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+      }
     };
     fetchData();
   }, [id]);
@@ -139,9 +185,9 @@ function SingleProduct() {
                           title="Qty"
                           size="4"
                         />
-                        <a href="#" className="btn btn-main btn-small">
+                        <Link className="btn btn-main btn-small">
                           Add to cart
-                        </a>
+                        </Link>
                       </div>
                     </form>
 
@@ -180,30 +226,32 @@ function SingleProduct() {
                         <span className="font-weight-bold text-capitalize product-meta-title">
                           Categories :
                         </span>
-                        <a href="#">{product?.data?.ten_danh_muc || ''}</a>
+                        <Link href="#">
+                          {product?.data?.ten_danh_muc || ''}
+                        </Link>
                       </div>
 
                       <div className="product-share mt-5">
                         <ul className="list-inline">
                           <li className="list-inline-item">
-                            <a href="#">
+                            <Link href="#">
                               <i className="tf-ion-social-facebook"></i>
-                            </a>
+                            </Link>
                           </li>
                           <li className="list-inline-item">
-                            <a href="#">
+                            <Link href="#">
                               <i className="tf-ion-social-twitter"></i>
-                            </a>
+                            </Link>
                           </li>
                           <li className="list-inline-item">
-                            <a href="#">
+                            <Link href="#">
                               <i className="tf-ion-social-linkedin"></i>
-                            </a>
+                            </Link>
                           </li>
                           <li className="list-inline-item">
-                            <a href="#">
+                            <Link href="#">
                               <i className="tf-ion-social-pinterest"></i>
-                            </a>
+                            </Link>
                           </li>
                         </ul>
                       </div>
@@ -220,7 +268,7 @@ function SingleProduct() {
                       id="nav-tab"
                       role="tablist"
                     >
-                      <a
+                      <Link
                         className="nav-item nav-link active"
                         id="nav-home-tab"
                         data-toggle="tab"
@@ -230,8 +278,8 @@ function SingleProduct() {
                         aria-selected="true"
                       >
                         Description
-                      </a>
-                      <a
+                      </Link>
+                      <Link
                         className="nav-item nav-link"
                         id="nav-profile-tab"
                         data-toggle="tab"
@@ -241,8 +289,8 @@ function SingleProduct() {
                         aria-selected="false"
                       >
                         Additional Information
-                      </a>
-                      <a
+                      </Link>
+                      <Link
                         className="nav-item nav-link"
                         id="nav-contact-tab"
                         data-toggle="tab"
@@ -252,7 +300,7 @@ function SingleProduct() {
                         aria-selected="false"
                       >
                         Reviews(2)
-                      </a>
+                      </Link>
                     </div>
                   </nav>
 
@@ -474,12 +522,12 @@ function SingleProduct() {
 
                       <span className="onsale">Sale</span>
                       <div className="product-hover-overlay">
-                        <a href="#">
+                        <Link>
                           <i className="tf-ion-android-cart"></i>
-                        </a>
-                        <a href="#">
+                        </Link>
+                        <Link onClick={() => handleListHeart(item)}>
                           <i className="tf-ion-ios-heart"></i>
-                        </a>
+                        </Link>
                       </div>
 
                       <div className="product-info">
