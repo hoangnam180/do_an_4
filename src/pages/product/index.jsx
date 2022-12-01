@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import Loading from 'src/components/common/Loading';
@@ -10,12 +11,23 @@ import { actionToast } from 'src/store/authSlice';
 import { checkLogin } from 'src/utils/checkLogin';
 
 function SingleProduct() {
+  // const colors = [
+  //   { title: 'Red', value: 'red' },
+  //   { title: 'Black', value: 'black' },
+  //   { title: 'Blue', value: 'blue' },
+  // ];
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const dataUser = useSelector((state) => state?.authReducer);
   const isLogin = checkLogin(dataUser);
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
+  const onSubmit = (data) => console.log(data);
 
   const handleListHeart = async (data) => {
     if (!isLogin) {
@@ -55,6 +67,7 @@ function SingleProduct() {
       try {
         setIsLoading(true);
         const data = await getProductDetail(id);
+        console.log(data);
         setProduct(data);
         setIsLoading(false);
       } catch (error) {
@@ -154,112 +167,128 @@ function SingleProduct() {
                 </div>
 
                 <div className="col-md-7">
-                  <div className="single-product-details mt-5 mt-lg-0">
-                    <h2> {product?.data?.ten_san_pham || ''}</h2>
-                    <div className="sku_wrapper mb-4">
-                      Quantity:{' '}
-                      <span className="text-muted">{product?.so_luong} </span>
-                    </div>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="single-product-details mt-5 mt-lg-0">
+                      <h2> {product?.data?.ten_san_pham || ''}</h2>
+                      <div className="sku_wrapper mb-4">
+                        Quantity:{' '}
+                        <span className="text-muted">{product?.so_luong} </span>
+                      </div>
 
-                    <hr />
+                      <hr />
 
-                    <h3 className="product-price">
-                      ${product?.data?.gia_ban || ''} <del>$119.90</del>
-                    </h3>
+                      <h3 className="product-price">
+                        ${product?.data?.gia_ban || ''} <del>$119.90</del>
+                      </h3>
 
-                    <p className="product-description my-4 ">
-                      {product?.data?.mo_ta_ngan || ''}
-                    </p>
+                      <p className="product-description my-4 ">
+                        {product?.data?.mo_ta_ngan || ''}
+                      </p>
 
-                    <form className="cart" action="#" method="post">
                       <div className="quantity d-flex align-items-center">
                         <input
-                          type="number"
-                          id="#"
-                          className="input-text qty text form-control w-25 mr-3"
-                          step="1"
-                          min="1"
-                          max="9"
-                          name="quantity"
                           defaultValue="1"
-                          title="Qty"
-                          size="4"
+                          {...register('quantity', {
+                            required: true,
+                            min: 1,
+                            max: 10,
+                          })}
+                          type="number"
+                          className="input-text qty text form-control w-25 mr-3"
+                          name="quantity"
                         />
-                        <Link className="btn btn-main btn-small">
+
+                        <button
+                          type="submit"
+                          className="btn btn-main btn-small"
+                        >
                           Add to cart
-                        </Link>
+                        </button>
                       </div>
-                    </form>
-
-                    <div className="color-swatches mt-4 d-flex align-items-center">
-                      <span className="font-weight-bold text-capitalize product-meta-title">
-                        color:
-                      </span>
-                      <ul className="list-inline mb-0">
-                        <li className="list-inline-item">
-                          <Link to={routes.detail} className="bg-info"></Link>
-                        </li>
-                        <li className="list-inline-item">
-                          <Link to={routes.detail} className="bg-dark"></Link>
-                        </li>
-                        <li className="list-inline-item">
-                          <Link to={routes.detail} className="bg-danger"></Link>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div className="product-size d-flex align-items-center mt-4">
-                      <span className="font-weight-bold text-capitalize product-meta-title">
-                        Size:
-                      </span>
-                      <select className="form-control">
-                        {product?.size?.map((item) => (
-                          <option key={item?.id} value={item?.id}>
-                            {item?.size || ''}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="products-meta mt-4">
-                      <div className="product-category d-flex align-items-center">
-                        <span className="font-weight-bold text-capitalize product-meta-title">
-                          Categories :
+                      {errors?.quantity && (
+                        <span className="text-danger">
+                          Quantity must be between 1 and 10
                         </span>
-                        <Link href="#">
-                          {product?.data?.ten_danh_muc || ''}
-                        </Link>
-                      </div>
-
-                      <div className="product-share mt-5">
-                        <ul className="list-inline">
-                          <li className="list-inline-item">
-                            <Link href="#">
-                              <i className="tf-ion-social-facebook"></i>
-                            </Link>
-                          </li>
-                          <li className="list-inline-item">
-                            <Link href="#">
-                              <i className="tf-ion-social-twitter"></i>
-                            </Link>
-                          </li>
-                          <li className="list-inline-item">
-                            <Link href="#">
-                              <i className="tf-ion-social-linkedin"></i>
-                            </Link>
-                          </li>
-                          <li className="list-inline-item">
-                            <Link href="#">
-                              <i className="tf-ion-social-pinterest"></i>
-                            </Link>
-                          </li>
+                      )}
+                      <div className="color-swatches mt-4 d-flex align-items-center">
+                        <span className="font-weight-bold text-capitalize product-meta-title">
+                          color:
+                        </span>
+                        <ul className="list-inline mb-0">
+                          {product?.mau?.map((color, index) => {
+                            console.log(color);
+                            return (
+                              <li className="list-inline-item" key={index}>
+                                <Link
+                                  to={routes.detail}
+                                  style={{
+                                    border: `1px solid #333`,
+                                    backgroundColor: color?.hex,
+                                  }}
+                                ></Link>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
+
+                      <div className="product-size d-flex align-items-center mt-4">
+                        <span className="font-weight-bold text-capitalize product-meta-title">
+                          Size:
+                        </span>
+                        <select
+                          className="form-control"
+                          {...register('size')}
+                          required
+                          placeholder="Size"
+                        >
+                          {product?.size?.map((item) => (
+                            <option key={item?.id} value={item?.id}>
+                              {item?.size || ''}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="products-meta mt-4">
+                        <div className="product-category d-flex align-items-center">
+                          <span className="font-weight-bold text-capitalize product-meta-title">
+                            Categories :
+                          </span>
+                          <Link href="#">
+                            {product?.data?.ten_danh_muc || ''}
+                          </Link>
+                        </div>
+
+                        <div className="product-share mt-5">
+                          <ul className="list-inline">
+                            <li className="list-inline-item">
+                              <Link href="#">
+                                <i className="tf-ion-social-facebook"></i>
+                              </Link>
+                            </li>
+                            <li className="list-inline-item">
+                              <Link href="#">
+                                <i className="tf-ion-social-twitter"></i>
+                              </Link>
+                            </li>
+                            <li className="list-inline-item">
+                              <Link href="#">
+                                <i className="tf-ion-social-linkedin"></i>
+                              </Link>
+                            </li>
+                            <li className="list-inline-item">
+                              <Link href="#">
+                                <i className="tf-ion-social-pinterest"></i>
+                              </Link>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </div>
-
               <div className="row">
                 <div className="col-lg-12">
                   <nav className="product-info-tabs wc-tabs mt-5 mb-5">
@@ -268,7 +297,7 @@ function SingleProduct() {
                       id="nav-tab"
                       role="tablist"
                     >
-                      <Link
+                      <a
                         className="nav-item nav-link active"
                         id="nav-home-tab"
                         data-toggle="tab"
@@ -278,8 +307,8 @@ function SingleProduct() {
                         aria-selected="true"
                       >
                         Description
-                      </Link>
-                      <Link
+                      </a>
+                      <a
                         className="nav-item nav-link"
                         id="nav-profile-tab"
                         data-toggle="tab"
@@ -289,8 +318,8 @@ function SingleProduct() {
                         aria-selected="false"
                       >
                         Additional Information
-                      </Link>
-                      <Link
+                      </a>
+                      <a
                         className="nav-item nav-link"
                         id="nav-contact-tab"
                         data-toggle="tab"
@@ -300,7 +329,7 @@ function SingleProduct() {
                         aria-selected="false"
                       >
                         Reviews(2)
-                      </Link>
+                      </a>
                     </div>
                   </nav>
 

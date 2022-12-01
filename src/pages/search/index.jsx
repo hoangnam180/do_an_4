@@ -230,6 +230,7 @@ function Search() {
                               className="page-link"
                               href="#"
                               aria-label="Previous"
+                              onClick={() => setPage(page - 1)}
                             >
                               <span aria-hidden="true">&laquo;</span>
                             </Link>
@@ -252,6 +253,7 @@ function Search() {
                               className="page-link"
                               href="#"
                               aria-label="Next"
+                              onClick={() => setPage(page + 1)}
                             >
                               <span aria-hidden="true">&raquo;</span>
                             </Link>

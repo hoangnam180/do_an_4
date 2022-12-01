@@ -23,3 +23,8 @@ export const getCategory = async (params) =>
     method: 'GET',
     params,
   });
+export const getBanner = async () =>
+  request({
+    url: `${prefix}/home/banner`,
+    method: 'GET',
+  });

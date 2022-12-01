@@ -3,9 +3,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination as Paginationn, Autoplay } from 'swiper';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getArrival, getCategory, getProducts } from '../../libs/apis/home';
+import { getArrival, getBanner, getCategory, getProducts } from '../../libs/apis/home';
 import { actionToast } from 'src/store/authSlice';
-import dataHome from 'src/dataFake/home';
 import routes from 'src/configs/router';
 import { addWishListApi } from 'src/libs/apis/wishlist';
 import { checkLogin } from 'src/utils/checkLogin';
@@ -19,6 +18,7 @@ function Home() {
   const [products, setProducts] = useState([]);
   const [arrival, setArrival] = useState([]);
   const [category, setCategory] = useState([]);
+  const [banner, setBanner] = useState([]);
   const isLogin = checkLogin(dataUser);
   const [loading, setLoading] = useState(false);
   const handleListHeart = async (data) => {
@@ -62,15 +62,28 @@ function Home() {
         const dataProducts = getProducts();
         const dataArrivals = getArrival();
         const dataCategory = getCategory();
+        const dataBanner = getBanner();
 
-        const [products, arrivals, category] = await Promise.all([
+        const [products, arrivals, category,banner] = await Promise.all([
           dataProducts,
           dataArrivals,
           dataCategory,
+          dataBanner
         ]);
         setCategory(category?.data);
         setProducts(products?.product);
         setArrival(arrivals?.sanPham);
+        setBanner(banner?.data);
+        var keys = [];
+        
+        for (var number in banner?.data?.[0]) {
+          if (banner?.data?.[0].hasOwnProperty(number)) {
+            if(banner?.data?.[0][number]?.length > 0){
+              keys.push(banner?.data?.[0][number]);
+            }
+          }
+        }
+        setBanner(keys);
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -92,13 +105,13 @@ function Home() {
             autoplay={{ delay: 3000 }}
             className="main-slider slider slick-initialized slick-slider section"
           >
-            {dataHome.banner?.map((item) => {
+            {banner?.map((item) => {
               return (
                 <SwiperSlide
                   key={item?.id}
                   className="slider-item"
                   style={{
-                    backgroundImage: `url('${item?.img}')`,
+                    backgroundImage: `url('${API_SERVER}${item}')`,
                     backgroundPosition: '50%',
                     backgroundRepeat: 'no-repeat',
                   }}
@@ -108,13 +121,13 @@ function Home() {
                       <div className="col-lg-6 col-12 offset-lg-6 offset-md-6">
                         <div className="slider-caption">
                           <span className="lead">
-                            {item?.caption?.text_top}
+                          Trendy dress
                           </span>
                           <h1 className="mt-2 mb-5">
                             <span className="text-color">
-                              {item?.caption?.text_center}
+                            Winter
                             </span>
-                            {item?.caption?.text_bottom}
+                            Collection
                           </h1>
                           <Link className="btn btn-main">Shop Now</Link>
                         </div>
