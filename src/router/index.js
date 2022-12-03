@@ -8,10 +8,10 @@ import Profile from 'src/pages/profile';
 import Shop from 'src/pages/shop';
 import AboutUs from 'src/pages/abouts';
 import Search from 'src/pages/search';
-import ForgotPassword from 'src/components/Auth/forgotpass/ForgotPass';
-import WithList from 'src/pages/WithList';
-import Login from 'src/components/Auth/Login';
-import SignUp from 'src/components/Auth/SignUp';
+import Login from 'src/components/auth/login';
+import SignUp from 'src/components/auth/signup';
+import ForgotPassword from 'src/components/auth/forgotpass/ForgotPass';
+import WithList from 'src/pages/withlist';
 // Public routes
 const publicRoutes = [
   {

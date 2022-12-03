@@ -1,24 +1,56 @@
 import { useEffect, useState } from 'react';
+import ReactStars from 'react-rating-stars-component';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import Loading from 'src/components/common/Loading';
-import routes from 'src/configs/router';
-import { API_SERVER } from 'src/constants/configs';
+
 import { getProductDetail } from 'src/libs/apis/home';
 import { addWishListApi } from 'src/libs/apis/wishlist';
 import { actionToast } from 'src/store/authSlice';
 import { checkLogin } from 'src/utils/checkLogin';
 
+import Loading from 'src/components/common/Loading';
+
+import routes from 'src/configs/router';
+
+import { API_SERVER } from 'src/constants/configs';
+import FormRate from './formRate/FormRate';
+import {
+  ListRate,
+  RateProduct,
+  RateProductAuth,
+  RateProductPublic,
+} from 'src/libs/apis/detail';
+
 function SingleProduct() {
-  // const colors = [
-  //   { title: 'Red', value: 'red' },
-  //   { title: 'Black', value: 'black' },
-  //   { title: 'Blue', value: 'blue' },
-  // ];
+  const soluong = {
+    tong: 200,
+    mau: [
+      {
+        ten_mau: 'xanh',
+        so_luong: 100,
+        size: [
+          { ten_size: 'M', so_luong: 50 },
+          { ten_size: 'L', so_luong: 50 },
+          { ten_size: 'XL', so_luong: 0 },
+        ],
+      },
+      {
+        ten_mau: 'do',
+        so_luong: 100,
+        size: [
+          { ten_size: 'M', so_luong: 50 },
+          { ten_size: 'L', so_luong: 50 },
+          { ten_size: 'XL', so_luong: 0 },
+        ],
+      },
+    ],
+  };
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [star, setStar] = useState(0);
+  const [listRate, setListRate] = useState([]);
   const dispatch = useDispatch();
   const dataUser = useSelector((state) => state?.authReducer);
   const isLogin = checkLogin(dataUser);
@@ -26,8 +58,41 @@ function SingleProduct() {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm();
+  } = useForm({
+    mode: 'onBlur',
+  });
+
   const onSubmit = (data) => console.log(data);
+
+  const onSubmitRate = async (data) => {
+    try {
+      if (!isLogin) {
+        const res = await RateProductPublic(id, { ...data, sao: star });
+        if (res?.status === 'success') {
+          setListRate([...listRate, res?.data]);
+          dispatch(
+            actionToast({
+              type: 'success',
+              title: 'Rate success',
+            })
+          );
+        }
+        return;
+      }
+      const res = await RateProductAuth(id, { ...data, sao: star });
+      if (res?.status === 'success') {
+        setListRate([...listRate, res?.data]);
+        dispatch(
+          actionToast({
+            type: 'success',
+            title: 'Rate success',
+          })
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleListHeart = async (data) => {
     if (!isLogin) {
@@ -42,7 +107,6 @@ function SingleProduct() {
     try {
       const body = { id_san_pham: data.id };
       const res = await addWishListApi(body);
-      console.log(res);
       if (res?.status === 'success') {
         dispatch(
           actionToast({
@@ -62,12 +126,14 @@ function SingleProduct() {
       dispatch(actionToast({ type: 'error', title: 'Add to wishlist failed' }));
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         const data = await getProductDetail(id);
-        console.log(data);
+        const rate = await ListRate(id);
+        setListRate(rate?.data);
         setProduct(data);
         setIsLoading(false);
       } catch (error) {
@@ -216,7 +282,6 @@ function SingleProduct() {
                         </span>
                         <ul className="list-inline mb-0">
                           {product?.mau?.map((color, index) => {
-                            console.log(color);
                             return (
                               <li className="list-inline-item" key={index}>
                                 <Link
@@ -249,7 +314,10 @@ function SingleProduct() {
                           ))}
                         </select>
                       </div>
-
+                      {
+                        // how to conver number to arrays
+                        // Array.from({length: 10}, (v, k) => k + 1)
+                      }
                       <div className="products-meta mt-4">
                         <div className="product-category d-flex align-items-center">
                           <span className="font-weight-bold text-capitalize product-meta-title">
@@ -328,7 +396,7 @@ function SingleProduct() {
                         aria-controls="nav-contact"
                         aria-selected="false"
                       >
-                        Reviews(2)
+                        Reviews({listRate?.length})
                       </a>
                     </div>
                   </nav>
@@ -381,6 +449,7 @@ function SingleProduct() {
                         </li>
                       </ul>
                     </div>
+
                     <div
                       className="tab-pane fade"
                       id="nav-contact"
@@ -389,123 +458,56 @@ function SingleProduct() {
                     >
                       <div className="row">
                         <div className="col-lg-7">
-                          <div className="media review-block mb-4">
-                            <img
-                              src="assets/images/avater-1.jpg"
-                              alt="reviewimg"
-                              className="img-fluid mr-4"
-                            />
-                            <div className="media-body">
-                              <div className="product-review">
-                                <span>
-                                  <i className="tf-ion-android-star"></i>
-                                </span>
-                                <span>
-                                  <i className="tf-ion-android-star"></i>
-                                </span>
-                                <span>
-                                  <i className="tf-ion-android-star"></i>
-                                </span>
-                                <span>
-                                  <i className="tf-ion-android-star"></i>
-                                </span>
-                                <span>
-                                  <i className="tf-ion-android-star"></i>
-                                </span>
-                              </div>
-                              <h6>
-                                Therichpost{' '}
-                                <span className="text-sm text-muted font-weight-normal ml-3">
-                                  -June 23, 2019
-                                </span>
-                              </h6>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipisicing elit. Ipsum suscipit consequuntur
-                                in, perspiciatis laudantium ipsa fugit. Iure
-                                esse saepe error dolore quod.
-                              </p>
-                            </div>
-                          </div>
+                          {listRate?.length > 0 &&
+                            listRate?.map((item, index) => {
+                              return (
+                                <div
+                                  key={item?.id}
+                                  className="media review-block mb-4"
+                                >
+                                  <div className="media-body">
+                                    <div className="product-review">
+                                      <ReactStars
+                                        count={5}
+                                        size={24}
+                                        value={item?.rate}
+                                        edit={false}
+                                        isHalf={true}
+                                        emptyIcon={
+                                          <i className="far fa-star"></i>
+                                        }
+                                        halfIcon={
+                                          <i className="fa fa-star-half-alt"></i>
+                                        }
+                                        fullIcon={
+                                          <i className="fa fa-star"></i>
+                                        }
+                                        activeColor="#ffd700"
+                                      />
+                                    </div>
+                                    <h6>
+                                      {item?.email}
+                                      <span className="text-sm text-muted font-weight-normal ml-3">
+                                        {new Date(
+                                          item?.created_at
+                                        ).toLocaleString('vi-VN')}
+                                      </span>
+                                    </h6>
 
-                          <div className="media review-block">
-                            <img
-                              src="assets/images/avater-2.jpg"
-                              alt="reviewimg"
-                              className="img-fluid mr-4"
-                            />
-                            <div className="media-body">
-                              <div className="product-review">
-                                <span>
-                                  <i className="tf-ion-android-star"></i>
-                                </span>
-                                <span>
-                                  <i className="tf-ion-android-star"></i>
-                                </span>
-                                <span>
-                                  <i className="tf-ion-android-star"></i>
-                                </span>
-                                <span>
-                                  <i className="tf-ion-android-star"></i>
-                                </span>
-                                <span>
-                                  <i className="tf-ion-android-star-outline"></i>
-                                </span>
-                              </div>
-                              <h6>
-                                Therichpost{' '}
-                                <span className="text-sm text-muted font-weight-normal ml-3">
-                                  -June 23, 2019
-                                </span>
-                              </h6>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipisicing elit. Ipsum suscipit consequuntur
-                                in, perspiciatis laudantium ipsa fugit. Iure
-                                esse saepe error dolore quod.
-                              </p>
-                            </div>
-                          </div>
+                                    <p>{item?.content}</p>
+                                  </div>
+                                </div>
+                              );
+                            })}
                         </div>
 
                         <div className="col-lg-5">
                           <div className="review-comment mt-5 mt-lg-0">
                             <h4 className="mb-3">Add a Review</h4>
-
-                            <form action="#">
-                              <div className="starrr"></div>
-                              <div className="form-group">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Your Name"
-                                />
-                              </div>
-                              <div className="form-group">
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  placeholder="Your Email"
-                                />
-                              </div>
-                              <div className="form-group">
-                                <textarea
-                                  name="comment"
-                                  id="comment"
-                                  className="form-control"
-                                  cols="30"
-                                  rows="4"
-                                  placeholder="Your Review"
-                                ></textarea>
-                              </div>
-
-                              <Link
-                                to={routes.detail}
-                                className="btn btn-main btn-small"
-                              >
-                                Submit Review
-                              </Link>
-                            </form>
+                            <FormRate
+                              onSubmitRate={onSubmitRate}
+                              setStar={setStar}
+                            />
                           </div>
                         </div>
                       </div>
