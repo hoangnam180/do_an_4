@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Loading from 'src/components/common/Loading';
 import routes from 'src/configs/router';
 import { API_SERVER } from 'src/constants/configs';
+import { useCustomSearchParams } from 'src/hooks/useSeachParams';
 import { getDataFilter, searchFilter } from 'src/libs/apis/filter';
 import { addWishListApi } from 'src/libs/apis/wishlist';
 import { actionToast } from 'src/store/authSlice';
@@ -15,6 +16,8 @@ function Shop() {
   const [category, setCategory] = useState();
   const [productFilter, setProductFilter] = useState([]);
   const [reset, setReset] = useState(false);
+  const [loadingContainer, setLoadingContainer] = useState(false);
+  const [searchParams, setSearchParams] = useCustomSearchParams();
 
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -69,11 +72,11 @@ function Shop() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoadingContainer(true);
       const data = await searchFilter({ page, brand, id_danh_muc: category });
       setProductFilter(data?.san_pham?.data);
       setTotalPage(data?.san_pham?.last_page);
-      setLoading(false);
+      setLoadingContainer(false);
     };
     fetchData();
   }, [reset, page]);
@@ -123,139 +126,145 @@ function Shop() {
           >
             <div className="container">
               <div className="row">
-                <div className="col-md-9">
-                  <div className="row align-items-center">
-                    <div className="col-lg-12 mb-4 mb-lg-0">
-                      <div className="section-title">
-                        <h2 className="d-block text-left-sm">Shop</h2>
+                {loadingContainer ? (
+                  <Loading />
+                ) : (
+                  <div className="col-md-9">
+                    <div className="row align-items-center">
+                      <div className="col-lg-12 mb-4 mb-lg-0">
+                        <div className="section-title">
+                          <h2 className="d-block text-left-sm">Shop</h2>
 
-                        <div className="heading d-flex justify-content-between mb-5">
-                          <p className="result-count mb-0">
-                            {' '}
-                            Showing 1–6 of 17 results
-                          </p>
-                          <form className="ordering " method="get">
-                            <select
-                              name="orderby"
-                              className="orderby form-control"
-                              aria-label="Shop order"
-                            >
-                              <option value="">Default sorting</option>
-                              <option value="0">Sort by popularity</option>
-                              <option value="1">Sort by average rating</option>
-                              <option value="2">Sort by latest</option>
-                              <option value="3">
-                                Sort by price: low to high
-                              </option>
-                              <option value="4">
-                                Sort by price: high to low
-                              </option>
-                            </select>
-                            <input type="hidden" name="paged" value="1" />
-                          </form>
+                          <div className="heading d-flex justify-content-between mb-5">
+                            <p className="result-count mb-0">
+                              {' '}
+                              Showing 1–6 of 17 results
+                            </p>
+                            <form className="ordering " method="get">
+                              <select
+                                name="orderby"
+                                className="orderby form-control"
+                                aria-label="Shop order"
+                              >
+                                <option value="">Default sorting</option>
+                                <option value="0">Sort by popularity</option>
+                                <option value="1">
+                                  Sort by average rating
+                                </option>
+                                <option value="2">Sort by latest</option>
+                                <option value="3">
+                                  Sort by price: low to high
+                                </option>
+                                <option value="4">
+                                  Sort by price: high to low
+                                </option>
+                              </select>
+                              <input type="hidden" name="paged" value="1" />
+                            </form>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="row">
-                    {productFilter?.length < 1 ? (
-                      <h1>No Data</h1>
-                    ) : (
-                      productFilter.map((item) => (
-                        <div
-                          key={item?.id}
-                          className="col-lg-4 col-12 col-md-6 col-sm-6 mb-5"
-                        >
-                          <div className="product">
-                            <div className="product-wrap">
-                              <Link to={`${routes.detail}/${item?.id}`}>
-                                <img
-                                  style={{ height: '250px' }}
-                                  className="img-fluid w-100 mb-3 img-first"
-                                  src={`${API_SERVER}${item?.hinh_anh}`}
-                                  alt="product-img"
-                                />
-                              </Link>
-                              <Link to={`${routes.detail}/${item?.id}`}>
-                                <img
-                                  style={{ height: '250px' }}
-                                  className="img-fluid w-100 mb-3 img-second"
-                                  src={`${API_SERVER}${item?.hinh_anh}`}
-                                  alt="product-img"
-                                />
-                              </Link>
-                            </div>
-
-                            <span className="onsale">Sale</span>
-                            <div className="product-hover-overlay">
-                              <Link href="#">
-                                <i className="tf-ion-android-cart"></i>
-                              </Link>
-                              <Link
-                                href="#"
-                                onClick={() => handleListHeart(item)}
-                              >
-                                <i className="tf-ion-ios-heart"></i>
-                              </Link>
-                            </div>
-
-                            <div className="product-info">
-                              <h2 className="product-title h5 mb-0">
+                    <div className="row">
+                      {productFilter?.length < 1 ? (
+                        <h1>No Data</h1>
+                      ) : (
+                        productFilter.map((item) => (
+                          <div
+                            key={item?.id}
+                            className="col-lg-4 col-12 col-md-6 col-sm-6 mb-5"
+                          >
+                            <div className="product">
+                              <div className="product-wrap">
                                 <Link to={`${routes.detail}/${item?.id}`}>
-                                  {item?.ten_san_pham || ''}
+                                  <img
+                                    style={{ height: '250px' }}
+                                    className="img-fluid w-100 mb-3 img-first"
+                                    src={`${API_SERVER}${item?.hinh_anh}`}
+                                    alt="product-img"
+                                  />
                                 </Link>
-                              </h2>
-                              <span className="price">
-                                ${item?.gia_ban || 0}
-                              </span>
+                                <Link to={`${routes.detail}/${item?.id}`}>
+                                  <img
+                                    style={{ height: '250px' }}
+                                    className="img-fluid w-100 mb-3 img-second"
+                                    src={`${API_SERVER}${item?.hinh_anh}`}
+                                    alt="product-img"
+                                  />
+                                </Link>
+                              </div>
+
+                              <span className="onsale">Sale</span>
+                              <div className="product-hover-overlay">
+                                <Link href="#">
+                                  <i className="tf-ion-android-cart"></i>
+                                </Link>
+                                <Link
+                                  href="#"
+                                  onClick={() => handleListHeart(item)}
+                                >
+                                  <i className="tf-ion-ios-heart"></i>
+                                </Link>
+                              </div>
+
+                              <div className="product-info">
+                                <h2 className="product-title h5 mb-0">
+                                  <Link to={`${routes.detail}/${item?.id}`}>
+                                    {item?.ten_san_pham || ''}
+                                  </Link>
+                                </h2>
+                                <span className="price">
+                                  ${item?.gia_ban || 0}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))
-                    )}
+                        ))
+                      )}
 
-                    <div className="col-12">
-                      <nav aria-label="Page navigation">
-                        <ul className="pagination">
-                          <li className="page-item">
-                            <Link
-                              className="page-link"
-                              href="#"
-                              aria-label="Previous"
-                              onClick={() => setPage(page - 1)}
-                            >
-                              <span aria-hidden="true">&laquo;</span>
-                            </Link>
-                          </li>
-                          {Array.from(Array(totalPage).keys()).map((item) => (
-                            <li
-                              onClick={() => setPage(item + 1)}
-                              className={`page-item ${
-                                item + 1 === page ? 'active' : ''
-                              }`}
-                              key={item}
-                            >
-                              <Link className="page-link" href="#">
-                                {item + 1}
+                      <div className="col-12">
+                        <nav aria-label="Page navigation">
+                          <ul className="pagination">
+                            <li className="page-item">
+                              <Link
+                                className="page-link"
+                                href="#"
+                                aria-label="Previous"
+                                onClick={() => setPage(page - 1)}
+                              >
+                                <span aria-hidden="true">&laquo;</span>
                               </Link>
                             </li>
-                          ))}
-                          <li className="page-item">
-                            <Link
-                              className="page-link"
-                              href="#"
-                              aria-label="Next"
-                              onClick={() => setPage(page + 1)}
-                            >
-                              <span aria-hidden="true">&raquo;</span>
-                            </Link>
-                          </li>
-                        </ul>
-                      </nav>
+                            {Array.from(Array(totalPage).keys()).map((item) => (
+                              <li
+                                onClick={() => setPage(item + 1)}
+                                className={`page-item ${
+                                  item + 1 === page ? 'active' : ''
+                                }`}
+                                key={item}
+                              >
+                                <Link className="page-link" href="#">
+                                  {item + 1}
+                                </Link>
+                              </li>
+                            ))}
+                            <li className="page-item">
+                              <Link
+                                className="page-link"
+                                href="#"
+                                aria-label="Next"
+                                onClick={() => setPage(page + 1)}
+                              >
+                                <span aria-hidden="true">&raquo;</span>
+                              </Link>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
                 <div className="col-md-3">
                   <form className="mb-5" name="category">
                     <section className="widget widget-colors mb-5">
