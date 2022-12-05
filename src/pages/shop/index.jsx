@@ -15,7 +15,6 @@ function Shop() {
   const [brand, setBrand] = useState();
   const [category, setCategory] = useState();
   const [productFilter, setProductFilter] = useState([]);
-  const [reset, setReset] = useState(false);
   const [loadingContainer, setLoadingContainer] = useState(false);
   const [searchParams, setSearchParams] = useCustomSearchParams();
 
@@ -38,7 +37,6 @@ function Shop() {
     try {
       const body = { id_san_pham: data.id };
       const res = await addWishListApi(body);
-      console.log(res);
       if (res?.status === 'success') {
         dispatch(
           actionToast({
@@ -66,22 +64,25 @@ function Shop() {
       setData(data);
       setLoading(false);
     };
-
     fetchData();
   }, []);
 
   useEffect(() => {
+    const params = {
+      page: searchParams?.page || 1,
+      brand: searchParams?.brand || '',
+      id_danh_muc: searchParams?.id_danh_muc || '',
+    };
     const fetchData = async () => {
       setLoadingContainer(true);
-      const data = await searchFilter({ page, brand, id_danh_muc: category });
+      const data = await searchFilter(params);
       setProductFilter(data?.san_pham?.data);
       setTotalPage(data?.san_pham?.last_page);
       setLoadingContainer(false);
     };
     fetchData();
-  }, [reset, page]);
+  }, [searchParams?.brand, searchParams?.id_danh_muc, searchParams?.page]);
 
-  console.log('data', page);
   return (
     <>
       {loading ? (
@@ -147,11 +148,6 @@ function Shop() {
                                 aria-label="Shop order"
                               >
                                 <option value="">Default sorting</option>
-                                <option value="0">Sort by popularity</option>
-                                <option value="1">
-                                  Sort by average rating
-                                </option>
-                                <option value="2">Sort by latest</option>
                                 <option value="3">
                                   Sort by price: low to high
                                 </option>
@@ -231,14 +227,28 @@ function Shop() {
                                 className="page-link"
                                 href="#"
                                 aria-label="Previous"
-                                onClick={() => setPage(page - 1)}
+                                onClick={() => {
+                                  if (page > 1) {
+                                    setPage(page - 1);
+                                    setSearchParams({
+                                      ...searchParams,
+                                      page: page - 1,
+                                    });
+                                  }
+                                }}
                               >
                                 <span aria-hidden="true">&laquo;</span>
                               </Link>
                             </li>
                             {Array.from(Array(totalPage).keys()).map((item) => (
                               <li
-                                onClick={() => setPage(item + 1)}
+                                onClick={() => {
+                                  setPage(item + 1);
+                                  setSearchParams({
+                                    ...searchParams,
+                                    page: item + 1,
+                                  });
+                                }}
                                 className={`page-item ${
                                   item + 1 === page ? 'active' : ''
                                 }`}
@@ -254,7 +264,15 @@ function Shop() {
                                 className="page-link"
                                 href="#"
                                 aria-label="Next"
-                                onClick={() => setPage(page + 1)}
+                                onClick={() => {
+                                  if (page < totalPage) {
+                                    setPage(page + 1);
+                                    setSearchParams({
+                                      ...searchParams,
+                                      page: page + 1,
+                                    });
+                                  }
+                                }}
                               >
                                 <span aria-hidden="true">&raquo;</span>
                               </Link>
@@ -339,7 +357,12 @@ function Shop() {
                           ).value = '';
                           setCategory('');
                           setBrand('');
-                          setReset(!reset);
+                          setSearchParams({
+                            ...searchParams,
+                            page: 1,
+                            brand: '',
+                            category: '',
+                          });
                         }}
                       >
                         Reset
@@ -350,18 +373,11 @@ function Shop() {
                       type="button"
                       className="btn btn-black btn-small"
                       onClick={async () => {
-                        try {
-                          setLoading(true);
-                          const data = await searchFilter({
-                            brand,
-                            id_danh_muc: category,
-                          });
-                          setProductFilter(data?.san_pham?.data);
-                          setLoading(false);
-                        } catch (error) {
-                          console.log(error);
-                          setLoading(false);
-                        }
+                        setSearchParams({
+                          ...searchParams,
+                          id_danh_muc: category || '',
+                          brand: brand || '',
+                        });
                       }}
                     >
                       Filter
