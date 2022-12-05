@@ -2,11 +2,11 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DATA_CART, STEP_CART } from 'src/constants/configs';
 
 import { getListProductCarClientApi } from 'src/libs/apis/cart';
-import webStorage from 'src/utils/webStorage';
 
 const { createSlice } = require('@reduxjs/toolkit');
-const stepCart = webStorage.get(STEP_CART);
-const dataCart = webStorage.get(DATA_CART);
+
+const stepCart = JSON.parse(localStorage.getItem(STEP_CART));
+const dataCart = JSON.parse(localStorage.getItem(DATA_CART));
 
 const initialState = {
   step: stepCart || 0,
@@ -40,7 +40,7 @@ const cartSlice = createSlice({
       if (index !== -1) {
         state.data[index].quantity = quantity;
       }
-      webStorage.set(DATA_CART, state.data);
+      localStorage.setItem(DATA_CART, state.data);
     },
     actionDelete(state, action) {
       const { id } = action.payload;
@@ -49,26 +49,25 @@ const cartSlice = createSlice({
         state.data.splice(index, 1);
       }
       state.step = state.step - 1;
-      webStorage.set(STEP_CART, state.step);
-      webStorage.set(DATA_CART, state.data);
+      localStorage.setItem(STEP_CART, state.step);
+      localStorage.setItem(DATA_CART, state.data);
     },
     actionTotalCart(state, action) {
       state.totalCart = action.payload;
     },
     actionAddToCart: (state, action) => {
-      // how to log action.payload
-      console.log(action.payload);
-      const data = action.payload;
+      const { data, step } = action.payload;
       const index =
         state.data?.data &&
         state.data?.data.findIndex((item) => item.id === data?.data?.id);
       if (index !== -1 && index) {
-        state.data[index].quantity = state.data[index].quantity + 1;
+        state.data[index].quantity = state.data[index].quantity + step;
       } else {
-        state.data.push({ ...data });
+        state.data.push({ ...data, quantity: step });
       }
-      webStorage.set(STEP_CART, state.step + 1);
-      webStorage.set(DATA_CART, state);
+      state.step = state.step + step;
+      localStorage.setItem(STEP_CART, state.step);
+      localStorage.setItem(DATA_CART, JSON.stringify(state.data));
     },
   },
 

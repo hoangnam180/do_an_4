@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
+import { API_SERVER } from 'src/constants/configs';
 import {
   actionDelete,
   actionQuantity,
@@ -11,7 +12,7 @@ import {
 function Cart() {
   const dispatch = useDispatch();
   const { data, totalCart } = useSelector((state) => state?.cartReducer);
-
+  console.log(data);
   const handleTotalPrice = () => {
     let total = 0;
     data.forEach((item) => {
@@ -72,7 +73,7 @@ function Cart() {
                   >
                     <thead>
                       <tr>
-                        <th className="product-thumbnail"> </th>
+                        <th className="product-thumbnail">thumbnail</th>
                         <th className="product-name">Product</th>
                         <th className="product-price">Price</th>
                         <th className="product-quantity pl-4">Quantity</th>
@@ -82,7 +83,7 @@ function Cart() {
                     </thead>
 
                     <tbody>
-                      {data?.data?.map((item, index) => {
+                      {data?.map((item, index) => {
                         return (
                           <tr className="cart_item" key={index}>
                             <td
@@ -91,7 +92,8 @@ function Cart() {
                             >
                               <a href="/product-single">
                                 <img
-                                  src={item?.img}
+                                  style={{ width: '100%', height: '60px' }}
+                                  src={`${API_SERVER}${item?.hinh_anh?.[0]?.hinh_anh}`}
                                   className="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
                                   alt=""
                                 />
@@ -99,7 +101,7 @@ function Cart() {
                             </td>
 
                             <td className="product-name" data-title="Product">
-                              <a href="#">{item?.name}</a>
+                              <a href="#">{item?.data?.ten_san_pham}</a>
                             </td>
 
                             <td className="product-price" data-title="Price">
@@ -107,7 +109,7 @@ function Cart() {
                                 <span className="currencySymbol">
                                   <pre wp-pre-tag-3=""></pre>
                                 </span>
-                                {item?.price}
+                                {item?.data?.gia_ban}
                               </span>
                             </td>
                             <td
@@ -121,10 +123,13 @@ function Cart() {
                                   type="number"
                                   id="qty"
                                   className="input-text qty text"
-                                  defaultValue={item?.quantity}
+                                  defaultValue={item?.data?.quantity || 1}
                                   title="Qty"
                                   onChange={(e) => {
-                                    handleIncrease(item?.id, e.target.value);
+                                    handleIncrease(
+                                      item?.data?.id,
+                                      e.target.value
+                                    );
                                   }}
                                 />
                               </div>
@@ -134,7 +139,8 @@ function Cart() {
                                 <span className="currencySymbol">
                                   <pre wp-pre-tag-3=""></pre>
                                 </span>
-                                {item?.price}
+                                {item?.data?.gia_ban *
+                                  (item?.data?.quantity || 1)}
                               </span>
                             </td>
                             <td className="product-remove" data-title="Remove">
@@ -144,7 +150,7 @@ function Cart() {
                                 data-product_id="30"
                                 data-product_sku=""
                                 onClick={() => {
-                                  handleDelete(item?.id);
+                                  handleDelete(item?.data?.id);
                                 }}
                               >
                                 ×
