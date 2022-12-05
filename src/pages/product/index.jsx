@@ -17,40 +17,23 @@ import { API_SERVER } from 'src/constants/configs';
 import FormRate from './formRate/FormRate';
 import {
   ListRate,
-  RateProduct,
   RateProductAuth,
   RateProductPublic,
 } from 'src/libs/apis/detail';
+import { addToCartApi } from 'src/libs/apis/cart';
+import { actionAddToCart } from 'src/store/cartSlice';
 
 function SingleProduct() {
-  const soluong = {
-    tong: 200,
-    mau: [
-      {
-        ten_mau: 'xanh',
-        so_luong: 100,
-        size: [
-          { ten_size: 'M', so_luong: 50 },
-          { ten_size: 'L', so_luong: 50 },
-          { ten_size: 'XL', so_luong: 0 },
-        ],
-      },
-      {
-        ten_mau: 'do',
-        so_luong: 100,
-        size: [
-          { ten_size: 'M', so_luong: 50 },
-          { ten_size: 'L', so_luong: 50 },
-          { ten_size: 'XL', so_luong: 0 },
-        ],
-      },
-    ],
-  };
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [star, setStar] = useState(0);
   const [listRate, setListRate] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+  const [indexActive, setIndexActive] = useState(null);
+  const [size, setSize] = useState();
+  const [color, setColor] = useState();
+
   const dispatch = useDispatch();
   const dataUser = useSelector((state) => state?.authReducer);
   const isLogin = checkLogin(dataUser);
@@ -62,7 +45,31 @@ function SingleProduct() {
     mode: 'onBlur',
   });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (data) => {
+    const dataSubmit = { ...data, color };
+    const findId = size?.find(
+      (item) => item.id === Number(dataSubmit.size)
+    )?.id_chi_tiet_san_pham;
+    if (!findId || !color) {
+      alert('Please choose size or color');
+      return;
+    }
+    const resultData = {
+      so_luong: dataSubmit.quantity,
+      id_chi_tiet_san_pham: findId,
+    };
+    const res = await addToCartApi(resultData);
+    if (res?.status === 'success') {
+      setQuantity(res?.data);
+      dispatch(
+        actionToast({
+          type: 'success',
+          title: 'Add to cart successfully',
+        })
+      );
+      dispatch(actionAddToCart(product));
+    }
+  };
 
   const onSubmitRate = async (data) => {
     try {
@@ -93,6 +100,8 @@ function SingleProduct() {
       console.log(err);
     }
   };
+
+  const handleAddToCart = () => {};
 
   const handleListHeart = async (data) => {
     if (!isLogin) {
@@ -135,6 +144,8 @@ function SingleProduct() {
         const rate = await ListRate(id);
         setListRate(rate?.data);
         setProduct(data);
+        setQuantity(data?.so_luong?.tong);
+        setSize(data?.size);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -238,7 +249,13 @@ function SingleProduct() {
                       <h2> {product?.data?.ten_san_pham || ''}</h2>
                       <div className="sku_wrapper mb-4">
                         Quantity:{' '}
-                        <span className="text-muted">{product?.so_luong} </span>
+                        <span
+                          style={{
+                            color: `${quantity < 50 ? 'red ' : '#6c757d'}`,
+                          }}
+                        >
+                          {quantity || ''}{' '}
+                        </span>
                       </div>
 
                       <hr />
@@ -257,7 +274,7 @@ function SingleProduct() {
                           {...register('quantity', {
                             required: true,
                             min: 1,
-                            max: 10,
+                            max: product?.so_luong?.tong || 1,
                           })}
                           type="number"
                           className="input-text qty text form-control w-25 mr-3"
@@ -267,13 +284,25 @@ function SingleProduct() {
                         <button
                           type="submit"
                           className="btn btn-main btn-small"
+                          onClick={() => {
+                            if (!color) {
+                              dispatch(
+                                actionToast({
+                                  type: 'error',
+                                  title: 'Please choose color',
+                                })
+                              );
+                              return;
+                            }
+                          }}
                         >
                           Add to cart
                         </button>
                       </div>
                       {errors?.quantity && (
                         <span className="text-danger">
-                          Quantity must be between 1 and 10
+                          Quantity must be between 1 and{' '}
+                          {product?.so_luong?.tong}
                         </span>
                       )}
                       <div className="color-swatches mt-4 d-flex align-items-center">
@@ -281,13 +310,20 @@ function SingleProduct() {
                           color:
                         </span>
                         <ul className="list-inline mb-0">
-                          {product?.mau?.map((color, index) => {
+                          {product?.so_luong?.mau?.map((color, index) => {
                             return (
                               <li className="list-inline-item" key={index}>
                                 <Link
-                                  to={routes.detail}
+                                  onClick={() => {
+                                    setQuantity(color?.so_luong);
+                                    setIndexActive(index);
+                                    setColor(color?.id_mau);
+                                    setSize(color?.size);
+                                  }}
                                   style={{
-                                    border: `1px solid #333`,
+                                    border: `1px solid ${
+                                      index === indexActive ? '#007bff' : '#333'
+                                    }`,
                                     backgroundColor: color?.hex,
                                   }}
                                 ></Link>
@@ -306,18 +342,29 @@ function SingleProduct() {
                           {...register('size')}
                           required
                           placeholder="Size"
+                          defaultValue={''}
+                          onChange={(e) => {
+                            const findIndex = size.find(
+                              (item) => item?.id === Number(e.target.value)
+                            );
+                            if (!findIndex || !findIndex?.so_luong) {
+                              alert('please choose color first !');
+                            } else {
+                              setQuantity(findIndex?.so_luong);
+                            }
+                          }}
                         >
-                          {product?.size?.map((item) => (
+                          <option value="" key={0}>
+                            Choose size
+                          </option>
+                          {size?.map((item) => (
                             <option key={item?.id} value={item?.id}>
                               {item?.size || ''}
                             </option>
                           ))}
                         </select>
                       </div>
-                      {
-                        // how to conver number to arrays
-                        // Array.from({length: 10}, (v, k) => k + 1)
-                      }
+
                       <div className="products-meta mt-4">
                         <div className="product-category d-flex align-items-center">
                           <span className="font-weight-bold text-capitalize product-meta-title">

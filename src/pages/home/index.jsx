@@ -3,7 +3,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination as Paginationn, Autoplay } from 'swiper';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getArrival, getBanner, getCategory, getProducts } from '../../libs/apis/home';
+import {
+  getArrival,
+  getBanner,
+  getCategory,
+  getProducts,
+} from '../../libs/apis/home';
 import { actionToast } from 'src/store/authSlice';
 import routes from 'src/configs/router';
 import { addWishListApi } from 'src/libs/apis/wishlist';
@@ -64,21 +69,21 @@ function Home() {
         const dataCategory = getCategory();
         const dataBanner = getBanner();
 
-        const [products, arrivals, category,banner] = await Promise.all([
+        const [products, arrivals, category, banner] = await Promise.all([
           dataProducts,
           dataArrivals,
           dataCategory,
-          dataBanner
+          dataBanner,
         ]);
         setCategory(category?.data);
         setProducts(products?.product);
         setArrival(arrivals?.sanPham);
         setBanner(banner?.data);
         var keys = [];
-        
+
         for (var number in banner?.data?.[0]) {
           if (banner?.data?.[0].hasOwnProperty(number)) {
-            if(banner?.data?.[0][number]?.length > 0){
+            if (banner?.data?.[0][number]?.length > 0) {
               keys.push(banner?.data?.[0][number]);
             }
           }
@@ -105,10 +110,10 @@ function Home() {
             autoplay={{ delay: 3000 }}
             className="main-slider slider slick-initialized slick-slider section"
           >
-            {banner?.map((item) => {
+            {banner?.map((item, index) => {
               return (
                 <SwiperSlide
-                  key={item?.id}
+                  key={index}
                   className="slider-item"
                   style={{
                     backgroundImage: `url('${API_SERVER}${item}')`,
@@ -120,13 +125,9 @@ function Home() {
                     <div className="row">
                       <div className="col-lg-6 col-12 offset-lg-6 offset-md-6">
                         <div className="slider-caption">
-                          <span className="lead">
-                          Trendy dress
-                          </span>
+                          <span className="lead">Trendy dress</span>
                           <h1 className="mt-2 mb-5">
-                            <span className="text-color">
-                            Winter
-                            </span>
+                            <span className="text-color">Winter</span>
                             Collection
                           </h1>
                           <Link className="btn btn-main">Shop Now</Link>
@@ -144,10 +145,7 @@ function Home() {
                 {category?.map(
                   (item, index) =>
                     index < 3 && (
-                      <div
-                        className="col-lg-4 col-sm-12 col-md-6"
-                        key={item?.id}
-                      >
+                      <div className="col-lg-4 col-sm-12 col-md-6" key={index}>
                         <div className="cat-item mb-4 mb-lg-0">
                           <img
                             style={{ height: '250px', width: '100%' }}
@@ -185,11 +183,11 @@ function Home() {
                 </div>
               </div>
               <div className="row">
-                {products?.map((item) => {
+                {products?.map((item, index) => {
                   return (
                     <div
                       className="col-lg-3 col-12 col-md-6 col-sm-6 mb-5"
-                      key={item?.id}
+                      key={index}
                     >
                       <div className="product">
                         <div className="product-wrap">

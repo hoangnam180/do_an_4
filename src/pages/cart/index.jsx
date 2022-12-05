@@ -82,7 +82,7 @@ function Cart() {
                     </thead>
 
                     <tbody>
-                      {data?.map((item, index) => {
+                      {data?.data?.map((item, index) => {
                         return (
                           <tr className="cart_item" key={index}>
                             <td
