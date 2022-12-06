@@ -58,14 +58,17 @@ const cartSlice = createSlice({
     actionAddToCart: (state, action) => {
       const { data, step } = action.payload;
       const index =
-        state.data?.data &&
-        state.data?.data.findIndex((item) => item.id === data?.data?.id);
-      if (index !== -1 && index) {
-        state.data[index].quantity = state.data[index].quantity + step;
+        state.data &&
+        state.data.findIndex((item) => {
+          return item?.data?.id === data?.data?.id;
+        });
+      if (index !== -1) {
+        state.data[index].quantity =
+          Number(state.data[index].quantity) + Number(step);
       } else {
-        state.data.push({ ...data, quantity: step });
+        state.data.push({ ...data, quantity: Number(step) });
       }
-      state.step = state.step + step;
+      state.step = Number(state.step) + Number(step);
       localStorage.setItem(STEP_CART, state.step);
       localStorage.setItem(DATA_CART, JSON.stringify(state.data));
     },

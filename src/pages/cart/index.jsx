@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
 import { API_SERVER } from 'src/constants/configs';
+import { addToCartNumber, decreeCartNumber } from 'src/libs/apis/cart';
 import {
   actionDelete,
   actionQuantity,
@@ -12,27 +13,63 @@ import {
 function Cart() {
   const dispatch = useDispatch();
   const { data, totalCart } = useSelector((state) => state?.cartReducer);
-  console.log(data);
+  // console.log(data);
   const handleTotalPrice = () => {
     let total = 0;
     data.forEach((item) => {
-      total += item.price * item.quantity;
+      total += item?.data?.gia_ban * Number(item?.quantity || 0);
     });
     dispatch(actionTotalCart(total));
   };
 
-  const handleIncrease = (id, quantity) => {
+  const handleIncrease = async (id, quantity) => {
     if (id) {
-      dispatch(actionQuantity({ id, quantity: Number(quantity || 0) }));
+      const index = data.findIndex((item) => item?.data?.id === id);
+      if (index !== -1) {
+        const res = await addToCartNumber({
+          id_chi_tiet_san_pham: data?.[index]?.id_chi_tiet_san_pham,
+        });
+        if (res?.status === 'success') {
+          // dispatch(
+          //   actionQuantity({
+          //     id,
+          //     quantity: Number(quantity || 0) + 1,
+          //   })
+          // );
+        }
+      }
     }
   };
+
+  const handleDecrease = async (id, quantity) => {
+    console.log(id);
+    if (id) {
+      const index = data.findIndex((item) => item?.data?.id === id);
+      if (index !== -1) {
+        const res = await decreeCartNumber({
+          id_chi_tiet_san_pham: data?.[index]?.id_chi_tiet_san_pham,
+        });
+        if (res?.status === 'success') {
+          // dispatch(
+          //   actionQuantity({
+          //     id,
+          //     quantity: Number(quantity || 0) - 1,
+          //   })
+          // );
+        }
+      }
+    }
+  };
+
   const handleDelete = (id) => {
     dispatch(actionDelete({ id }));
   };
+
   useEffect(() => {
     handleTotalPrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, dispatch]);
+
   return (
     <div className="checkout-container">
       <section className="page-header">
@@ -101,7 +138,7 @@ function Cart() {
                             </td>
 
                             <td className="product-name" data-title="Product">
-                              <a href="#">{item?.data?.ten_san_pham}</a>
+                              <Link>{item?.data?.ten_san_pham}</Link>
                             </td>
 
                             <td className="product-price" data-title="Price">
@@ -122,15 +159,15 @@ function Cart() {
                                 <input
                                   type="number"
                                   id="qty"
-                                  className="input-text qty text"
-                                  defaultValue={item?.data?.quantity || 1}
+                                  className={`input-text qty qty-${index} text`}
+                                  min={1}
+                                  max={100}
+                                  defaultValue={item?.quantity || 1}
                                   title="Qty"
-                                  onChange={(e) => {
-                                    handleIncrease(
-                                      item?.data?.id,
-                                      e.target.value
-                                    );
-                                  }}
+                                  // onKeyPress={(e) => {
+                                  //   e.preventDefault();
+                                  // }}
+                                  onChange={(e) => {}}
                                 />
                               </div>
                             </td>
@@ -139,8 +176,10 @@ function Cart() {
                                 <span className="currencySymbol">
                                   <pre wp-pre-tag-3=""></pre>
                                 </span>
-                                {item?.data?.gia_ban *
-                                  (item?.data?.quantity || 1)}
+                                {Number(
+                                  Number(item?.data?.gia_ban) *
+                                    (Number(item?.quantity) || 1)
+                                ).toFixed(2)}
                               </span>
                             </td>
                             <td className="product-remove" data-title="Remove">

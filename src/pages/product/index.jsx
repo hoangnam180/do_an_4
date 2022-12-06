@@ -67,7 +67,16 @@ function SingleProduct() {
           title: 'Add to cart successfully',
         })
       );
-      dispatch(actionAddToCart({ data: product, step: dataSubmit.quantity }));
+      dispatch(
+        actionAddToCart({
+          data: {
+            ...product,
+            id_chi_tiet_san_pham: findId,
+            so_luong: dataSubmit.quantity,
+          },
+          step: dataSubmit.quantity,
+        })
+      );
     }
   };
 
@@ -100,8 +109,6 @@ function SingleProduct() {
       console.log(err);
     }
   };
-
-  const handleAddToCart = () => {};
 
   const handleListHeart = async (data) => {
     if (!isLogin) {

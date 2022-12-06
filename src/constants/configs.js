@@ -1,5 +1,5 @@
 export const API_SERVER =
-  'https://c39b-2402-800-629c-bdc4-7c3d-5c40-2032-7bfb.ap.ngrok.io';
+  'https://5220-2001-ee0-4b72-770-cd1f-db8e-105d-f1ef.ap.ngrok.io';
 export const ACCESS_TOKEN = '_ac_tk_topaz';
 export const USER_INFO = 'user_info';
 export const IS_AUTH = 'is_auth';
