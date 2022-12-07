@@ -8,7 +8,18 @@ export const addToCartApi = async (data) =>
     data,
     tokenClient: true,
   });
-
+export const addToCartNumber = async (data) =>
+  request({
+    url: `${prefix}/add-to-cart/add`,
+    method: 'POST',
+    data,
+  });
+export const decreeCartNumber = async (data) =>
+  request({
+    url: `${prefix}/add-to-cart/sub`,
+    method: 'POST',
+    data,
+  });
 export const getListProductCartApi = async (context, params) =>
   request({
     url: `${prefix}/cart/me`,

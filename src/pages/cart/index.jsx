@@ -1,7 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
+import { API_SERVER } from 'src/constants/configs';
+import { addToCartNumber, decreeCartNumber } from 'src/libs/apis/cart';
 import {
   actionDelete,
   actionQuantity,
@@ -11,27 +13,63 @@ import {
 function Cart() {
   const dispatch = useDispatch();
   const { data, totalCart } = useSelector((state) => state?.cartReducer);
-
+  // console.log(data);
   const handleTotalPrice = () => {
     let total = 0;
     data.forEach((item) => {
-      total += item.price * item.quantity;
+      total += item?.data?.gia_ban * Number(item?.quantity || 0);
     });
     dispatch(actionTotalCart(total));
   };
 
-  const handleIncrease = (id, quantity) => {
+  const handleIncrease = async (id, quantity) => {
     if (id) {
-      dispatch(actionQuantity({ id, quantity: Number(quantity || 0) }));
+      const index = data.findIndex((item) => item?.data?.id === id);
+      if (index !== -1) {
+        const res = await addToCartNumber({
+          id_chi_tiet_san_pham: data?.[index]?.id_chi_tiet_san_pham,
+        });
+        if (res?.status === 'success') {
+          // dispatch(
+          //   actionQuantity({
+          //     id,
+          //     quantity: Number(quantity || 0) + 1,
+          //   })
+          // );
+        }
+      }
     }
   };
+
+  const handleDecrease = async (id, quantity) => {
+    console.log(id);
+    if (id) {
+      const index = data.findIndex((item) => item?.data?.id === id);
+      if (index !== -1) {
+        const res = await decreeCartNumber({
+          id_chi_tiet_san_pham: data?.[index]?.id_chi_tiet_san_pham,
+        });
+        if (res?.status === 'success') {
+          // dispatch(
+          //   actionQuantity({
+          //     id,
+          //     quantity: Number(quantity || 0) - 1,
+          //   })
+          // );
+        }
+      }
+    }
+  };
+
   const handleDelete = (id) => {
     dispatch(actionDelete({ id }));
   };
+
   useEffect(() => {
     handleTotalPrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, dispatch]);
+
   return (
     <div className="checkout-container">
       <section className="page-header">
@@ -72,7 +110,7 @@ function Cart() {
                   >
                     <thead>
                       <tr>
-                        <th className="product-thumbnail"> </th>
+                        <th className="product-thumbnail">thumbnail</th>
                         <th className="product-name">Product</th>
                         <th className="product-price">Price</th>
                         <th className="product-quantity pl-4">Quantity</th>
@@ -82,7 +120,7 @@ function Cart() {
                     </thead>
 
                     <tbody>
-                      {data?.data?.map((item, index) => {
+                      {data?.map((item, index) => {
                         return (
                           <tr className="cart_item" key={index}>
                             <td
@@ -91,7 +129,8 @@ function Cart() {
                             >
                               <a href="/product-single">
                                 <img
-                                  src={item?.img}
+                                  style={{ width: '100%', height: '60px' }}
+                                  src={`${API_SERVER}${item?.hinh_anh?.[0]?.hinh_anh}`}
                                   className="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
                                   alt=""
                                 />
@@ -99,7 +138,7 @@ function Cart() {
                             </td>
 
                             <td className="product-name" data-title="Product">
-                              <a href="#">{item?.name}</a>
+                              <Link>{item?.data?.ten_san_pham}</Link>
                             </td>
 
                             <td className="product-price" data-title="Price">
@@ -107,7 +146,7 @@ function Cart() {
                                 <span className="currencySymbol">
                                   <pre wp-pre-tag-3=""></pre>
                                 </span>
-                                {item?.price}
+                                {item?.data?.gia_ban}
                               </span>
                             </td>
                             <td
@@ -120,12 +159,15 @@ function Cart() {
                                 <input
                                   type="number"
                                   id="qty"
-                                  className="input-text qty text"
-                                  defaultValue={item?.quantity}
+                                  className={`input-text qty qty-${index} text`}
+                                  min={1}
+                                  max={100}
+                                  defaultValue={item?.quantity || 1}
                                   title="Qty"
-                                  onChange={(e) => {
-                                    handleIncrease(item?.id, e.target.value);
-                                  }}
+                                  // onKeyPress={(e) => {
+                                  //   e.preventDefault();
+                                  // }}
+                                  onChange={(e) => {}}
                                 />
                               </div>
                             </td>
@@ -134,7 +176,10 @@ function Cart() {
                                 <span className="currencySymbol">
                                   <pre wp-pre-tag-3=""></pre>
                                 </span>
-                                {item?.price}
+                                {Number(
+                                  Number(item?.data?.gia_ban) *
+                                    (Number(item?.quantity) || 1)
+                                ).toFixed(2)}
                               </span>
                             </td>
                             <td className="product-remove" data-title="Remove">
@@ -144,7 +189,7 @@ function Cart() {
                                 data-product_id="30"
                                 data-product_sku=""
                                 onClick={() => {
-                                  handleDelete(item?.id);
+                                  handleDelete(item?.data?.id);
                                 }}
                               >
                                 ×

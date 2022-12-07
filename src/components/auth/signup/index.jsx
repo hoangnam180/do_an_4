@@ -21,7 +21,10 @@ function SignUp() {
       dispatch(actionLoading({ loading: false }));
       if (res?.status === 'success') {
         dispatch(
-          actionToast({ title: 'Register Successfully!', type: 'success' })
+          actionToast({
+            title: 'Please go to mail to authenticate !',
+            type: 'success',
+          })
         );
       } else {
         dispatch(actionToast({ title: 'Register Error!', type: 'error' }));
@@ -102,7 +105,7 @@ function SignUp() {
                         },
                       })}
                       id="confirm"
-                      type="text"
+                      type="password"
                       className="form-control"
                       placeholder="Confirm Password"
                     />
