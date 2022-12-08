@@ -20,7 +20,6 @@ import {
   RateProductAuth,
   RateProductPublic,
 } from 'src/libs/apis/detail';
-import { addToCartApi } from 'src/libs/apis/cart';
 import { actionAddToCart } from 'src/store/cartSlice';
 
 function SingleProduct() {
@@ -54,12 +53,8 @@ function SingleProduct() {
       alert('Please choose size or color');
       return;
     }
-    const resultData = {
-      so_luong: dataSubmit.quantity,
-      id_chi_tiet_san_pham: findId,
-    };
-    const res = await addToCartApi(resultData);
-    if (res?.status === 'success') {
+    const res = 'success';
+    if (res === 'success') {
       setQuantity(res?.data);
       dispatch(
         actionToast({
@@ -73,6 +68,8 @@ function SingleProduct() {
             ...product,
             id_chi_tiet_san_pham: findId,
             so_luong: dataSubmit.quantity,
+            sizeSubmit: dataSubmit.size,
+            color: color,
           },
           step: dataSubmit.quantity,
         })

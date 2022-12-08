@@ -34,23 +34,30 @@ const cartSlice = createSlice({
   initialState: initialState,
 
   reducers: {
-    actionQuantity(state, action) {
+    actionUpdateQuantity(state, action) {
       const { id, quantity } = action.payload;
-      const index = state.data.findIndex((item) => item.id === id);
+      const index = state.data.findIndex(
+        (item) => item.id_chi_tiet_san_pham === id
+      );
       if (index !== -1) {
+        state.step =
+          state.step - Number(state.data[index].quantity) + Number(quantity);
         state.data[index].quantity = quantity;
       }
-      localStorage.setItem(DATA_CART, state.data);
+      localStorage.setItem(DATA_CART, JSON.stringify(state.data));
+      localStorage.setItem(STEP_CART, state.step);
     },
     actionDelete(state, action) {
       const { id } = action.payload;
-      const index = state.data.findIndex((item) => item.id === id);
+      const index = state.data.findIndex(
+        (item) => item.id_chi_tiet_san_pham === id
+      );
       if (index !== -1) {
         state.data.splice(index, 1);
+        state.step = state.step - Number(state.data[index].quantity);
       }
-      state.step = state.step - 1;
       localStorage.setItem(STEP_CART, state.step);
-      localStorage.setItem(DATA_CART, state.data);
+      localStorage.setItem(DATA_CART, JSON.stringify(state.data));
     },
     actionTotalCart(state, action) {
       state.totalCart = action.payload;
@@ -62,7 +69,11 @@ const cartSlice = createSlice({
         state.data.findIndex((item) => {
           return item?.data?.id === data?.data?.id;
         });
-      if (index !== -1) {
+      if (
+        index !== -1 &&
+        state.data[index].color === data.color &&
+        state.data[index].sizeSubmit === data.sizeSubmit
+      ) {
         state.data[index].quantity =
           Number(state.data[index].quantity) + Number(step);
       } else {
@@ -92,7 +103,7 @@ const { reducer: cartReducer } = cartSlice;
 export const {
   actionAddToCart,
   actionDelete,
-  actionQuantity,
+  actionUpdateQuantity,
   actionTotalCart,
 } = cartSlice.actions;
 export default cartReducer;

@@ -3,17 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
 import { API_SERVER } from 'src/constants/configs';
-import { addToCartNumber, decreeCartNumber } from 'src/libs/apis/cart';
 import {
   actionDelete,
-  actionQuantity,
   actionTotalCart,
+  actionUpdateQuantity,
 } from 'src/store/cartSlice';
 
 function Cart() {
   const dispatch = useDispatch();
   const { data, totalCart } = useSelector((state) => state?.cartReducer);
-  // console.log(data);
+  console.log(data);
   const handleTotalPrice = () => {
     let total = 0;
     data.forEach((item) => {
@@ -21,44 +20,21 @@ function Cart() {
     });
     dispatch(actionTotalCart(total));
   };
-
-  const handleIncrease = async (id, quantity) => {
-    if (id) {
-      const index = data.findIndex((item) => item?.data?.id === id);
-      if (index !== -1) {
-        const res = await addToCartNumber({
-          id_chi_tiet_san_pham: data?.[index]?.id_chi_tiet_san_pham,
-        });
-        if (res?.status === 'success') {
-          // dispatch(
-          //   actionQuantity({
-          //     id,
-          //     quantity: Number(quantity || 0) + 1,
-          //   })
-          // );
-        }
-      }
-    }
+  const renderColor = (data) => {
+    const result = data?.mau?.find((itemChild) => {
+      return itemChild?.id === Number(data?.color);
+    });
+    return result;
   };
-
-  const handleDecrease = async (id, quantity) => {
-    console.log(id);
-    if (id) {
-      const index = data.findIndex((item) => item?.data?.id === id);
-      if (index !== -1) {
-        const res = await decreeCartNumber({
-          id_chi_tiet_san_pham: data?.[index]?.id_chi_tiet_san_pham,
-        });
-        if (res?.status === 'success') {
-          // dispatch(
-          //   actionQuantity({
-          //     id,
-          //     quantity: Number(quantity || 0) - 1,
-          //   })
-          // );
-        }
-      }
-    }
+  const renderSize = (data) => {
+    const result = data?.size?.find((itemChild) => {
+      return itemChild?.id === Number(data?.sizeSubmit);
+    });
+    return result;
+  };
+  renderColor();
+  const handleUpdateQuantity = async (id, quantity) => {
+    dispatch(actionUpdateQuantity({ id, quantity }));
   };
 
   const handleDelete = (id) => {
@@ -112,6 +88,7 @@ function Cart() {
                       <tr>
                         <th className="product-thumbnail">thumbnail</th>
                         <th className="product-name">Product</th>
+                        <th className="product-property">Property</th>
                         <th className="product-price">Price</th>
                         <th className="product-quantity pl-4">Quantity</th>
                         <th className="product-subtotal">Total</th>
@@ -141,6 +118,34 @@ function Cart() {
                               <Link>{item?.data?.ten_san_pham}</Link>
                             </td>
 
+                            <td
+                              className="product-property"
+                              data-title="Product"
+                            >
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  gap: '10px',
+                                  alignItems: 'flex-end',
+                                }}
+                              >
+                                <p
+                                  style={{
+                                    backgroundColor: `${
+                                      renderColor(item)?.hex
+                                    }`,
+                                    width: '30px',
+                                    height: '30px',
+                                    border: '1px solid #333',
+                                    marginTop: 'auto',
+                                    position: 'relative',
+                                    top: '16px',
+                                  }}
+                                ></p>
+                                <span>{renderSize(item)?.size}</span>
+                              </div>
+                            </td>
+
                             <td className="product-price" data-title="Price">
                               <span className="amount">
                                 <span className="currencySymbol">
@@ -155,7 +160,6 @@ function Cart() {
                             >
                               <div className="quantity d-flex align-items-center">
                                 <label className="sr-only">Quantity</label>
-
                                 <input
                                   type="number"
                                   id="qty"
@@ -164,10 +168,12 @@ function Cart() {
                                   max={100}
                                   defaultValue={item?.quantity || 1}
                                   title="Qty"
-                                  // onKeyPress={(e) => {
-                                  //   e.preventDefault();
-                                  // }}
-                                  onChange={(e) => {}}
+                                  onChange={(e) => {
+                                    handleUpdateQuantity(
+                                      item?.id_chi_tiet_san_pham,
+                                      Number(e.target.value)
+                                    );
+                                  }}
                                 />
                               </div>
                             </td>
@@ -189,7 +195,7 @@ function Cart() {
                                 data-product_id="30"
                                 data-product_sku=""
                                 onClick={() => {
-                                  handleDelete(item?.data?.id);
+                                  handleDelete(item?.id_chi_tiet_san_pham);
                                 }}
                               >
                                 ×
