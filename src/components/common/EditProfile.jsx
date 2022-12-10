@@ -18,7 +18,6 @@ const EditProfile = () => {
   const [wards, setWards] = useState([]);
   const [location, setLocation] = useState({});
   const { userInfo } = useSelector((state) => state?.authReducer);
-  const dataUser = useSelector((state) => state?.authReducer);
   const dispatch = useDispatch();
   const {
     register,
@@ -109,9 +108,9 @@ const EditProfile = () => {
                               id="full_name"
                               placeholder="Full Name"
                               {...register('full_name', {
-                                required: userInfo?.ho_va_ten ? false : true,
+                                required: userInfo?.fullname ? false : true,
                               })}
-                              defaultValue={userInfo?.ho_va_ten || ''}
+                              defaultValue={userInfo?.fullname || ''}
                             />
                           </div>
                         </div>

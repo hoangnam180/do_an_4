@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
-import { checkoutPublic } from 'src/libs/apis/checkout';
+import { checkoutPrivate, checkoutPublic } from 'src/libs/apis/checkout';
 import {
   getDistrictDetail,
   getDistricts,
@@ -14,6 +14,8 @@ import {
 } from 'src/libs/apis/location';
 import { actionToast } from 'src/store/authSlice';
 import { actionResetCart } from 'src/store/cartSlice';
+import { checkLogin } from 'src/utils/checkLogin';
+import webStorage from 'src/utils/webStorage';
 
 function Checkout() {
   const { data, totalCart } = useSelector((state) => state.cartReducer);
@@ -21,7 +23,10 @@ function Checkout() {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [location, setLocation] = useState({});
+  const { userInfo } = useSelector((state) => state?.authReducer);
   const dispatch = useDispatch();
+  const dataUser = useSelector((state) => state?.authReducer);
+  const isLogin = checkLogin(dataUser);
 
   const renderColor = (data) => {
     const result = data?.mau?.find((itemChild) => {
@@ -60,16 +65,34 @@ function Checkout() {
       tong_tien: totalCart,
       thuc_tra: totalCart,
       tien_giam: 0,
-      dia_chi: `${location.province} - ${location.district} - ${location.ward} - ${data?.apartment}`,
+      dia_chi: `${location.province || ''} - ${location.district || ''} - ${
+        location.war || ''
+      } - ${data?.apartment || ''}`,
       nguoi_nhan: data?.full_name,
       sdt: data?.phone,
       ghi_chu: data?.msg,
       don_hang: convertDataDetail(),
     };
-    console.log(dataResult);
+    if (isLogin) {
+      console.log('login');
+      try {
+        const res = await checkoutPrivate(dataResult);
+        if (res?.status === 'success') {
+          dispatch(actionResetCart());
+          dispatch(
+            actionToast({ title: 'Checkout Successfully', type: 'success' })
+          );
+          reset();
+          return;
+        }
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+    }
     const res = await checkoutPublic(dataResult);
-    console.log(res);
     if (res?.status === 'success') {
+      webStorage.set('email', res?.email);
       dispatch(actionResetCart());
       dispatch(
         actionToast({ title: 'Checkout Successfully', type: 'success' })
@@ -182,7 +205,10 @@ function Checkout() {
                             className="form-control"
                             id="full_name"
                             placeholder="Full Name"
-                            {...register('full_name', { required: true })}
+                            {...register('full_name', {
+                              required: userInfo?.fullname ? false : true,
+                            })}
+                            defaultValue={userInfo?.fullname || ''}
                           />
                         </div>
                       </div>
@@ -201,7 +227,7 @@ function Checkout() {
                             id="province"
                             className="form-control"
                             {...register('province', {
-                              required: true,
+                              required: userInfo?.dia_chi ? false : true,
                               onChange: (e) =>
                                 handleGetDistricts(e.target.value),
                             })}
@@ -230,7 +256,7 @@ function Checkout() {
                             id="districts"
                             className="form-control"
                             {...register('districts', {
-                              required: true,
+                              required: userInfo?.dia_chi ? false : true,
                               onChange: (e) => handleGetWards(e.target.value),
                             })}
                           >
@@ -259,7 +285,7 @@ function Checkout() {
                             id="wards"
                             className="form-control"
                             {...register('wards', {
-                              required: true,
+                              required: userInfo?.dia_chi ? false : true,
                               onChange: (e) =>
                                 handleGetValueResult(e.target.value),
                             })}
@@ -291,7 +317,10 @@ function Checkout() {
                             className="form-control"
                             id="apartment"
                             placeholder="Apartment"
-                            {...register('apartment', { required: true })}
+                            {...register('apartment', {
+                              required: userInfo?.dia_chi ? false : true,
+                            })}
+                            defaultValue={userInfo?.dia_chi || ''}
                           />
                         </div>
                       </div>
@@ -312,7 +341,10 @@ function Checkout() {
                             className="form-control"
                             id="phone"
                             placeholder="Your phone number"
-                            {...register('phone', { required: true })}
+                            {...register('phone', {
+                              required: userInfo?.sdt ? false : true,
+                            })}
+                            defaultValue={userInfo?.sdt || ''}
                           />
                         </div>
                       </div>
@@ -333,9 +365,10 @@ function Checkout() {
                             id="email"
                             placeholder="Your email address"
                             {...register('email', {
-                              required: true,
+                              required: userInfo?.email ? false : true,
                               pattern: /^\S+@\S+$/i,
                             })}
+                            defaultValue={userInfo?.email || ''}
                           />
                         </div>
                       </div>

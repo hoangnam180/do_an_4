@@ -21,7 +21,7 @@ const SESSION_EXPIRED_STATUS_CODE = 401;
 
 const baseApiClient = axios.create(baseApiConfig);
 
-const request = ({ context, tokenClient, ...options }) => {
+const request = ({ context, tokenClient, emailClient, ...options }) => {
   // Serverside
   if (context) {
     const token = getCookiesByKey(context, ACCESS_TOKEN);
@@ -35,7 +35,10 @@ const request = ({ context, tokenClient, ...options }) => {
     const token = webStorage.getToken();
     baseApiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
-
+  if (emailClient) {
+    const email = webStorage.get('email');
+    baseApiClient.defaults.headers.common.email = `${email}`;
+  }
   const onSuccess = (response) => {
     return response?.data;
   };

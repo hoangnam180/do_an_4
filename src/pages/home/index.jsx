@@ -176,7 +176,7 @@ function Home() {
               <div className="row justify-content-center">
                 <div className="col-lg-8">
                   <div className="title text-center">
-                    <h2>New arrivals</h2>
+                    <h2>Products</h2>
                     <p>The best Online sales to shop these weekend</p>
                   </div>
                 </div>

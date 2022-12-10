@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
 import { API_SERVER } from 'src/constants/configs';
 import {
+  historyCheckout,
+  historyCheckoutPrivate,
+} from 'src/libs/apis/checkout';
+import {
   actionDelete,
   actionTotalCart,
   actionUpdateQuantity,
@@ -43,6 +47,11 @@ function Cart() {
   };
 
   useEffect(() => {
+    const fetchData = async () => {
+      const res = await historyCheckout();
+      console.log(res);
+    };
+    fetchData();
     handleTotalPrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, dispatch]);

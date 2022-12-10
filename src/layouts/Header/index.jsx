@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionLogout, actionToast } from 'src/store/authSlice';
 import routes from 'src/configs/router';
 import { useEffect, useState } from 'react';
+import { actionResetCart } from 'src/store/cartSlice';
 function Header() {
   const [width, setWidth] = useState(window.innerWidth);
   const data = useSelector((state) => state?.authReducer);
@@ -14,6 +15,7 @@ function Header() {
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(actionLogout());
+    dispatch(actionResetCart());
     dispatch(actionToast({ title: 'Logout Successfully!', type: 'success' }));
   };
   useEffect(() => {
