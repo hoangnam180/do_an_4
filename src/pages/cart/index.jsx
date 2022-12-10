@@ -12,7 +12,6 @@ import {
 function Cart() {
   const dispatch = useDispatch();
   const { data, totalCart } = useSelector((state) => state?.cartReducer);
-  console.log(data);
   const handleTotalPrice = () => {
     let total = 0;
     data.forEach((item) => {
@@ -34,7 +33,9 @@ function Cart() {
   };
   renderColor();
   const handleUpdateQuantity = async (id, quantity) => {
-    dispatch(actionUpdateQuantity({ id, quantity }));
+    if (id !== 'undefined' && quantity) {
+      dispatch(actionUpdateQuantity({ id, quantity }));
+    }
   };
 
   const handleDelete = (id) => {

@@ -12,6 +12,7 @@ import Login from 'src/components/auth/login';
 import SignUp from 'src/components/auth/signup';
 import ForgotPassword from 'src/components/auth/forgotpass/ForgotPass';
 import WithList from 'src/pages/withlist';
+import EditProfile from 'src/components/common/EditProfile';
 // Public routes
 const publicRoutes = [
   {
@@ -78,6 +79,10 @@ const privateRoutes = [
   {
     path: routes.withList,
     component: WithList,
+  },
+  {
+    path: routes.editProfile,
+    component: EditProfile,
   },
 ];
 

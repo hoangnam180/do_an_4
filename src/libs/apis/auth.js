@@ -16,7 +16,7 @@ export const signUpApi = async (data) =>
 
 export const updateProfileApi = async (data) =>
   request({
-    url: '/core/user/me',
+    url: `${prefix}/auth/update-profile`,
     method: 'PUT',
     data,
     tokenClient: true,
@@ -24,7 +24,7 @@ export const updateProfileApi = async (data) =>
 
 export const getMeApi = async () =>
   request({
-    url: '/core/user/me',
+    url: `${prefix}/auth/me`,
     method: 'GET',
     tokenClient: true,
   });

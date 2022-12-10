@@ -1,7 +1,11 @@
 import { useForm } from 'react-hook-form';
 import ReactStars from 'react-rating-stars-component';
+import { useSelector } from 'react-redux';
+import { checkLogin } from 'src/utils/checkLogin';
 
 const FormRate = ({ onSubmitRate, setStar }) => {
+  const dataUser = useSelector((state) => state?.authReducer);
+  const isLogin = checkLogin(dataUser);
   const {
     register,
     formState: { errors },
@@ -36,12 +40,14 @@ const FormRate = ({ onSubmitRate, setStar }) => {
       <div className="form-group">
         <input
           {...register('email', {
-            required: true,
+            required: isLogin ? false : true,
             pattern: /^\S+@\S+$/i,
           })}
           type="email"
           name="email"
+          defaultValue={isLogin ? dataUser?.userInfo?.email : ''}
           className="form-control"
+          disabled={isLogin}
           placeholder="Your Email"
         />
       </div>

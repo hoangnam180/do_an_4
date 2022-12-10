@@ -55,7 +55,6 @@ function SingleProduct() {
     }
     const res = 'success';
     if (res === 'success') {
-      setQuantity(res?.data);
       dispatch(
         actionToast({
           type: 'success',

@@ -16,7 +16,7 @@ export const RateProductPublic = async (id, data) =>
 export const ListRate = async (id, data) =>
   request({
     url: `${prefix}/detail/danh-gia/data/${id}`,
-    method: 'GEt',
+    method: 'GET',
     data,
   });
 export const RateProductAuth = async (id, data) =>

@@ -12,6 +12,7 @@ const routes = {
   profile: '/profile',
   aboutUs: '/about-us',
   withList: '/with-list',
+  editProfile: '/edit-profile',
 };
 
 export default routes;

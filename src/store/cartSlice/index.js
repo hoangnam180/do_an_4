@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { DATA_CART, STEP_CART } from 'src/constants/configs';
+import { DATA_CART, STEP_CART, TOTAL_CART } from 'src/constants/configs';
 
 import { getListProductCarClientApi } from 'src/libs/apis/cart';
 
@@ -7,11 +7,11 @@ const { createSlice } = require('@reduxjs/toolkit');
 
 const stepCart = JSON.parse(localStorage.getItem(STEP_CART));
 const dataCart = JSON.parse(localStorage.getItem(DATA_CART));
-
+const totalCart = JSON.parse(localStorage.getItem(TOTAL_CART));
 const initialState = {
   step: stepCart || 0,
   data: dataCart ? dataCart : [],
-  totalCart: 0,
+  totalCart: totalCart || 0,
   totalPrice: 0,
   pending: false,
   error: {},
@@ -53,14 +53,15 @@ const cartSlice = createSlice({
         (item) => item.id_chi_tiet_san_pham === id
       );
       if (index !== -1) {
-        state.data.splice(index, 1);
         state.step = state.step - Number(state.data[index].quantity);
+        state.data.splice(index, 1);
       }
-      localStorage.setItem(STEP_CART, state.step);
       localStorage.setItem(DATA_CART, JSON.stringify(state.data));
+      localStorage.setItem(STEP_CART, state.step);
     },
     actionTotalCart(state, action) {
       state.totalCart = action.payload;
+      localStorage.setItem(TOTAL_CART, state.totalCart);
     },
     actionAddToCart: (state, action) => {
       const { data, step } = action.payload;
@@ -80,6 +81,12 @@ const cartSlice = createSlice({
         state.data.push({ ...data, quantity: Number(step) });
       }
       state.step = Number(state.step) + Number(step);
+      localStorage.setItem(STEP_CART, state.step);
+      localStorage.setItem(DATA_CART, JSON.stringify(state.data));
+    },
+    actionResetCart: (state) => {
+      state.step = 0;
+      state.data = [];
       localStorage.setItem(STEP_CART, state.step);
       localStorage.setItem(DATA_CART, JSON.stringify(state.data));
     },
@@ -105,5 +112,6 @@ export const {
   actionDelete,
   actionUpdateQuantity,
   actionTotalCart,
+  actionResetCart,
 } = cartSlice.actions;
 export default cartReducer;

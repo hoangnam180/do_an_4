@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
+import { checkoutPublic } from 'src/libs/apis/checkout';
 import {
   getDistrictDetail,
   getDistricts,
@@ -10,6 +12,8 @@ import {
   getWardDetail,
   getWards,
 } from 'src/libs/apis/location';
+import { actionToast } from 'src/store/authSlice';
+import { actionResetCart } from 'src/store/cartSlice';
 
 function Checkout() {
   const { data, totalCart } = useSelector((state) => state.cartReducer);
@@ -17,6 +21,63 @@ function Checkout() {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [location, setLocation] = useState({});
+  const dispatch = useDispatch();
+
+  const renderColor = (data) => {
+    const result = data?.mau?.find((itemChild) => {
+      return itemChild?.id === Number(data?.color);
+    });
+    return result;
+  };
+
+  const renderSize = (data) => {
+    const result = data?.size?.find((itemChild) => {
+      return itemChild?.id === Number(data?.sizeSubmit);
+    });
+    return result;
+  };
+
+  const convertDataDetail = () => {
+    const result = data?.map((item) => {
+      return {
+        don_gia: item?.data?.gia_ban,
+        so_luong: item?.quantity,
+        id_chi_tiet_san_pham: item?.id_chi_tiet_san_pham,
+      };
+    });
+    return result;
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+  const onSubmit = async (data) => {
+    const dataResult = {
+      email: data.email,
+      tong_tien: totalCart,
+      thuc_tra: totalCart,
+      tien_giam: 0,
+      dia_chi: `${location.province} - ${location.district} - ${location.ward} - ${data?.apartment}`,
+      nguoi_nhan: data?.full_name,
+      sdt: data?.phone,
+      ghi_chu: data?.msg,
+      don_hang: convertDataDetail(),
+    };
+    console.log(dataResult);
+    const res = await checkoutPublic(dataResult);
+    console.log(res);
+    if (res?.status === 'success') {
+      dispatch(actionResetCart());
+      dispatch(
+        actionToast({ title: 'Checkout Successfully', type: 'success' })
+      );
+      reset();
+    }
+  };
+
   const handleGetDistricts = async (e) => {
     const provinceId = e;
     const res = await getProvinceDetail(provinceId);
@@ -93,58 +154,57 @@ function Checkout() {
       </section>
       <div className="page-wrapper">
         <div className="checkout shopping">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-8 pr-5">
-                <div
-                  className="coupon-notice "
-                  data-toggle="modal"
-                  data-target="#coupon-modal"
-                >
-                  <div className="bg-light p-3">
-                    Have a coupon?{' '}
-                    <a href="/checkout" className="showcoupon">
-                      Click here to enter your code
-                    </a>
+          <form className="checkout-form" onSubmit={handleSubmit(onSubmit)}>
+            <div className="container">
+              <div className="row">
+                <div className="col-lg-8 pr-5">
+                  <div
+                    className="coupon-notice "
+                    data-toggle="modal"
+                    data-target="#coupon-modal"
+                  >
+                    <div className="bg-light p-3">
+                      Have a coupon?{' '}
+                      <a href="/checkout" className="showcoupon">
+                        Click here to enter your code
+                      </a>
+                    </div>
                   </div>
-                </div>
 
-                <div className="billing-details mt-5">
-                  <h4 className="mb-4">Billing Details</h4>
-                  <form className="checkout-form">
+                  <div className="billing-details mt-5">
+                    <h4 className="mb-4">Billing Details</h4>
                     <div className="row">
-                      <div className="col-lg-6">
+                      <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="first_name">First Name</label>
+                          <label htmlFor="full_name">First Name</label>
                           <input
                             type="text"
                             className="form-control"
-                            id="first_name"
-                            placeholder=""
+                            id="full_name"
+                            placeholder="Full Name"
+                            {...register('full_name', { required: true })}
                           />
                         </div>
                       </div>
-                      <div className="col-lg-6">
-                        <div className="form-group mb-4">
-                          <label htmlFor="last_name">Last Name</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="last_name"
-                            placeholder=""
-                          />
-                        </div>
-                      </div>
-
+                      {errors.full_name && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Please type full name
+                        </p>
+                      )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="province">Province</label>
                           <select
                             id="province"
                             className="form-control"
-                            onChange={(e) => {
-                              handleGetDistricts(e.target.value);
-                            }}
+                            {...register('province', {
+                              required: true,
+                              onChange: (e) =>
+                                handleGetDistricts(e.target.value),
+                            })}
                           >
                             <option value="">Select an Option</option>
                             {provinces?.map((province, index) => (
@@ -155,16 +215,24 @@ function Checkout() {
                           </select>
                         </div>
                       </div>
-
+                      {errors.province && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Please choose province
+                        </p>
+                      )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="districts">Districts</label>
                           <select
                             id="districts"
                             className="form-control"
-                            onChange={(e) => {
-                              handleGetWards(e.target.value);
-                            }}
+                            {...register('districts', {
+                              required: true,
+                              onChange: (e) => handleGetWards(e.target.value),
+                            })}
                           >
                             <option value="">Select an Option</option>
                             {districts?.map((province, index) => (
@@ -175,6 +243,14 @@ function Checkout() {
                           </select>
                         </div>
                       </div>
+                      {errors.districts && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Please choose districts
+                        </p>
+                      )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="wards">Wards</label>
@@ -182,9 +258,11 @@ function Checkout() {
                           <select
                             id="wards"
                             className="form-control"
-                            onChange={(e) => {
-                              handleGetValueResult(e.target.value);
-                            }}
+                            {...register('wards', {
+                              required: true,
+                              onChange: (e) =>
+                                handleGetValueResult(e.target.value),
+                            })}
                           >
                             <option value="">Select an Option</option>
                             {wards?.map((province, index) => (
@@ -195,6 +273,14 @@ function Checkout() {
                           </select>
                         </div>
                       </div>
+                      {errors.wards && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Please choose wards
+                        </p>
+                      )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="first_name">
@@ -205,9 +291,18 @@ function Checkout() {
                             className="form-control"
                             id="apartment"
                             placeholder="Apartment"
+                            {...register('apartment', { required: true })}
                           />
                         </div>
                       </div>
+                      {errors.apartment && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Please type apartment
+                        </p>
+                      )}
 
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
@@ -216,10 +311,19 @@ function Checkout() {
                             type="text"
                             className="form-control"
                             id="phone"
-                            placeholder=""
+                            placeholder="Your phone number"
+                            {...register('phone', { required: true })}
                           />
                         </div>
                       </div>
+                      {errors.phone && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Please type apartment
+                        </p>
+                      )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="first_name">Email address </label>
@@ -227,10 +331,22 @@ function Checkout() {
                             type="text"
                             className="form-control"
                             id="email"
-                            placeholder=""
+                            placeholder="Your email address"
+                            {...register('email', {
+                              required: true,
+                              pattern: /^\S+@\S+$/i,
+                            })}
                           />
                         </div>
                       </div>
+                      {errors.email && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Please type email
+                        </p>
+                      )}
 
                       <div className="col-lg-12">
                         <div className="form-check mb-4 pl-0">
@@ -256,42 +372,54 @@ function Checkout() {
                             cols="30"
                             rows="5"
                             placeholder="Notes about order e:g: want to say something"
+                            {...register('msg')}
                           ></textarea>
                         </div>
                       </div>
                     </div>
-                  </form>
+                  </div>
                 </div>
-              </div>
+                <div className="col-md-6 col-lg-4">
+                  <div className="product-checkout-details mt-5 mt-lg-0">
+                    <h4 className="mb-4 border-bottom pb-4">Order Summary</h4>
 
-              <div className="col-md-6 col-lg-4">
-                <div className="product-checkout-details mt-5 mt-lg-0">
-                  <h4 className="mb-4 border-bottom pb-4">Order Summary</h4>
+                    {data?.map((item, index) => {
+                      return (
+                        <div key={index} className="media product-card">
+                          <p>{item?.data?.ten_san_pham}</p>
 
-                  {data?.map((item) => (
-                    <div className="media product-card" key={item?.id}>
-                      <p>{item?.name}</p>
-                      <div className="media-body text-right">
-                        <p className="h5">
-                          {item?.quantity} x ${item?.price}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                          <div className="media-body text-right">
+                            <p className="h5">
+                              {item?.quantity} x ${item?.data?.gia_ban}
+                            </p>
+                          </div>
+                          <div
+                            style={{
+                              display: 'flex',
+                              gap: '10px',
+                              alignItems: 'stretch',
+                              marginLeft: '10px',
+                            }}
+                          >
+                            <span>{renderColor(item)?.ten_mau}</span>
+                            <span>{renderSize(item)?.size}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
 
-                  <ul className="summary-prices list-unstyled mb-4">
-                    <li className="d-flex justify-content-between">
-                      <span>Shipping:</span>
-                      <span className="h5">Free</span>
-                    </li>
-                    <li className="d-flex justify-content-between">
-                      <span>Total</span>
-                      <span className="h5">${totalCart || 0}</span>
-                    </li>
-                  </ul>
-
-                  <form action="#">
-                    <div className="form-check mb-3">
+                    <ul className="summary-prices list-unstyled mb-4">
+                      <li className="d-flex justify-content-between">
+                        <span>Shipping:</span>
+                        <span className="h5">Free</span>
+                      </li>
+                      <li className="d-flex justify-content-between">
+                        <span>Total</span>
+                        <span className="h5">${totalCart || 0}</span>
+                      </li>
+                    </ul>
+                    <>
+                      {/* <div className="form-check mb-3">
                       <input
                         className="form-check-input"
                         type="radio"
@@ -328,37 +456,47 @@ function Checkout() {
                       >
                         Check payments
                       </label>
-                    </div>
+                    </div> */}
 
-                    <div className="form-check mb-3">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="exampleCheck3"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="exampleCheck3"
-                      >
-                        I have read and agree to the website terms and
-                        conditions *
-                      </label>
-                    </div>
-                  </form>
+                      <div className="form-check mb-3">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id="check"
+                          {...register('check', { required: true })}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="exampleCheck3"
+                        >
+                          I have read and agree to the website terms and
+                          conditions *
+                        </label>
+                      </div>
+                      {errors.check && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Please check
+                        </p>
+                      )}
+                    </>
 
-                  <div className="info mt-4 border-top pt-4 mb-5">
-                    Your personal data will be used to process your order,
-                    support your experience throughout this website, and for
-                    other purposes described in our{' '}
-                    <a href="#">privacy policy</a>.
+                    <div className="info mt-4 border-top pt-4 mb-5">
+                      Your personal data will be used to process your order,
+                      support your experience throughout this website, and for
+                      other purposes described in our{' '}
+                      <Link>privacy policy</Link>.
+                    </div>
+                    <button type="submit" className="btn btn-main btn-small">
+                      Place Order
+                    </button>
                   </div>
-                  <a href="/checkout" className="btn btn-main btn-small">
-                    Place Order
-                  </a>
                 </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
 
@@ -366,22 +504,20 @@ function Checkout() {
         <div className="modal-dialog" role="document">
           <div className="modal-content py-5">
             <div className="modal-body">
-              <form>
-                <div className="form-group">
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="Enter Coupon Code"
-                  />
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-main btn-small"
-                  data-dismiss="modal"
-                >
-                  Apply Coupon
-                </button>
-              </form>
+              <div className="form-group">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Enter Coupon Code"
+                />
+              </div>
+              <button
+                type="button"
+                className="btn btn-main btn-small"
+                data-dismiss="modal"
+              >
+                Apply Coupon
+              </button>
             </div>
           </div>
         </div>

@@ -39,7 +39,6 @@ function Home() {
     try {
       const body = { id_san_pham: data.id };
       const res = await addWishListApi(body);
-      console.log(res);
       if (res?.status === 'success') {
         dispatch(
           actionToast({

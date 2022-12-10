@@ -35,11 +35,17 @@ const authSlice = createSlice({
       webStorage.set(USER_INFO, action.payload?.userInfo);
       webStorage.setToken(action.payload?.token);
     },
+    actionUpdateMe: (state, action) => {
+      state.userInfo = action.payload?.userInfo;
+      webStorage.set(USER_INFO, action.payload?.userInfo);
+    },
 
     actionLogout: (state) => {
       state.isAuth = false;
       state.userInfo = {};
       webStorage.removeAll();
+      // remove all local storage
+      localStorage.clear();
       <Navigate to="/login" replace={true} />;
     },
     actionLoading: (state, action) => {
@@ -66,5 +72,6 @@ export const {
   actionToast,
   actionLoading,
   actionRedirect,
+  actionUpdateMe,
 } = authSlice.actions;
 export default authReducer;

@@ -18,7 +18,7 @@ const WithList = () => {
       setLoadingDelete(true);
       const res = await deleteWithList(id);
       if (res.status === 'success') {
-        const newWishlist = wishlist.filter((item) => item.id !== id);
+        const newWishlist = wishlist.filter((item) => item.id_yeu_thich !== id);
         setWishlist(newWishlist);
         dispatch(
           actionToast({
@@ -108,7 +108,7 @@ const WithList = () => {
                             className="remove"
                             aria-label="Remove this item"
                             onClick={() => {
-                              handleDeleteWithList(item?.id);
+                              handleDeleteWithList(item?.id_yeu_thich);
                             }}
                           >
                             {loadingDelete ? (
