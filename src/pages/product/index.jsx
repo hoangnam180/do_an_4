@@ -32,7 +32,6 @@ function SingleProduct() {
   const [indexActive, setIndexActive] = useState(null);
   const [size, setSize] = useState();
   const [color, setColor] = useState();
-
   const dispatch = useDispatch();
   const dataUser = useSelector((state) => state?.authReducer);
   const isLogin = checkLogin(dataUser);
@@ -179,7 +178,7 @@ function SingleProduct() {
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb bg-transparent justify-content-center">
                         <li className="breadcrumb-item">
-                          <Link to="/">Home</Link>
+                          <Link to={routes.home}>Home</Link>
                         </li>
                         <li
                           className="breadcrumb-item active"
@@ -268,7 +267,12 @@ function SingleProduct() {
                           <hr />
 
                           <h3 className="product-price">
-                            ${product?.data?.gia_ban || ''} <del>$119.90</del>
+                            $
+                            {Number(
+                              product?.data?.gia_ban *
+                                ((100 - product?.data?.khuyen_mai) / 100)
+                            )?.toFixed(2)}
+                            <del>${product?.data?.gia_ban || ''} </del>
                           </h3>
 
                           <p className="product-description my-4 ">
@@ -278,6 +282,7 @@ function SingleProduct() {
                           <div className="quantity d-flex align-items-center">
                             <input
                               defaultValue="1"
+                              min={1}
                               {...register('quantity', {
                                 required: true,
                                 min: 1,

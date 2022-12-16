@@ -13,6 +13,7 @@ import SignUp from 'src/components/Auth/signUp';
 import WithList from 'src/pages/withList';
 import EditProfile from 'src/components/common/EditProfile';
 import ForgotPassword from 'src/components/Auth/forgotpass/ForgotPass';
+import History from 'src/pages/history';
 // Public routes
 const publicRoutes = [
   {
@@ -61,6 +62,10 @@ const publicRoutes = [
   {
     path: routes.search,
     component: Search,
+  },
+  {
+    path: routes.history,
+    component: History,
   },
 
   { path: '*', component: Page404 },

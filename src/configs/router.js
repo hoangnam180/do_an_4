@@ -13,6 +13,7 @@ const routes = {
   aboutUs: '/about-us',
   withList: '/with-list',
   editProfile: '/edit-profile',
+  history: '/history',
 };
 
 export default routes;

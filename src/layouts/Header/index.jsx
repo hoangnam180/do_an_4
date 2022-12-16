@@ -70,6 +70,11 @@ function Header() {
                 Profile
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to={{ pathname: routes.history }}>
+                History
+              </Link>
+            </li>
             {width <= 768 && (
               <>
                 {data.userInfo && data.isAuth === true ? (

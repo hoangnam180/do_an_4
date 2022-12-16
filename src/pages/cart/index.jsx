@@ -71,7 +71,7 @@ function Cart() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb bg-transparent justify-content-center">
                     <li className="breadcrumb-item">
-                      <a href="/">Home</a>
+                      <Link to={routes.home}>Home</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       Cart

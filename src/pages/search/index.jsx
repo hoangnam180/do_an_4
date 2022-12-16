@@ -115,7 +115,7 @@ function Search() {
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb bg-transparent justify-content-center">
                         <li className="breadcrumb-item">
-                          <Link href="/">Home</Link>
+                          <Link to={routes.home}>Home</Link>
                         </li>
                         <li
                           className="breadcrumb-item active"

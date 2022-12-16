@@ -207,8 +207,8 @@ function Home() {
                             />
                           </Link>
                         </div>
-                        {item?.sale === true ? (
-                          <span className="onsale">sale</span>
+                        {item?.khuyen_mai && item?.khuyen_mai > 0 ? (
+                          <span className="onsale">{item?.khuyen_mai}%</span>
                         ) : (
                           ''
                         )}

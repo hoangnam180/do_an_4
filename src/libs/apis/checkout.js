@@ -14,12 +14,11 @@ export const checkoutPrivate = async (data) =>
     data,
     tokenClient: true,
   });
-export const historyCheckout = async () =>
+export const historyCheckout = async (params) =>
   request({
     url: `${prefix}/don-hang/lich-su-don-hang`,
     method: 'GET',
-    tokenClient: true,
-    emailClient: true,
+    params,
   });
 export async function historyCheckoutPrivate() {
   return request({
