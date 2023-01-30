@@ -14,6 +14,7 @@ const routes = {
   withList: '/with-list',
   editProfile: '/edit-profile',
   history: '/history',
+  historyDetail: '/history/:id',
 };
 
 export default routes;

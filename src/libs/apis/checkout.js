@@ -20,6 +20,11 @@ export const historyCheckout = async (params) =>
     method: 'GET',
     params,
   });
+export const historyCheckoutDetail = async (id) =>
+  request({
+    url: `${prefix}/don-hang/lich-su-mua-hang/detail/${id}`,
+    method: 'GET',
+  });
 export async function historyCheckoutPrivate() {
   return request({
     url: `${prefix}/auth/lich-su-don-hang`,
