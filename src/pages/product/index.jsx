@@ -80,7 +80,7 @@ function SingleProduct() {
       if (!isLogin) {
         const res = await RateProductPublic(id, { ...data, sao: star });
         if (res?.status === 'success') {
-          setListRate([...listRate, res?.data]);
+          setListRate([res?.data, ...listRate]);
           dispatch(
             actionToast({
               type: 'success',
@@ -92,7 +92,7 @@ function SingleProduct() {
       }
       const res = await RateProductAuth(id, { ...data, sao: star });
       if (res?.status === 'success') {
-        setListRate([...listRate, res?.data]);
+        setListRate([res?.data, ...listRate]);
         dispatch(
           actionToast({
             type: 'success',

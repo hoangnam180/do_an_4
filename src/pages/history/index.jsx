@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
 import { useCustomSearchParams } from 'src/hooks/useSeachParams';
@@ -9,6 +10,8 @@ function History() {
   const refSearch = useRef(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { userInfo } = useSelector((state) => state?.authReducer);
+
   const email = searchParams?.email;
   const handleSearch = (e) => {
     e.preventDefault();
@@ -19,11 +22,24 @@ function History() {
   };
   useEffect(() => {
     const fetchData = async () => {
+      if (userInfo?.email) {
+        try {
+          setLoading(true);
+          const res = await historyCheckout({
+            email: userInfo?.email || email || '',
+          });
+          setData(res?.donhang);
+          setLoading(false);
+        } catch (err) {
+          setLoading(false);
+          console.log(err);
+        }
+      }
       if (!email) return;
       try {
         setLoading(true);
         const res = await historyCheckout({
-          email: email,
+          email: email || '',
         });
         setData(res?.donhang);
         setLoading(false);
