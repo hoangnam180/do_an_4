@@ -31,13 +31,13 @@ const Profile = () => {
                 >
                   <ol className="breadcrumb mb-0">
                     <li className="breadcrumb-item">
-                      <Link to="/">Home</Link>
+                      <Link to="/">Trang chủ</Link>
                     </li>
                     <li className="breadcrumb-item">
-                      <Link to="/profile">User</Link>
+                      <Link to="/profile">Thành viên</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      User Profile
+                      Thông tin cá nhân
                     </li>
                   </ol>
                 </nav>
@@ -62,7 +62,7 @@ const Profile = () => {
                   <div className="card-body">
                     <div className="row">
                       <div className="col-sm-3">
-                        <p className="mb-0">Full Name</p>
+                        <p className="mb-0">Họ tên</p>
                       </div>
                       <div className="col-sm-9">
                         <p className="text-muted mb-0">
@@ -82,7 +82,7 @@ const Profile = () => {
                     <hr />
                     <div className="row">
                       <div className="col-sm-3">
-                        <p className="mb-0">Phone</p>
+                        <p className="mb-0">Số điện thoại</p>
                       </div>
                       <div className="col-sm-9">
                         <p className="text-muted mb-0">{data?.sdt || '...'}</p>
@@ -91,7 +91,7 @@ const Profile = () => {
                     <hr />
                     <div className="row">
                       <div className="col-sm-3">
-                        <p className="mb-0">Address</p>
+                        <p className="mb-0">Địa chỉ</p>
                       </div>
                       <div className="col-sm-9">
                         <p className="text-muted mb-0">
@@ -107,7 +107,7 @@ const Profile = () => {
                             to={routes.editProfile}
                             className="btn-small btn-primary"
                           >
-                            Edit
+                            Chỉnh sửa
                           </Link>
                         </p>
                       </div>

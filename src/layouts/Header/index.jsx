@@ -2,7 +2,7 @@
 import 'jquery/dist/jquery.slim.min.js';
 import 'popper.js/dist/umd/popper.min.js';
 import 'bootstrap/dist/js/bootstrap.min.js';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionLogout, actionToast } from 'src/store/authSlice';
 import routes from 'src/configs/router';
@@ -12,11 +12,13 @@ function Header() {
   const [width, setWidth] = useState(window.innerWidth);
   const data = useSelector((state) => state?.authReducer);
   const cart = useSelector((state) => state?.cartReducer);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(actionLogout());
     dispatch(actionResetCart());
-    dispatch(actionToast({ title: 'Logout Successfully!', type: 'success' }));
+    navigate(routes.login);
+    dispatch(actionToast({ title: 'Đăng xuất thành công!', type: 'success' }));
   };
   useEffect(() => {
     window.addEventListener('resize', () => setWidth(window.innerWidth));
@@ -30,7 +32,7 @@ function Header() {
     >
       <div className="container">
         <Link className="navbar-brand font-weight-bold" to={{ pathname: '/' }}>
-          E-Shop
+          ShuShu
         </Link>
         <button
           className="navbar-toggler"
@@ -47,32 +49,32 @@ function Header() {
           <ul className="navbar-nav mx-auto">
             <li className="nav-item active">
               <Link className="nav-link" to={{ pathname: '/' }}>
-                Home
+                Trang chủ{' '}
               </Link>
             </li>
             <li className="nav-item ">
               <Link className="nav-link" to={{ pathname: routes.shop }}>
-                Shop
+                Sản phẩm
               </Link>
             </li>
             <li className="nav-item ">
               <Link className="nav-link" to={{ pathname: routes.search }}>
-                Search
+                Tìm kiếm{' '}
               </Link>
             </li>
             <li className="nav-item ">
               <Link className="nav-link" to={{ pathname: routes.cart }}>
-                Cart
+                Giỏ hàng
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to={{ pathname: routes.profile }}>
-                Profile
+                Tài khoản
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to={{ pathname: routes.history }}>
-                History
+                Lịch sử mua hàng
               </Link>
             </li>
             {width <= 768 && (
@@ -84,7 +86,7 @@ function Header() {
                         className="nav-link"
                         to={{ pathname: routes.withList }}
                       >
-                        With List
+                        Danh sách yêu thích
                       </Link>
                     </li>
                     <li className="nav-item">
@@ -92,12 +94,12 @@ function Header() {
                         className="nav-link"
                         to={{ pathname: routes.forgot }}
                       >
-                        Forgot Password
+                        Quên mật khẩu
                       </Link>
                     </li>
                     <li className="nav-item">
                       <Link className="nav-link" onClick={handleLogout}>
-                        Logout
+                        Đăng xuất
                       </Link>
                     </li>
                   </>
@@ -108,12 +110,12 @@ function Header() {
                         className="nav-link"
                         to={{ pathname: routes.login }}
                       >
-                        Login
+                        Đăng nhập
                       </Link>
                     </li>
                     <li className="nav-item">
                       <Link className="nav-link" to={routes.signup}>
-                        SignUp
+                        Đăng ký
                       </Link>
                     </li>
                   </>
@@ -158,10 +160,7 @@ function Header() {
               aria-labelledby="navbarDropdown5"
             >
               <li>
-                <Link to={routes.cart}> View Cart</Link>
-              </li>
-              <li>
-                <Link to={routes.checkout}>Checkout</Link>
+                <Link to={routes.cart}> Xem giỏ hàng</Link>
               </li>
             </ul>
           </li>
@@ -187,24 +186,24 @@ function Header() {
                     <Link to={{ pathname: routes.profile }}>profile</Link>
                   </li>
                   <li>
+                    <Link to={{ pathname: routes.forgot }}>Quên mật khẩu</Link>
+                  </li>
+                  <li>
                     <Link to={{ pathname: routes.forgot }}>
-                      Forgot Password
+                      Danh sách yêu thích
                     </Link>
                   </li>
                   <li>
-                    <Link to={{ pathname: routes.forgot }}>Wish List</Link>
-                  </li>
-                  <li>
-                    <Link onClick={handleLogout}>Logout</Link>
+                    <Link onClick={handleLogout}>Đăng xuất</Link>
                   </li>
                 </>
               ) : (
                 <>
                   <li>
-                    <Link to={{ pathname: routes.login }}>Login</Link>
+                    <Link to={{ pathname: routes.login }}>Đăng nhập</Link>
                   </li>
                   <li>
-                    <Link to={{ pathname: routes.signup }}>SignUp</Link>
+                    <Link to={{ pathname: routes.signup }}>Đăng ký</Link>
                   </li>
                 </>
               )}

@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { loginApi } from 'src/libs/apis/auth';
+import { loginApi, loginWithGoogle } from 'src/libs/apis/auth';
 import { useDispatch } from 'react-redux';
 import { actionLoading, actionLogin, actionToast } from 'src/store/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
@@ -27,23 +27,42 @@ function Login() {
         };
         dispatch(actionLogin(payload));
         dispatch(
-          actionToast({ title: 'Login Successfully!', type: 'success' })
+          actionToast({ title: 'Đăng nhập thành công', type: 'success' })
         );
         navigation('/');
         reset();
       } else {
-        dispatch(
-          actionToast({ title: 'Wrong Password or UserName!', type: 'error' })
-        );
+        if (res?.message) {
+          dispatch(actionToast({ title: res?.message, type: 'error' }));
+        } else {
+          dispatch(
+            actionToast({
+              title: 'UserName hoặc mật khẩu không đúng !',
+              type: 'error',
+            })
+          );
+        }
       }
     } catch (err) {
       dispatch(
-        actionToast({ title: 'Wrong Password or UserName!', type: 'error' })
+        actionToast({
+          title: 'UserName hoặc mật khẩu không đúng !',
+          type: 'error',
+        })
       );
       dispatch(actionLoading({ loading: false }));
     }
   };
 
+  const onLoginWithGoogle = async (event) => {
+    event.preventDefault();
+    const res = await loginWithGoogle();
+    if (res?.status === 'success') {
+      window.location.href = res?.url;
+    } else {
+      dispatch(actionToast({ title: 'Failed!', type: 'error' }));
+    }
+  };
   return (
     <div className="login-container">
       <div className="account section">
@@ -52,32 +71,34 @@ function Login() {
             <div className="col-lg-6">
               <div className="login-form border p-5">
                 <div className="text-center heading">
-                  <h2 className="mb-2">Login</h2>
+                  <h2 className="mb-2">Đăng nhập</h2>
                   <p className="lead">
-                    Don’t have an account?{' '}
-                    <Link to={routes.signup}>Create a free account</Link>
+                    Bạn chưa có tài khoản?{' '}
+                    <Link to={routes.signup}>Đăng ký ngay</Link>
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="form-group mb-4">
-                    <label htmlFor="username">Enter username</label>
+                    <label htmlFor="username">Nhập UserName</label>
                     <input
                       tabIndex={1}
                       {...register('username', { required: true })}
                       id="username"
                       type="text"
                       className="form-control"
-                      placeholder="Enter Username"
+                      placeholder="Nhập Username"
                     />
                     {errors.username && (
-                      <span className="text-danger">Please type username</span>
+                      <span className="text-danger">
+                        Username không được để trống
+                      </span>
                     )}
                   </div>
                   <div className="form-group">
-                    <label htmlFor="password">Enter Password</label>
+                    <label htmlFor="password">Nhập mật khẩu</label>
                     <Link className="float-right" to={routes.forgot}>
-                      Forget password?
+                      Quên mật khẩu?
                     </Link>
                     <input
                       tabIndex={2}
@@ -85,15 +106,24 @@ function Login() {
                       id="password"
                       type="password"
                       className="form-control"
-                      placeholder="Enter Password"
+                      placeholder="Nhập Password"
                     />{' '}
                     {errors.password && (
-                      <span className="text-danger">Please type password</span>
+                      <span className="text-danger">
+                        password không được để trống
+                      </span>
                     )}
                   </div>
 
                   <button type="submit" className="btn btn-main mt-3 btn-block">
-                    Login
+                    Đăng nhập
+                  </button>
+                  <button
+                    onClick={onLoginWithGoogle}
+                    className="w-100 text-primary border-0 bg-transparent mt-3"
+                    to={routes.forgot}
+                  >
+                    Đăng nhập bằng google
                   </button>
                 </form>
               </div>

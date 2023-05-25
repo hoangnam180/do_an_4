@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Modal, Form, Input, message } from 'antd';
+import { useState } from 'react';
+import { Modal, Form, Input } from 'antd';
 import OtpInput from 'react-otp-input';
 
 import { sendEmailApi, confirmOptApi } from 'src/libs/apis/auth';
@@ -26,16 +26,13 @@ export default function Forgot({ visible, onCancel, setShowLogin }) {
   };
 
   const handleConfirmOtp = () => {
-    console.log('otp', otp);
     confirmOptApi({
       email: email,
       otpCode: otp,
     })
-      .then(() => {
-        console.log('oke');
-      })
-      .catch(() => {
-        console.log('no');
+      .then(() => {})
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -68,7 +65,7 @@ export default function Forgot({ visible, onCancel, setShowLogin }) {
               />
             </div>
             <div className="center">
-              <button onClick={handleConfirmOtp}>SUBMIT</button>
+              <button onClick={handleConfirmOtp}>Gửi</button>
             </div>
           </>
         ) : (
@@ -107,7 +104,7 @@ export default function Forgot({ visible, onCancel, setShowLogin }) {
               setShowLogin(true);
             }}
           >
-            LOGIN HERE
+            Đăng nhập tại đây
           </b>
         </div>
       </div>

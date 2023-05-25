@@ -87,8 +87,10 @@ const cartSlice = createSlice({
     actionResetCart: (state) => {
       state.step = 0;
       state.data = [];
+      state.totalCart = 0;
       localStorage.setItem(STEP_CART, state.step);
       localStorage.setItem(DATA_CART, JSON.stringify(state.data));
+      localStorage.setItem(TOTAL_CART, state.totalCart);
     },
   },
 

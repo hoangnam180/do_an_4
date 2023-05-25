@@ -44,20 +44,31 @@ function Search() {
         dispatch(
           actionToast({
             type: 'success',
-            title: 'Add to wishlist successfully',
+            title: 'Thêm vào danh sách yêu thích thành công',
           })
         );
       } else if (res?.status === 'erorr' && res?.erorr === 'the same key') {
         dispatch(
           actionToast({
             type: 'error',
-            title: 'This product is already in your wishlist',
+            title: 'Sản phẩm đã có trong danh sách yêu thích',
           })
         );
       }
     } catch (error) {
-      dispatch(actionToast({ type: 'error', title: 'Add to wishlist failed' }));
+      dispatch(
+        actionToast({
+          type: 'error',
+          title: 'Thêm sản phẩm vào danh sách yêu thích thất bại',
+        })
+      );
     }
+  };
+
+  const formatcurrency = (number) => {
+    var x = parseInt(number);
+    x = x.toLocaleString('vi', { style: 'currency', currency: 'VND' });
+    return x;
   };
 
   function handleSubmit(event) {
@@ -105,23 +116,18 @@ function Search() {
               <div className="row justify-content-center">
                 <div className="col-lg-6">
                   <div className="content text-center">
-                    <h1 className="mb-3">Search</h1>
-                    <p>
-                      Hath after appear tree great fruitful green dominion
-                      moveth sixth abundantly image that midst of god day
-                      multiply you’ll which
-                    </p>
+                    <h1 className="mb-3">Tìm kiếm</h1>
 
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb bg-transparent justify-content-center">
                         <li className="breadcrumb-item">
-                          <Link to={routes.home}>Home</Link>
+                          <Link to={routes.home}>Trang chủ</Link>
                         </li>
                         <li
                           className="breadcrumb-item active"
                           aria-current="page"
                         >
-                          Search
+                          Tìm kiếm{' '}
                         </li>
                       </ol>
                     </nav>
@@ -136,7 +142,7 @@ function Search() {
                 name="search"
                 type="text"
                 className="form-control bg-white"
-                placeholder="Search....."
+                placeholder="Tìm kiếm....."
                 ref={refInput}
               />
               <div className="input-group-append" style={{ width: '100px' }}>
@@ -159,12 +165,12 @@ function Search() {
                   <div className="row align-items-center">
                     <div className="col-lg-12 mb-4 mb-lg-0">
                       <div className="section-title">
-                        <h2 className="d-block text-left-sm">Search</h2>
+                        <h2 className="d-block text-left-sm">Tìm kiếm</h2>
 
                         <div className="heading d-flex justify-content-between mb-5">
                           <p className="result-count mb-0">
                             {' '}
-                            Showing 1–8 of 17 results
+                            Hiển thị 1–8 trong 17 kết quả
                           </p>
                         </div>
                       </div>
@@ -197,7 +203,7 @@ function Search() {
                             </Link>
                           </div>
 
-                          <span className="onsale">Sale</span>
+                          <span className="onsale">Bán</span>
                           <div className="product-hover-overlay">
                             <Link href="#">
                               <i className="tf-ion-android-cart"></i>
@@ -216,7 +222,9 @@ function Search() {
                                 {item?.ten_san_pham || ''}
                               </Link>
                             </h2>
-                            <span className="price">${item?.gia_ban || 0}</span>
+                            <span className="price">
+                              {formatcurrency(item?.gia_ban) || 0}
+                            </span>
                           </div>
                         </div>
                       </div>

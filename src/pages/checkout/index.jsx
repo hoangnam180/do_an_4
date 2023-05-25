@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import routes from 'src/configs/router';
-import { checkoutPrivate, checkoutPublic } from 'src/libs/apis/checkout';
+import {
+  checkoutPrivate,
+  checkoutPrivatevnPay,
+  checkoutPublic,
+} from 'src/libs/apis/checkout';
 import {
   getDistrictDetail,
   getDistricts,
@@ -18,6 +22,7 @@ import { checkLogin } from 'src/utils/checkLogin';
 import webStorage from 'src/utils/webStorage';
 
 function Checkout() {
+  const [loading, setLoading] = useState(false);
   const { data, totalCart } = useSelector((state) => state.cartReducer);
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -27,6 +32,7 @@ function Checkout() {
   const dispatch = useDispatch();
   const dataUser = useSelector((state) => state?.authReducer);
   const isLogin = checkLogin(dataUser);
+  const navigation = useNavigate();
 
   const renderColor = (data) => {
     const result = data?.mau?.find((itemChild) => {
@@ -53,6 +59,12 @@ function Checkout() {
     return result;
   };
 
+  const formatcurrency = (number) => {
+    var x = parseInt(number);
+    x = x.toLocaleString('vi', { style: 'currency', currency: 'VND' });
+    return x;
+  };
+
   const {
     register,
     handleSubmit,
@@ -60,6 +72,7 @@ function Checkout() {
     reset,
   } = useForm();
   const onSubmit = async (data) => {
+    const buttonType = window.event.submitter.name;
     const dataResult = {
       email: data.email,
       tong_tien: totalCart,
@@ -73,31 +86,52 @@ function Checkout() {
       ghi_chu: data?.msg,
       don_hang: convertDataDetail(),
     };
-    if (isLogin) {
-      console.log('login');
-      try {
-        const res = await checkoutPrivate(dataResult);
-        if (res?.status === 'success') {
-          dispatch(actionResetCart());
-          dispatch(
-            actionToast({ title: 'Checkout Successfully', type: 'success' })
-          );
+    setLoading(true);
+    try {
+      let res;
+      if (isLogin) {
+        if (buttonType === 'draft') {
+          res = await checkoutPrivatevnPay(dataResult);
+          webStorage.set('data_return', res?.data);
+          webStorage.set('loai_thanh_toan', res?.loai_thanh_toan);
+          // direct to payment
+          window.location.href = res?.link;
           reset();
-          return;
+        } else {
+          res = await checkoutPrivate(dataResult);
+          if (res?.status === 'success') {
+            console.log(res.status);
+            dispatch(
+              actionToast({ title: 'Thanh toán thành công', type: 'success' })
+            );
+            reset();
+            dispatch(actionResetCart());
+            navigation(routes.history);
+          } else {
+            dispatch(
+              actionToast({ title: 'Thanh toán thất bại', type: 'error' })
+            );
+          }
         }
-      } catch (err) {
-        console.log(err);
-        return;
+      } else {
+        res = await checkoutPublic(dataResult);
+        if (res?.status === 'success') {
+          webStorage.set('data_return', res?.data);
+          webStorage.set('loai_thanh_toan', res?.loai_thanh_toan);
+          // direct to payment
+          window.location.href = res?.link;
+          reset();
+        } else {
+          dispatch(
+            actionToast({ title: 'Thanh toán thất bại', type: 'error' })
+          );
+        }
       }
-    }
-    const res = await checkoutPublic(dataResult);
-    if (res?.status === 'success') {
-      webStorage.set('email', res?.email);
-      dispatch(actionResetCart());
-      dispatch(
-        actionToast({ title: 'Checkout Successfully', type: 'success' })
-      );
-      reset();
+    } catch (error) {
+      console.log(error);
+      dispatch(actionToast({ title: 'Thanh toán thất bại', type: 'error' }));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -163,10 +197,10 @@ function Checkout() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb bg-transparent justify-content-center">
                     <li className="breadcrumb-item">
-                      <Link to={routes.home}>Home</Link>
+                      <Link to={routes.home}>Trang chủ</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Checkout
+                      Thanh toán
                     </li>
                   </ol>
                 </nav>
@@ -187,24 +221,31 @@ function Checkout() {
                     data-target="#coupon-modal"
                   >
                     <div className="bg-light p-3">
-                      Have a coupon?{' '}
+                      Bạn có một mã giảm giá?{' '}
                       <a href="/checkout" className="showcoupon">
-                        Click here to enter your code
+                        Click vào đây nếu có mã giảm giá
                       </a>
                     </div>
                   </div>
 
                   <div className="billing-details mt-5">
-                    <h4 className="mb-4">Billing Details</h4>
+                    <h4 className="mb-4">Chi tiết thanh toán</h4>
+                    {loading && (
+                      <div className="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                      </div>
+                    )}
                     <div className="row">
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="full_name">First Name</label>
+                          <label htmlFor="full_name">Họ và tên</label>
                           <input
                             type="text"
                             className="form-control"
                             id="full_name"
-                            placeholder="Full Name"
+                            placeholder="Họ và tên"
                             {...register('full_name', {
                               required: userInfo?.fullname ? false : true,
                             })}
@@ -217,12 +258,12 @@ function Checkout() {
                           style={{ marginLeft: '18px' }}
                           className="text-danger"
                         >
-                          Please type full name
+                          Vui lòng nhập họ tên
                         </p>
                       )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="province">Province</label>
+                          <label htmlFor="province">Tỉnh</label>
                           <select
                             id="province"
                             className="form-control"
@@ -232,7 +273,7 @@ function Checkout() {
                                 handleGetDistricts(e.target.value),
                             })}
                           >
-                            <option value="">Select an Option</option>
+                            <option value="">Chọn tỉnh</option>
                             {provinces?.map((province, index) => (
                               <option key={index} value={province?.code}>
                                 {province?.name}
@@ -246,12 +287,14 @@ function Checkout() {
                           style={{ marginLeft: '18px' }}
                           className="text-danger"
                         >
-                          Please choose province
+                          Vui lòng chọn tỉnh/thành phố
                         </p>
                       )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="districts">Districts</label>
+                          <label htmlFor="districts">
+                            Vui lòng chọn quận/huyện
+                          </label>
                           <select
                             id="districts"
                             className="form-control"
@@ -260,7 +303,7 @@ function Checkout() {
                               onChange: (e) => handleGetWards(e.target.value),
                             })}
                           >
-                            <option value="">Select an Option</option>
+                            <option value="">chọn quận/huyện</option>
                             {districts?.map((province, index) => (
                               <option key={index} value={province?.code}>
                                 {province?.name}
@@ -274,13 +317,12 @@ function Checkout() {
                           style={{ marginLeft: '18px' }}
                           className="text-danger"
                         >
-                          Please choose districts
+                          Vui lòng chọn quận/huyện
                         </p>
                       )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="wards">Wards</label>
-                          <option value="">Select an Option</option>
+                          <label htmlFor="wards">Phường xã</label>
                           <select
                             id="wards"
                             className="form-control"
@@ -290,7 +332,7 @@ function Checkout() {
                                 handleGetValueResult(e.target.value),
                             })}
                           >
-                            <option value="">Select an Option</option>
+                            <option value="">Chọn phường/xã</option>
                             {wards?.map((province, index) => (
                               <option key={index} value={province?.code}>
                                 {province?.name}
@@ -304,19 +346,19 @@ function Checkout() {
                           style={{ marginLeft: '18px' }}
                           className="text-danger"
                         >
-                          Please choose wards
+                          Vui lòng chọn phường/xã
                         </p>
                       )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="first_name">
-                            Apartment, suite, unit etc. (optional) (optional)
+                            Số nhà, tên đường, tên phố
                           </label>
                           <input
                             type="text"
                             className="form-control"
                             id="apartment"
-                            placeholder="Apartment"
+                            placeholder="Số nhà, tên đường, tên phố"
                             {...register('apartment', {
                               required: userInfo?.dia_chi ? false : true,
                             })}
@@ -329,44 +371,66 @@ function Checkout() {
                           style={{ marginLeft: '18px' }}
                           className="text-danger"
                         >
-                          Please type apartment
+                          Vui lòng nhập số nhà
                         </p>
                       )}
 
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="first_name">Phone </label>
+                          <label htmlFor="first_name">Số điện thoại </label>
                           <input
                             type="text"
                             className="form-control"
                             id="phone"
-                            placeholder="Your phone number"
+                            placeholder="Số điện thoại"
                             {...register('phone', {
                               required: userInfo?.sdt ? false : true,
+                              minLength: 10,
+                              maxLength: 10,
                             })}
                             defaultValue={userInfo?.sdt || ''}
                           />
                         </div>
                       </div>
-                      {errors.phone && (
+                      {errors.phone?.type === 'required' && (
                         <p
                           style={{ marginLeft: '18px' }}
                           className="text-danger"
                         >
-                          Please type apartment
+                          Vui lòng nhập số điện thoại
+                        </p>
+                      )}
+                      {errors.phone?.type === 'minLength' && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Số điện thoại cần đúng 10 chữ số
+                        </p>
+                      )}
+                      {errors.phone?.type === 'maxLength' && (
+                        <p
+                          style={{ marginLeft: '18px' }}
+                          className="text-danger"
+                        >
+                          Số điện thoại đúng 10 chữ số
                         </p>
                       )}
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
-                          <label htmlFor="first_name">Email address </label>
+                          <label htmlFor="first_name">Email</label>
                           <input
                             type="text"
                             className="form-control"
                             id="email"
-                            placeholder="Your email address"
+                            placeholder="Email"
                             {...register('email', {
-                              required: userInfo?.email ? false : true,
-                              pattern: /^\S+@\S+$/i,
+                              required: 'Email không được để trống',
+                              pattern: {
+                                value:
+                                  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: 'Email không đúng định dạng',
+                              },
                             })}
                             defaultValue={userInfo?.email || ''}
                           />
@@ -377,27 +441,22 @@ function Checkout() {
                           style={{ marginLeft: '18px' }}
                           className="text-danger"
                         >
-                          Please type email
+                          <span className="text-danger">
+                            {errors.email.message}
+                          </span>
                         </p>
                       )}
 
                       <div className="col-lg-12">
                         <div className="form-check mb-4 pl-0">
-                          <Link to={routes.signup}>Create an account?</Link>
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="form-check mb-4 pl-0">
-                          <Link to={routes.signup}>
-                            Ship to a different address?
-                          </Link>
+                          <Link to={routes.signup}>Tạo một tài khoản?</Link>
                         </div>
                       </div>
 
                       <div className="col-lg-12">
                         <div className="form-group mb-4">
                           <label htmlFor="first_name">
-                            Order notes (optional)
+                            Ghi chú về đơn hàng, giao hàng
                           </label>
                           <textarea
                             className="form-control"
@@ -414,7 +473,9 @@ function Checkout() {
                 </div>
                 <div className="col-md-6 col-lg-4">
                   <div className="product-checkout-details mt-5 mt-lg-0">
-                    <h4 className="mb-4 border-bottom pb-4">Order Summary</h4>
+                    <h4 className="mb-4 border-bottom pb-4">
+                      Chi Tiết Đơn Hàng
+                    </h4>
 
                     {data?.map((item, index) => {
                       return (
@@ -423,7 +484,8 @@ function Checkout() {
 
                           <div className="media-body text-right">
                             <p className="h5">
-                              {item?.quantity} x ${item?.data?.gia_ban}
+                              {item?.quantity} x{' '}
+                              {formatcurrency(item?.data?.gia_ban)}
                             </p>
                           </div>
                           <div
@@ -443,12 +505,14 @@ function Checkout() {
 
                     <ul className="summary-prices list-unstyled mb-4">
                       <li className="d-flex justify-content-between">
-                        <span>Shipping:</span>
-                        <span className="h5">Free</span>
+                        <span>Phí Ship:</span>
+                        <span className="h5">Miễn Phí</span>
                       </li>
                       <li className="d-flex justify-content-between">
-                        <span>Total</span>
-                        <span className="h5">${totalCart || 0}</span>
+                        <span>Tổng Tiền</span>
+                        <span className="h5">
+                          {formatcurrency(totalCart) || 0}
+                        </span>
                       </li>
                     </ul>
                     <>
@@ -502,8 +566,8 @@ function Checkout() {
                           className="form-check-label"
                           htmlFor="exampleCheck3"
                         >
-                          I have read and agree to the website terms and
-                          conditions *
+                          Tôi đã đọc và đồng ý với các điều khoản và điều kiện
+                          của trang web
                         </label>
                       </div>
                       {errors.check && (
@@ -511,20 +575,46 @@ function Checkout() {
                           style={{ marginLeft: '18px' }}
                           className="text-danger"
                         >
-                          Please check
+                          Đồng ý
                         </p>
                       )}
                     </>
 
                     <div className="info mt-4 border-top pt-4 mb-5">
-                      Your personal data will be used to process your order,
-                      support your experience throughout this website, and for
-                      other purposes described in our{' '}
-                      <Link>privacy policy</Link>.
+                      Dữ liệu cá nhân của bạn sẽ được sử dụng để xử lý đơn đặt
+                      hàng của bạn, hỗ trợ trải nghiệm của bạn trên trang web
+                      này và cho các mục đích khác được mô tả trong phần của
+                      chúng tôi. <Link>Chính sách bảo mật</Link>.
                     </div>
-                    <button type="submit" className="btn btn-main btn-small">
-                      Place Order
-                    </button>
+                    {!isLogin && (
+                      <button type="submit" className="btn btn-main btn-small">
+                        Thanh toán trực tuyến
+                      </button>
+                    )}
+                    {isLogin && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          gap: '50px',
+                          flexDirection: 'column',
+                          gap: '18px',
+                        }}
+                      >
+                        <button
+                          type="submit"
+                          className="btn btn-main btn-small"
+                        >
+                          Đặt hàng
+                        </button>
+                        <button
+                          type="submit"
+                          className="btn btn-main btn-small"
+                          name="draft"
+                        >
+                          Thanh toán trực tuyến
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

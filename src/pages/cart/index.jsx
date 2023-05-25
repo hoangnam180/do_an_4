@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
 import { API_SERVER } from 'src/constants/configs';
-import {
-  historyCheckout,
-  historyCheckoutPrivate,
-} from 'src/libs/apis/checkout';
+import { historyCheckout } from 'src/libs/apis/checkout';
 import {
   actionDelete,
   actionTotalCart,
@@ -16,6 +13,11 @@ import {
 function Cart() {
   const dispatch = useDispatch();
   const { data, totalCart } = useSelector((state) => state?.cartReducer);
+  const formatcurrency = (number) => {
+    var x = parseInt(number);
+    x = x.toLocaleString('vi', { style: 'currency', currency: 'VND' });
+    return x;
+  };
   const handleTotalPrice = () => {
     let total = 0;
     data.forEach((item) => {
@@ -47,11 +49,6 @@ function Cart() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await historyCheckout();
-      console.log(res);
-    };
-    fetchData();
     handleTotalPrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, dispatch]);
@@ -64,17 +61,15 @@ function Cart() {
           <div className="row justify-content-center">
             <div className="col-lg-6">
               <div className="content text-center">
-                <h1 className="mb-3">Cart</h1>
-                Hath after appear tree great fruitful green dominion moveth
-                sixth abundantly image that midst of god day multiply you’ll
-                which
+                <h1 className="mb-3">Giỏ hàng</h1>
+
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb bg-transparent justify-content-center">
                     <li className="breadcrumb-item">
-                      <Link to={routes.home}>Home</Link>
+                      <Link to={routes.home}>Trang chủ</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Cart
+                      Giỏ hàng
                     </li>
                   </ol>
                 </nav>
@@ -96,12 +91,12 @@ function Cart() {
                   >
                     <thead>
                       <tr>
-                        <th className="product-thumbnail">thumbnail</th>
-                        <th className="product-name">Product</th>
-                        <th className="product-property">Property</th>
-                        <th className="product-price">Price</th>
-                        <th className="product-quantity pl-4">Quantity</th>
-                        <th className="product-subtotal">Total</th>
+                        <th className="product-thumbnail">Hình ảnh</th>
+                        <th className="product-name">Tên sản phẩm</th>
+                        <th className="product-property">Chi tiết</th>
+                        <th className="product-price">Giá bán</th>
+                        <th className="product-quantity pl-4">Số lượng</th>
+                        <th className="product-subtotal">Tổng tiền</th>
                         <th className="product-remove"> </th>
                       </tr>
                     </thead>
@@ -161,7 +156,7 @@ function Cart() {
                                 <span className="currencySymbol">
                                   <pre wp-pre-tag-3=""></pre>
                                 </span>
-                                {item?.data?.gia_ban}
+                                {formatcurrency(item?.data?.gia_ban)}
                               </span>
                             </td>
                             <td
@@ -169,7 +164,7 @@ function Cart() {
                               data-title="Quantity"
                             >
                               <div className="quantity d-flex align-items-center">
-                                <label className="sr-only">Quantity</label>
+                                <label className="sr-only">Số lượng</label>
                                 <input
                                   type="number"
                                   id="qty"
@@ -192,10 +187,10 @@ function Cart() {
                                 <span className="currencySymbol">
                                   <pre wp-pre-tag-3=""></pre>
                                 </span>
-                                {Number(
+                                {formatcurrency(
                                   Number(item?.data?.gia_ban) *
                                     (Number(item?.quantity) || 1)
-                                ).toFixed(2)}
+                                )}
                               </span>
                             </td>
                             <td className="product-remove" data-title="Remove">
@@ -223,7 +218,7 @@ function Cart() {
                               className="input-text form-control"
                               id="coupon_code"
                               defaultValue=""
-                              placeholder="Coupon code"
+                              placeholder="Mã giảm giá"
                             />
                             <button
                               type="button"
@@ -231,7 +226,7 @@ function Cart() {
                               name="apply_coupon"
                               defaultValue="Apply coupon"
                             >
-                              Apply coupon
+                              Áp dụng
                             </button>
                             <span className="float-right mt-3 mt-lg-0">
                               <button
@@ -241,7 +236,7 @@ function Cart() {
                                 defaultValue="Update cart"
                                 disabled=""
                               >
-                                Update cart
+                                Cập nhật giỏ hàng
                               </button>
                             </span>
                           </div>
@@ -267,19 +262,19 @@ function Cart() {
           <div className="row justify-content-end">
             <div className="col-lg-4">
               <div className="cart-info card p-4 mt-4">
-                <h4 className="mb-4">Cart totals</h4>
+                <h4 className="mb-4">Tổng giỏ hàng</h4>
                 <ul className="list-unstyled mb-4">
                   <li className="d-flex justify-content-between pb-2 mb-3">
-                    <h5>Shipping</h5>
-                    <span>Free</span>
+                    <h5>Phí ship</h5>
+                    <span>Miễn phí</span>
                   </li>
                   <li className="d-flex justify-content-between pb-2">
-                    <h5>Total</h5>
-                    <span>${Number(totalCart || 0)?.toFixed(2) || 0}</span>
+                    <h5>Tổng tiền</h5>
+                    <span>{formatcurrency(totalCart) || 0}</span>
                   </li>
                 </ul>
                 <Link to={routes?.checkout} className="btn btn-main btn-small">
-                  Proceed to checkout
+                  Thanh toán
                 </Link>
               </div>
             </div>

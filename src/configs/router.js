@@ -15,6 +15,11 @@ const routes = {
   editProfile: '/edit-profile',
   history: '/history',
   historyDetail: '/history/:id',
+  chat: '/chat',
+  direction: '/direction',
+  directionLogin: 'direction-login',
+  confirmOpt: '/confirm-opt',
+  resetPassword: '/reset-password/:id',
 };
 
 export default routes;

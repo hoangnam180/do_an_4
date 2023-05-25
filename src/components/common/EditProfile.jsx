@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import routes from 'src/configs/router';
 import { updateProfileApi } from 'src/libs/apis/auth';
 import {
   getDistrictDetail,
@@ -19,6 +21,7 @@ const EditProfile = () => {
   const [location, setLocation] = useState({});
   const { userInfo } = useSelector((state) => state?.authReducer);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -40,9 +43,13 @@ const EditProfile = () => {
       };
       dispatch(actionUpdateMe(payload));
       dispatch(
-        actionToast({ title: 'Update Profile Successfully!', type: 'success' })
+        actionToast({
+          title: 'Cập nhật thông tin thành công!',
+          type: 'success',
+        })
       );
       reset();
+      navigate(`${routes.profile}`);
     }
   };
   const handleGetDistricts = async (e) => {
@@ -101,14 +108,14 @@ const EditProfile = () => {
                       <div className="row">
                         <div className="col-lg-12">
                           <div className="form-group mb-4">
-                            <label htmlFor="full_name">Full Name</label>
+                            <label htmlFor="full_name">Họ và tên</label>
                             <input
                               type="text"
                               className="form-control"
                               id="full_name"
-                              placeholder="Full Name"
+                              placeholder="Họ và tên"
                               {...register('full_name', {
-                                required: userInfo?.fullname ? false : true,
+                                required: true,
                               })}
                               defaultValue={userInfo?.fullname || ''}
                             />
@@ -119,22 +126,22 @@ const EditProfile = () => {
                             style={{ marginLeft: '18px' }}
                             className="text-danger"
                           >
-                            Please type full name
+                            Vui lòng nhập họ tên
                           </p>
                         )}
                         <div className="col-lg-12">
                           <div className="form-group mb-4">
-                            <label htmlFor="province">Province</label>
+                            <label htmlFor="province">Tỉnh</label>
                             <select
                               id="province"
                               className="form-control"
                               {...register('province', {
-                                required: userInfo?.dia_chi ? false : true,
+                                required: true,
                                 onChange: (e) =>
                                   handleGetDistricts(e.target.value),
                               })}
                             >
-                              <option value="">Select an Option</option>
+                              <option value="">chọn tỉnh</option>
                               {provinces?.map((province, index) => (
                                 <option key={index} value={province?.code}>
                                   {province?.name}
@@ -148,21 +155,21 @@ const EditProfile = () => {
                             style={{ marginLeft: '18px' }}
                             className="text-danger"
                           >
-                            Please choose province
+                            Vui lòng chọn Tỉnh/Thành phố
                           </p>
                         )}
                         <div className="col-lg-12">
                           <div className="form-group mb-4">
-                            <label htmlFor="districts">Districts</label>
+                            <label htmlFor="districts">Quận</label>
                             <select
                               id="districts"
                               className="form-control"
                               {...register('districts', {
-                                required: userInfo?.dia_chi ? false : true,
+                                required: true,
                                 onChange: (e) => handleGetWards(e.target.value),
                               })}
                             >
-                              <option value="">Select an Option</option>
+                              <option value="">Chọn quận</option>
                               {districts?.map((province, index) => (
                                 <option key={index} value={province?.code}>
                                   {province?.name}
@@ -176,23 +183,22 @@ const EditProfile = () => {
                             style={{ marginLeft: '18px' }}
                             className="text-danger"
                           >
-                            Please choose districts
+                            Vui lòng chọn Quận/Huyện
                           </p>
                         )}
                         <div className="col-lg-12">
                           <div className="form-group mb-4">
-                            <label htmlFor="wards">Wards</label>
-                            <option value="">Select an Option</option>
+                            <label htmlFor="wards">Phường</label>
                             <select
                               id="wards"
                               className="form-control"
                               {...register('wards', {
-                                required: userInfo?.dia_chi ? false : true,
+                                required: true,
                                 onChange: (e) =>
                                   handleGetValueResult(e.target.value),
                               })}
                             >
-                              <option value="">Select an Option</option>
+                              <option value="">Chọn phường</option>
                               {wards?.map((province, index) => (
                                 <option key={index} value={province?.code}>
                                   {province?.name}
@@ -206,23 +212,23 @@ const EditProfile = () => {
                             style={{ marginLeft: '18px' }}
                             className="text-danger"
                           >
-                            Please choose wards
+                            Vui lòng chọn Phường/Xã
                           </p>
                         )}
                         <div className="col-lg-12">
                           <div className="form-group mb-4">
                             <label htmlFor="first_name">
-                              Apartment, suite, unit etc. (optional) (optional)
+                              Căn hộ, dãy phòng, đơn vị, v.v. (tùy chọn) (tùy
+                              chọn)
                             </label>
                             <input
                               type="text"
                               className="form-control"
                               id="apartment"
-                              placeholder="Apartment"
+                              placeholder="Nhập số nhà, tên đường"
                               {...register('apartment', {
-                                required: userInfo?.dia_chi ? false : true,
+                                required: true,
                               })}
-                              defaultValue={userInfo?.dia_chi || ''}
                             />
                           </div>
                         </div>
@@ -231,32 +237,37 @@ const EditProfile = () => {
                             style={{ marginLeft: '18px' }}
                             className="text-danger"
                           >
-                            Please type apartment
+                            Vui lòng nhập số nhà, tên đường
                           </p>
                         )}
 
                         <div className="col-lg-12">
                           <div className="form-group mb-4">
-                            <label htmlFor="first_name">Phone </label>
+                            <label htmlFor="first_name">Số điện thoại </label>
                             <input
                               type="text"
                               className="form-control"
                               id="phone"
                               placeholder="Your phone number"
                               {...register('phone', {
-                                required: userInfo?.sdt ? false : true,
+                                required: 'Vui lòng nhập số điện thoại',
+                                minLength: {
+                                  value: 10,
+                                  message: 'Số điện thoại phải đúng 10 số',
+                                },
+                                maxLength: {
+                                  value: 10,
+                                  message: 'Số điện thoại phải đúng 10 số',
+                                },
                               })}
                               defaultValue={userInfo?.sdt || ''}
                             />
                           </div>
                         </div>
                         {errors.phone && (
-                          <p
-                            style={{ marginLeft: '18px' }}
-                            className="text-danger"
-                          >
-                            Please type apartment
-                          </p>
+                          <span className="text-danger">
+                            {errors.phone.message}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -265,7 +276,7 @@ const EditProfile = () => {
               </div>
               <div className="container d-flex justify-content-end">
                 <button type="submit" className="btn btn-main btn-small">
-                  Place Order
+                  Lưu
                 </button>
               </div>
             </form>

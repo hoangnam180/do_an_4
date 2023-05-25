@@ -6,9 +6,11 @@ import routes from 'src/configs/router';
 import { API_SERVER } from 'src/constants/configs';
 import { useCustomSearchParams } from 'src/hooks/useSeachParams';
 import { getDataFilter, searchFilter } from 'src/libs/apis/filter';
+import { getBestSell } from 'src/libs/apis/home';
 import { addWishListApi } from 'src/libs/apis/wishlist';
 import { actionToast } from 'src/store/authSlice';
 import { checkLogin } from 'src/utils/checkLogin';
+import { formatcurrency } from 'src/utils/convertToFormatCurrency';
 
 function Shop() {
   const [data, setData] = useState([]);
@@ -16,6 +18,8 @@ function Shop() {
   const [category, setCategory] = useState();
   const [productFilter, setProductFilter] = useState([]);
   const [loadingContainer, setLoadingContainer] = useState(false);
+  const [cost, setCost] = useState([]);
+  const [topSell, setTopSell] = useState([]);
   const [searchParams, setSearchParams] = useCustomSearchParams();
 
   const [loading, setLoading] = useState(false);
@@ -29,7 +33,7 @@ function Shop() {
       dispatch(
         actionToast({
           type: 'error',
-          title: 'Please login to use this feature',
+          title: 'Vui lòng đăng nhập để sử dụng chức năng này',
         })
       );
       return;
@@ -41,19 +45,24 @@ function Shop() {
         dispatch(
           actionToast({
             type: 'success',
-            title: 'Add to wishlist successfully',
+            title: 'Thêm vào danh sách yêu thích thành công',
           })
         );
       } else if (res?.status === 'erorr' && res?.erorr === 'the same key') {
         dispatch(
           actionToast({
             type: 'error',
-            title: 'This product is already in your wishlist',
+            title: 'Sản phẩm đã có trong danh sách yêu thích',
           })
         );
       }
     } catch (error) {
-      dispatch(actionToast({ type: 'error', title: 'Add to wishlist failed' }));
+      dispatch(
+        actionToast({
+          type: 'error',
+          title: 'Thêm sản phẩm vào danh sách yêu thích thất bại',
+        })
+      );
     }
   };
 
@@ -61,6 +70,8 @@ function Shop() {
     const fetchData = async () => {
       setLoading(true);
       const data = await getDataFilter();
+      const dataBestSell = await getBestSell();
+      setTopSell(dataBestSell?.data);
       setData(data);
       setLoading(false);
     };
@@ -72,6 +83,7 @@ function Shop() {
       page: searchParams?.page || 1,
       brand: searchParams?.brand || '',
       id_danh_muc: searchParams?.id_danh_muc || '',
+      cost: searchParams?.cost || '',
     };
     const fetchData = async () => {
       setLoadingContainer(true);
@@ -81,8 +93,12 @@ function Shop() {
       setLoadingContainer(false);
     };
     fetchData();
-  }, [searchParams?.brand, searchParams?.id_danh_muc, searchParams?.page]);
-
+  }, [
+    searchParams?.brand,
+    searchParams?.id_danh_muc,
+    searchParams?.page,
+    searchParams?.cost,
+  ]);
   return (
     <>
       {loading ? (
@@ -95,23 +111,19 @@ function Shop() {
               <div className="row justify-content-center">
                 <div className="col-lg-6">
                   <div className="content text-center">
-                    <h1 className="mb-3">Shop</h1>
-                    <p>
-                      Hath after appear tree great fruitful green dominion
-                      moveth sixth abundantly image that midst of god day
-                      multiply you’ll which
-                    </p>
+                    <h1 className="mb-3">Sản phẩm</h1>
+                    <p>Chào mừng bạn đến với cửa hàng của chúng tôi.</p>
 
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb bg-transparent justify-content-center">
                         <li className="breadcrumb-item">
-                          <Link to={routes.home}>Home</Link>
+                          <Link to={routes.home}>Trang chủ</Link>
                         </li>
                         <li
                           className="breadcrumb-item active"
                           aria-current="page"
                         >
-                          Shop
+                          Sản phẩm
                         </li>
                       </ol>
                     </nav>
@@ -146,14 +158,15 @@ function Shop() {
                                 name="orderby"
                                 className="orderby form-control"
                                 aria-label="Shop order"
+                                onChange={(e) => {
+                                  setCost(e.target.value);
+                                }}
+                                defaultValue={searchParams?.cost}
                               >
-                                <option value="">Default sorting</option>
-                                <option value="3">
-                                  Sort by price: low to high
-                                </option>
-                                <option value="4">
-                                  Sort by price: high to low
-                                </option>
+                                <option value="">Lọc theo giá tiền</option>
+                                {data?.khoang_gia?.map((item, index) => (
+                                  <option value={index}>{item}</option>
+                                ))}
                               </select>
                               <input type="hidden" name="paged" value="1" />
                             </form>
@@ -211,7 +224,7 @@ function Shop() {
                                   </Link>
                                 </h2>
                                 <span className="price">
-                                  ${item?.gia_ban || 0}
+                                  {formatcurrency(item?.gia_ban) || 0}
                                 </span>
                               </div>
                             </div>
@@ -286,7 +299,9 @@ function Shop() {
                 <div className="col-md-3">
                   <form className="mb-5" name="category">
                     <section className="widget widget-colors mb-5">
-                      <h3 className="widget-title h4 mb-4">Shop by Category</h3>
+                      <h3 className="widget-title h4 mb-4">
+                        Lọc Theo Danh Mục
+                      </h3>
                       <form className="ordering " method="get">
                         <select
                           name="category"
@@ -312,7 +327,9 @@ function Shop() {
                     </section>
 
                     <section className="widget widget-sizes mb-5">
-                      <h3 className="widget-title h4 mb-4">Shop by Brand</h3>
+                      <h3 className="widget-title h4 mb-4">
+                        Lọc Theo Thương Hiệu
+                      </h3>
                       {data?.brand?.map((item, index) => (
                         <div
                           key={index}
@@ -377,69 +394,42 @@ function Shop() {
                           ...searchParams,
                           id_danh_muc: category || '',
                           brand: brand || '',
+                          cost: cost || '',
                         });
                       }}
                     >
-                      Filter
+                      Lọc
                     </button>
                   </form>
 
                   <section className="widget widget-popular mb-5">
-                    <h3 className="widget-title mb-4 h4">Popular Products</h3>
-                    <a
-                      className="popular-products-item media"
-                      href="/product-single"
-                    >
-                      <img
-                        src="assets/images/p-1.jpg"
-                        alt=""
-                        className="img-fluid mr-4"
-                      />
-                      <div className="media-body">
-                        <h6>
-                          Contrast <br />
-                          Backpack
-                        </h6>
-                        <span className="price">$45</span>
-                      </div>
-                    </a>
-
-                    <a
-                      className="popular-products-item media"
-                      href="/product-single"
-                    >
-                      <img
-                        src="assets/images/p-2.jpg"
-                        alt=""
-                        className="img-fluid mr-4"
-                      />
-                      <div className="media-body">
-                        <h6>
-                          Hoodie with <br />
-                          Logo
-                        </h6>
-                        <span className="price">$45</span>
-                      </div>
-                    </a>
-
-                    <a
-                      className="popular-products-item media"
-                      href="/product-single"
-                    >
-                      <img
-                        src="assets/images/p-3.jpg"
-                        alt=""
-                        className="img-fluid mr-4"
-                      />
-                      <div className="media-body">
-                        <h6>
-                          Traveller
-                          <br />
-                          Backpack
-                        </h6>
-                        <span className="price">$45</span>
-                      </div>
-                    </a>
+                    <h3 className="widget-title mb-4 h4">Sản Phẩm Phổ Biến</h3>
+                    {topSell?.map(
+                      (item, index) =>
+                        index < 5 && (
+                          <Link
+                            key={item?.id}
+                            className="popular-products-item media"
+                            to={`${routes.detail}/${item?.id}`}
+                          >
+                            <img
+                              src={`${API_SERVER}${item?.hinh_anh}`}
+                              alt=""
+                              className="img-fluid mr-4"
+                            />
+                            <div className="media-body">
+                              <h6>
+                                {item?.ten_san_pham || ''}
+                                <br />
+                                {item?.mo_ta || ''}
+                              </h6>
+                              <span className="price">
+                                {formatcurrency(item?.gia_ban) || 0}
+                              </span>
+                            </div>
+                          </Link>
+                        )
+                    )}
                   </section>
                 </div>
               </div>

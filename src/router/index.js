@@ -15,6 +15,11 @@ import SignUp from 'src/components/Auth/SignUp';
 import Page404 from 'src/pages/404Page';
 import WithList from 'src/pages/WithList';
 import HistoryDetail from 'src/pages/historyDetail';
+import ConfirmOtp from 'src/components/Auth/ConfirmOtp/ConfirmOtp';
+import ResetPassWord from 'src/components/Auth/ResetPassWord';
+import Direction from 'src/pages/direction';
+import DirectionLogin from 'src/pages/directionLogin';
+
 // Public routes
 const publicRoutes = [
   {
@@ -69,8 +74,24 @@ const publicRoutes = [
     component: History,
   },
   {
+    path: routes.confirmOpt,
+    component: ConfirmOtp,
+  },
+  {
+    path: routes.resetPassword,
+    component: ResetPassWord,
+  },
+  {
     path: routes.historyDetail,
     component: HistoryDetail,
+  },
+  {
+    path: routes.direction,
+    component: Direction,
+  },
+  {
+    path: routes.directionLogin,
+    component: DirectionLogin,
   },
   { path: '*', component: Page404 },
 ];

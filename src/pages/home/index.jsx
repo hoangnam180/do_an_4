@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import {
   getArrival,
   getBanner,
+  getBestSell,
   getCategory,
   getProducts,
 } from '../../libs/apis/home';
@@ -19,13 +20,18 @@ import { API_SERVER } from 'src/constants/configs';
 function Home() {
   const dataUser = useSelector((state) => state?.authReducer);
   const dispatch = useDispatch();
-  const navigation = useNavigate();
   const [products, setProducts] = useState([]);
   const [arrival, setArrival] = useState([]);
+  const [topSell, setTopSell] = useState([]);
   const [category, setCategory] = useState([]);
   const [banner, setBanner] = useState([]);
   const isLogin = checkLogin(dataUser);
   const [loading, setLoading] = useState(false);
+  const formatcurrency = (number) => {
+    var x = parseInt(number);
+    x = x.toLocaleString('vi', { style: 'currency', currency: 'VND' });
+    return x;
+  };
   const handleListHeart = async (data) => {
     if (!isLogin) {
       dispatch(
@@ -43,19 +49,24 @@ function Home() {
         dispatch(
           actionToast({
             type: 'success',
-            title: 'Add to wishlist successfully',
+            title: 'Đã thêm sản phẩm vào danh sách yêu thích',
           })
         );
       } else if (res?.status === 'erorr' && res?.erorr === 'the same key') {
         dispatch(
           actionToast({
             type: 'error',
-            title: 'This product is already in your wishlist',
+            title: 'Sản phẩm đã có trong danh sách yêu thích',
           })
         );
       }
     } catch (error) {
-      dispatch(actionToast({ type: 'error', title: 'Add to wishlist failed' }));
+      dispatch(
+        actionToast({
+          type: 'error',
+          title: 'Thêm sản phẩm vào danh sách yêu thích thất bại',
+        })
+      );
     }
   };
 
@@ -67,17 +78,21 @@ function Home() {
         const dataArrivals = getArrival();
         const dataCategory = getCategory();
         const dataBanner = getBanner();
+        const dataBestSell = getBestSell();
 
-        const [products, arrivals, category, banner] = await Promise.all([
-          dataProducts,
-          dataArrivals,
-          dataCategory,
-          dataBanner,
-        ]);
+        const [products, arrivals, category, banner, bestsell] =
+          await Promise.all([
+            dataProducts,
+            dataArrivals,
+            dataCategory,
+            dataBanner,
+            dataBestSell,
+          ]);
         setCategory(category?.data);
         setProducts(products?.product);
         setArrival(arrivals?.sanPham);
         setBanner(banner?.data);
+        setTopSell(bestsell?.data);
         var keys = [];
 
         for (var number in banner?.data?.[0]) {
@@ -129,7 +144,7 @@ function Home() {
                             <span className="text-color">Winter</span>
                             Collection
                           </h1>
-                          <Link className="btn btn-main">Shop Now</Link>
+                          <Link className="btn btn-main">Mua ngay</Link>
                         </div>
                       </div>
                     </div>
@@ -160,9 +175,9 @@ function Home() {
                               {item?.ten_danh_muc}
                             </p>
                             <h4 className="mb-4">
-                              up to <strong>{item?.upto} 50% </strong>off
+                              Lên đến <strong>{item?.upto} 50% </strong>
                             </h4>
-                            <Link className="read-more">Shop now</Link>
+                            <Link className="read-more">Mua ngay</Link>
                           </div>
                         </div>
                       </div>
@@ -176,8 +191,7 @@ function Home() {
               <div className="row justify-content-center">
                 <div className="col-lg-8">
                   <div className="title text-center">
-                    <h2>Products</h2>
-                    <p>The best Online sales to shop these weekend</p>
+                    <h2>Sản phẩm</h2>
                   </div>
                 </div>
               </div>
@@ -226,7 +240,25 @@ function Home() {
                           <h2 className="product-title h5 mb-0">
                             <Link>{item?.ten_san_pham}</Link>
                           </h2>
-                          <span className="price">${item?.gia_ban}</span>
+                          <div
+                            style={{
+                              display: 'flex',
+                              gap: '30px',
+                              alignItems: 'center',
+                              marginLeft: '20px',
+                            }}
+                          >
+                            <span className="price">
+                              {formatcurrency(item?.gia_ban)}
+                            </span>
+                            <div>
+                              {item?.so_luong !== 0 ? (
+                                <span>Số lượng : {item?.so_luong}</span>
+                              ) : (
+                                <span style={{ color: 'red' }}>Hết hàng</span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -247,92 +279,46 @@ function Home() {
                 </div>
                 <div className="col-lg-4 col-sm-6 col-md-6">
                   <div className="widget-featured-entries mt-5 mt-lg-0">
-                    <h4 className="mb-4 pb-3">Best selllers</h4>
-                    <div className="media mb-3">
-                      <Link className="featured-entry-thumb">
-                        <img
-                          src="assets/images/p-1.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Keds - Kickstart Pom Pom</Link>
-                        </h6>
-                        <p className="featured-entry-meta">$42.99</p>
-                      </div>
-                    </div>
-                    <div className="media mb-3">
-                      <Link className="featured-entry-thumb" href="#">
-                        <img
-                          src="assets/images/p-2.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Nike - Brasilia Medium Backpack</Link>
-                        </h6>
-                        <p className="featured-entry-meta">$27.99</p>
-                      </div>
-                    </div>
-                    <div className="media mb-3">
-                      <Link className="featured-entry-thumb" href="#">
-                        <img
-                          src="assets/images/p-3.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Guess - GU7295</Link>
-                        </h6>
-                        <p>$38.00</p>
-                      </div>
-                    </div>
-                    <div className="media mb-3">
-                      <Link className="featured-entry-thumb" href="#">
-                        <img
-                          src="assets/images/p-4.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Adidas Originals Cap</Link>
-                        </h6>
-                        <p className="featured-entry-meta">$35.00</p>
-                      </div>
-                    </div>
-                    <div className="media">
-                      <Link className="featured-entry-thumb" href="#">
-                        <img
-                          src="assets/images/p-5.jpg"
-                          alt="Product thumb"
-                          width="64"
-                          className="img-fluid mr-3"
-                        />
-                      </Link>
-                      <div className="media-body">
-                        <h6 className="featured-entry-title mb-0">
-                          <Link href="#">Big Star Flip Tops</Link>
-                        </h6>
-                        <p className="featured-entry-meta">$10.60</p>
-                      </div>
-                    </div>
+                    <h4 className="mb-4 pb-3">Sản phẩm bán chạy</h4>
+                    {topSell?.map(
+                      (item, index) =>
+                        index < 5 && (
+                          <div className="media mb-3" key={index}>
+                            <Link
+                              className="featured-entry-thumb"
+                              to={`${routes.detail}/${item?.id}`}
+                            >
+                              <img
+                                style={{
+                                  height: '64px',
+                                  width: '64px',
+                                  objectFit: 'cover',
+                                  overflow: 'hidden',
+                                }}
+                                src={`${API_SERVER}${item?.hinh_anh}`}
+                                alt="Product thumb"
+                                width="64"
+                                className="img-fluid mr-3"
+                              />
+                            </Link>
+                            <div className="media-body">
+                              <h6 className="featured-entry-title mb-0">
+                                <Link to={`${routes.detail}/${item?.id}`}>
+                                  {item?.ten_san_pham || ''}
+                                </Link>
+                              </h6>
+                              <p className="featured-entry-meta">
+                                ${formatcurrency(item?.gia_ban) || ''}
+                              </p>
+                            </div>
+                          </div>
+                        )
+                    )}
                   </div>
                 </div>
                 <div className="col-lg-4 col-sm-6 col-md-6">
                   <div className="widget-featured-entries mt-5 mt-lg-0">
-                    <h4 className="mb-4 pb-3">New Arrivals</h4>
+                    <h4 className="mb-4 pb-3">Sản phẩm mới</h4>
                     {arrival?.map(
                       (item, index) =>
                         index < 5 && (
@@ -361,7 +347,7 @@ function Home() {
                                 </Link>
                               </h6>
                               <p className="featured-entry-meta">
-                                ${item?.gia_ban || ''}
+                                ${formatcurrency(item?.gia_ban) || ''}
                               </p>
                             </div>
                           </div>
@@ -379,8 +365,8 @@ function Home() {
                   <div className="feature-block">
                     <i className="tf-ion-android-bicycle"></i>
                     <div className="content">
-                      <h5>Free Shipping</h5>
-                      <p>On all order over $39.00</p>
+                      <h5>Miễn phí giao hàng</h5>
+                      <p>Tất cả sản phẩm trên 5.000.000đ</p>
                     </div>
                   </div>
                 </div>
@@ -388,8 +374,8 @@ function Home() {
                   <div className="feature-block">
                     <i className="tf-wallet"></i>
                     <div className="content">
-                      <h5>30 Days Return</h5>
-                      <p>Money back Guarantee</p>
+                      <h5>Đổi trả trong vòng 30 ngày</h5>
+                      <p>Đảm bảo hoàn tiền</p>
                     </div>
                   </div>
                 </div>
@@ -397,8 +383,8 @@ function Home() {
                   <div className="feature-block">
                     <i className="tf-key"></i>
                     <div className="content">
-                      <h5>Secure Checkout</h5>
-                      <p>100% Protected by paypal</p>
+                      <h5>Bảo mật thanh toán</h5>
+                      <p>100% được bảo vệ bởi Vnpay</p>
                     </div>
                   </div>
                 </div>
@@ -406,8 +392,8 @@ function Home() {
                   <div className="feature-block">
                     <i className="tf-clock"></i>
                     <div className="content">
-                      <h5>24/7 Support</h5>
-                      <p>All time customer support </p>
+                      <h5>Hỗ trợ 24/7</h5>
+                      <p>Dành toàn thời gian để hỗ trợ khách hàng </p>
                     </div>
                   </div>
                 </div>

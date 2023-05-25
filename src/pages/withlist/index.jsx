@@ -12,7 +12,11 @@ const WithList = () => {
   const [loading, setLoading] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const dispatch = useDispatch();
-
+  const formatcurrency = (number) => {
+    var x = parseInt(number);
+    x = x.toLocaleString('vi', { style: 'currency', currency: 'VND' });
+    return x;
+  };
   const handleDeleteWithList = async (id) => {
     try {
       setLoadingDelete(true);
@@ -74,7 +78,7 @@ const WithList = () => {
             <div className="col-lg-12 col-sm-12 col-md-12">
               <div className="row">
                 <div className="col-lg-12 widget-featured-entries mt-5 mt-lg-0">
-                  <h4 className="mb-4 pb-3">With List</h4>
+                  <h4 className="mb-4 pb-3">Danh sách yêu thích</h4>
                 </div>
                 {/* Column */}
                 {wishlist.map((item) => (
@@ -99,8 +103,17 @@ const WithList = () => {
                               {item?.ten_san_pham || ''}
                             </Link>
                           </h6>
-                          <p className="featured-entry-meta">
-                            ${item?.gia_ban || ''}
+                          <p className="featured-entry-meta d-flex">
+                            <div className="mr-4">
+                              ${formatcurrency(item?.gia_ban) || ''}
+                            </div>
+                            <div>
+                              {item?.so_luong !== 0 ? (
+                                <span className="text-success">Còn hàng</span>
+                              ) : (
+                                <span className="text-danger">Hết hàng</span>
+                              )}
+                            </div>
                           </p>
                         </div>
                         <div className="product-remove" data-title="Remove">
@@ -113,7 +126,7 @@ const WithList = () => {
                           >
                             {loadingDelete ? (
                               <div class="spinner-border" role="status">
-                                <span class="sr-only">Loading...</span>
+                                <span class="sr-only">Đang tải...</span>
                               </div>
                             ) : (
                               'X'

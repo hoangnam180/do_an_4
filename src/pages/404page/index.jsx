@@ -18,8 +18,7 @@ const Page404 = () => {
           </p>
           <p className="lead">The page you’re looking for doesn’t exist.</p>
           <Link to={'/'} className="btn btn-primary">
-            Go Home
-          </Link>
+            Go Trang chủ          </Link>
         </div>
       </div>
     </div>

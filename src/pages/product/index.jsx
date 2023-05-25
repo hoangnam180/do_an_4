@@ -26,6 +26,7 @@ function SingleProduct() {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingRate, setLoadingRate] = useState(false);
   const [star, setStar] = useState(0);
   const [listRate, setListRate] = useState([]);
   const [quantity, setQuantity] = useState(1);
@@ -42,6 +43,11 @@ function SingleProduct() {
   } = useForm({
     mode: 'onBlur',
   });
+  const formatcurrency = (number) => {
+    var x = parseInt(number);
+    x = x.toLocaleString('vi', { style: 'currency', currency: 'VND' });
+    return x;
+  };
 
   const onSubmit = async (data) => {
     const dataSubmit = { ...data, color };
@@ -57,7 +63,7 @@ function SingleProduct() {
       dispatch(
         actionToast({
           type: 'success',
-          title: 'Add to cart successfully',
+          title: 'Thêm vào giỏ hàng thành công',
         })
       );
       dispatch(
@@ -77,6 +83,7 @@ function SingleProduct() {
 
   const onSubmitRate = async (data) => {
     try {
+      setLoadingRate(true);
       if (!isLogin) {
         const res = await RateProductPublic(id, { ...data, sao: star });
         if (res?.status === 'success') {
@@ -87,6 +94,16 @@ function SingleProduct() {
               title: 'Rate success',
             })
           );
+          setLoadingRate(false);
+        } else {
+          if (res?.message) {
+            dispatch(actionToast({ title: res?.message, type: 'error' }));
+          } else {
+            for (let index = 0; index < res.errors.length; index++) {
+              const element = res.errors[index][0];
+              dispatch(actionToast({ title: element, type: 'error' }));
+            }
+          }
         }
         return;
       }
@@ -99,9 +116,23 @@ function SingleProduct() {
             title: 'Rate success',
           })
         );
+        setLoadingRate(false);
+      } else {
+        for (let index = 0; index < res.errors.length; index++) {
+          const element = res.errors[index][0];
+          dispatch(actionToast({ title: element, type: 'error' }));
+        }
       }
     } catch (err) {
-      console.log(err);
+      setLoadingRate(false);
+      dispatch(
+        actionToast({
+          type: 'error',
+          title: 'Rate failed',
+        })
+      );
+    } finally {
+      setLoadingRate(false);
     }
   };
 
@@ -122,19 +153,24 @@ function SingleProduct() {
         dispatch(
           actionToast({
             type: 'success',
-            title: 'Add to wishlist successfully',
+            title: 'Thêm sản phẩm vào danh sách yêu thích thành công',
           })
         );
       } else if (res?.status === 'erorr' && res?.erorr === 'the same key') {
         dispatch(
           actionToast({
             type: 'error',
-            title: 'This product is already in your wishlist',
+            title: 'Sản phẩm này đã được thêm vào trước đó',
           })
         );
       }
     } catch (error) {
-      dispatch(actionToast({ type: 'error', title: 'Add to wishlist failed' }));
+      dispatch(
+        actionToast({
+          type: 'error',
+          title: 'Thêm sản phẩm vào danh sách yêu thất thất bại',
+        })
+      );
     }
   };
 
@@ -168,23 +204,18 @@ function SingleProduct() {
               <div className="row justify-content-center">
                 <div className="col-lg-6">
                   <div className="content text-center">
-                    <h1 className="mb-3">Product Single</h1>
-                    <p>
-                      Hath after appear tree great fruitful green dominion
-                      moveth sixth abundantly image that midst of god day
-                      multiply you’ll which
-                    </p>
+                    <h1 className="mb-3">Chi Tiết Sản Phẩm</h1>
 
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb bg-transparent justify-content-center">
                         <li className="breadcrumb-item">
-                          <Link to={routes.home}>Home</Link>
+                          <Link to={routes.home}>Trang chủ</Link>
                         </li>
                         <li
                           className="breadcrumb-item active"
                           aria-current="page"
                         >
-                          Product Single
+                          Chi Tiết Sản Phẩm
                         </li>
                       </ol>
                     </nav>
@@ -197,7 +228,7 @@ function SingleProduct() {
           <section className="single-product">
             <div className="container">
               {quantity <= 0 ? (
-                <h1>This product is temporarily out of stock ...</h1>
+                <h1>Sản phẩm này đang tạm hết hàng</h1>
               ) : (
                 <>
                   <div className="row">
@@ -254,7 +285,7 @@ function SingleProduct() {
                         <div className="single-product-details mt-5 mt-lg-0">
                           <h2> {product?.data?.ten_san_pham || ''}</h2>
                           <div className="sku_wrapper mb-4">
-                            Quantity:{' '}
+                            Số lượng:{' '}
                             <span
                               style={{
                                 color: `${quantity < 50 ? 'red ' : '#6c757d'}`,
@@ -267,12 +298,15 @@ function SingleProduct() {
                           <hr />
 
                           <h3 className="product-price">
-                            $
-                            {Number(
+                            {formatcurrency(
                               product?.data?.gia_ban *
                                 ((100 - product?.data?.khuyen_mai) / 100)
-                            )?.toFixed(2)}
-                            <del>${product?.data?.gia_ban || ''} </del>
+                            ) || ''}{' '}
+                            <del>
+                              {product?.data?.khuyen_mai
+                                ? formatcurrency(product?.data?.gia_ban)
+                                : ''}{' '}
+                            </del>
                           </h3>
 
                           <p className="product-description my-4 ">
@@ -286,7 +320,7 @@ function SingleProduct() {
                               {...register('quantity', {
                                 required: true,
                                 min: 1,
-                                max: product?.so_luong?.tong || 1,
+                                max: quantity || 1,
                               })}
                               type="number"
                               className="input-text qty text form-control w-25 mr-3"
@@ -301,25 +335,24 @@ function SingleProduct() {
                                   dispatch(
                                     actionToast({
                                       type: 'error',
-                                      title: 'Please choose color',
+                                      title: 'Bạn chưa chọn màu sắc',
                                     })
                                   );
                                   return;
                                 }
                               }}
                             >
-                              Add to cart
+                              Thêm vào giỏ hàng
                             </button>
                           </div>
                           {errors?.quantity && (
                             <span className="text-danger">
-                              Quantity must be between 1 and{' '}
-                              {product?.so_luong?.tong}
+                              Số lượng phải từ 1 tới {quantity}
                             </span>
                           )}
                           <div className="color-swatches mt-4 d-flex align-items-center">
                             <span className="font-weight-bold text-capitalize product-meta-title">
-                              color:
+                              màu :
                             </span>
                             <ul className="list-inline mb-0">
                               {product?.so_luong?.mau?.map((color, index) => {
@@ -362,7 +395,12 @@ function SingleProduct() {
                                   (item) => item?.id === Number(e.target.value)
                                 );
                                 if (!findIndex || !findIndex?.so_luong) {
-                                  alert('please choose color first !');
+                                  dispatch(
+                                    actionToast({
+                                      title: 'Vui lòng chọn màu trước',
+                                      type: 'error',
+                                    })
+                                  );
                                 } else {
                                   setQuantity(findIndex?.so_luong);
                                 }
@@ -382,7 +420,7 @@ function SingleProduct() {
                           <div className="products-meta mt-4">
                             <div className="product-category d-flex align-items-center">
                               <span className="font-weight-bold text-capitalize product-meta-title">
-                                Categories :
+                                Danh mục :
                               </span>
                               <Link href="#">
                                 {product?.data?.ten_danh_muc || ''}
@@ -435,7 +473,7 @@ function SingleProduct() {
                             aria-controls="nav-home"
                             aria-selected="true"
                           >
-                            Description
+                            Mô Tả
                           </a>
                           <a
                             className="nav-item nav-link"
@@ -446,7 +484,7 @@ function SingleProduct() {
                             aria-controls="nav-profile"
                             aria-selected="false"
                           >
-                            Additional Information
+                            Thông tin chi tiết
                           </a>
                           <a
                             className="nav-item nav-link"
@@ -457,7 +495,7 @@ function SingleProduct() {
                             aria-controls="nav-contact"
                             aria-selected="false"
                           >
-                            Reviews({listRate?.length})
+                            Đánh giá({listRate?.length})
                           </a>
                         </div>
                       </nav>
@@ -493,7 +531,7 @@ function SingleProduct() {
                         >
                           <ul className="list-unstyled info-desc">
                             <li className="d-flex">
-                              <strong>Color </strong>
+                              <strong>Màu </strong>
                               <span>
                                 {product?.mau?.map((item, idex) => (
                                   <span key={idex}> {item?.ten_mau}, </span>
@@ -554,8 +592,43 @@ function SingleProduct() {
                                             ).toLocaleString('vi-VN')}
                                           </span>
                                         </h6>
-
-                                        <p>{item?.content}</p>
+                                        <p style={{ marginBottom: '2px' }}>
+                                          {item?.content}
+                                        </p>
+                                        {item?.children_content ? (
+                                          <div>
+                                            <span
+                                              style={{
+                                                cursor: 'pointer',
+                                                fontWeight: 'bold',
+                                              }}
+                                              data-toggle="collapse"
+                                              data-target={`#collapseExample-${item?.id}`}
+                                              aria-expanded="false"
+                                              aria-controls={`collapseExample-${item?.id}`}
+                                            >
+                                              xem câu trả lời ...
+                                            </span>
+                                            <div
+                                              style={{ marginLeft: '10px' }}
+                                              class="collapse"
+                                              id={`collapseExample-${item?.id}`}
+                                            >
+                                              <h6
+                                                style={{ marginBottom: '0px' }}
+                                              >
+                                                admin
+                                              </h6>
+                                              <p
+                                                style={{ marginBottom: '0px' }}
+                                              >
+                                                {item?.children_content}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          ''
+                                        )}
                                       </div>
                                     </div>
                                   );
@@ -564,7 +637,14 @@ function SingleProduct() {
 
                             <div className="col-lg-5">
                               <div className="review-comment mt-5 mt-lg-0">
-                                <h4 className="mb-3">Add a Review</h4>
+                                <h4 className="mb-3">Thêm một đánh giá</h4>
+                                {loadingRate && (
+                                  <div className="d-flex justify-content-center">
+                                    <div class="spinner-border" role="status">
+                                      <span class="sr-only">Loading...</span>
+                                    </div>
+                                  </div>
+                                )}
                                 <FormRate
                                   onSubmitRate={onSubmitRate}
                                   setStar={setStar}
@@ -586,7 +666,7 @@ function SingleProduct() {
               <div className="row justify-content-center">
                 <div className="col-lg-6">
                   <div className="title text-center">
-                    <h2>You may like this</h2>
+                    <h2>Có Thể Bạn Sẽ Thích</h2>
                     <p>The best Online sales to shop these weekend</p>
                   </div>
                 </div>
@@ -630,7 +710,9 @@ function SingleProduct() {
                             {item?.ten_san_pham || ''}
                           </Link>
                         </h2>
-                        <span className="price">${item?.gia_ban || ''}</span>
+                        <span className="price">
+                          {formatcurrency(item?.gia_ban) || ''}
+                        </span>
                       </div>
                     </div>
                   </div>

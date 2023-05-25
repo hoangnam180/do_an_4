@@ -51,7 +51,7 @@ const FormRate = ({ onSubmitRate, setStar }) => {
           placeholder="Your Email"
         />
       </div>
-      {errors.email && <span className="text-danger">email not valid</span>}
+      {errors.email && <span className="text-danger">Email không đúng định dạng</span>}
 
       <div className="form-group">
         <textarea
@@ -66,12 +66,12 @@ const FormRate = ({ onSubmitRate, setStar }) => {
           placeholder="Your Review"
         ></textarea>
         {errors.content && (
-          <span className="text-danger">please enter content</span>
+          <span className="text-danger">Vui lòng nhập đánh giá</span>
         )}
       </div>
 
       <button type="submit" className="btn btn-main btn-small">
-        Submit Review
+        Gửi đánh giá
       </button>
     </form>
   );

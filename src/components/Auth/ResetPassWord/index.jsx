@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import routes from 'src/configs/router';
-import { signUpApi } from 'src/libs/apis/auth';
-import { actionLoading, actionToast } from 'src/store/authSlice';
+import { changePasswordApi } from 'src/libs/apis/auth';
+import { actionToast } from 'src/store/authSlice';
 
-function SignUp() {
+function ResetPassWord() {
   const dispatch = useDispatch();
+  const { id } = useParams();
   const {
     register,
     handleSubmit,
@@ -14,29 +16,37 @@ function SignUp() {
     reset,
     watch,
   } = useForm();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
     try {
-      dispatch(actionLoading({ loading: true }));
-      const res = await signUpApi(data);
-      dispatch(actionLoading({ loading: false }));
+      setLoading(true);
+      const res = await changePasswordApi({
+        ...data,
+        email: id,
+      });
       if (res?.status === 'success') {
         dispatch(
           actionToast({
-            title: 'Please go to mail to authenticate !',
+            title: 'Thành công!',
             type: 'success',
           })
         );
+        reset();
+        navigate(`${routes.login}`);
       } else {
-        for (let index = 0; index < res.errors.length; index++) {
-          const element = res.errors[index][0];
-          dispatch(actionToast({ title: element, type: 'error' }));
-        }
+        dispatch(
+          actionToast({ title: 'Reset password thất bại!', type: 'error' })
+        );
       }
-      reset();
     } catch (err) {
-      dispatch(actionToast({ title: 'Đăng ký thất bại!', type: 'error' }));
-      dispatch(actionLoading({ loading: false }));
+      dispatch(
+        actionToast({ title: 'Reset password thất bại!', type: 'error' })
+      );
+      setLoading(false);
       reset();
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -46,51 +56,18 @@ function SignUp() {
           <div className="row justify-content-center">
             <div className="col-lg-6">
               <div className="login-form border p-5">
-                <div className="text-center heading">
-                  <h2 className="mb-2">Đăng ký</h2>
-                  <p className="lead">
-                    Bạn đã có tài khoản? <Link to="/login"> Đăng nhập</Link>
-                  </p>
+                <div className="text-center">
+                  <h3 className="mb-2">Đặt lại mật khẩu</h3>
+                  {loading && (
+                    <div className="d-flex justify-content-center">
+                      <div class="spinner-border" role="status">
+                        <span class="sr-only">Đang tải...</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <div className="form-group mb-4">
-                    <label htmlFor="email">Nhập Email</label>
-                    <input
-                      {...register('email', {
-                        required: 'Email không được để trống',
-                        pattern: {
-                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: 'Email không đúng định dạng',
-                        },
-                      })}
-                      id="email"
-                      type="text"
-                      className="form-control"
-                      placeholder="Nhập Email"
-                    />
-                    {errors.email && (
-                      <span className="text-danger">
-                        {errors.email.message}
-                      </span>
-                    )}
-                  </div>
-                  <div className="form-group mb-4">
-                    <label htmlFor="username">Nhập tên đăng nhập</label>
-                    <Link className="float-right" to={routes.forgot}></Link>
-                    <input
-                      {...register('username', { required: true })}
-                      id="username"
-                      type="text"
-                      className="form-control"
-                      placeholder="Nhập username"
-                    />
-                    {errors.username && (
-                      <span className="text-danger">
-                        Username không được để trống
-                      </span>
-                    )}
-                  </div>
                   <div className="form-group mb-4">
                     <label htmlFor="password">Nhập mật khẩu</label>
                     <input
@@ -146,7 +123,7 @@ function SignUp() {
                   </div>
 
                   <button type="submit" className="btn btn-main mt-3 btn-block">
-                    Đăng ký
+                    Thay đổi mật khẩu
                   </button>
                 </form>
               </div>
@@ -157,4 +134,4 @@ function SignUp() {
     </div>
   );
 }
-export default SignUp;
+export default ResetPassWord;

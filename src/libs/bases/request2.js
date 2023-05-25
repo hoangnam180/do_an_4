@@ -41,7 +41,6 @@ const request = ({ context, tokenClient, ...options }) => {
 
   const onError = (error) => {
     if (error?.response?.status === SESSION_EXPIRED_STATUS_CODE) {
-      webStorage.removeAll();
     }
 
     return Promise.reject(error.response);

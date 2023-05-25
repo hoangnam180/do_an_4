@@ -28,3 +28,8 @@ export const getBanner = async () =>
     url: `${prefix}/home/banner`,
     method: 'GET',
   });
+export const getBestSell = async () =>
+  request({
+    url: `${prefix}/home/best-sell`,
+    method: 'GET',
+  });

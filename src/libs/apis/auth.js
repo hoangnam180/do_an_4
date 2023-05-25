@@ -31,16 +31,16 @@ export const getMeApi = async () =>
 
 export const changePasswordApi = async (data) =>
   request({
-    url: '/core/auth/change-password',
+    url: `${prefix}/reset-password`,
     method: 'POST',
     data,
     tokenClient: true,
   });
 
-export const updateInfoApi = async (data) => {
-  request({
-    url: '/core/user/me',
-    method: 'PUT',
+export const loginWithGoogle = async (data) => {
+  return request({
+    url: `${prefix}/google/login`,
+    method: 'GET',
     data,
     tokenClient: true,
   });
@@ -48,14 +48,14 @@ export const updateInfoApi = async (data) => {
 
 export const sendEmailApi = async (data) =>
   request({
-    url: '/core/auth/request-otp',
+    url: `${prefix}/forget-password`,
     method: 'POST',
     data,
   });
 
 export const confirmOptApi = async (data) =>
   request({
-    url: '/core/auth/check-otp',
+    url: `${prefix}/confirm`,
     method: 'POST',
     data,
   });

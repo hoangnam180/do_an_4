@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import routes from 'src/configs/router';
 import { API_SERVER } from 'src/constants/configs';
 import { historyCheckoutDetail } from 'src/libs/apis/checkout';
+import { formatcurrency } from 'src/utils/convertToFormatCurrency';
 
 function HistoryDetail() {
   const { id } = useParams();
@@ -12,7 +13,6 @@ function HistoryDetail() {
     const fetchData = async () => {
       const res = await historyCheckoutDetail(id);
       if (res?.status === 'success') {
-        console.log(res);
         setTotal(res?.total);
         setData(res?.data);
       }
@@ -28,17 +28,15 @@ function HistoryDetail() {
           <div className="row justify-content-center">
             <div className="col-lg-6">
               <div className="content text-center">
-                <h1 className="mb-3">Detail History</h1>
-                Hath after appear tree great fruitful green dominion moveth
-                sixth abundantly image that midst of god day multiply you’ll
-                which
+                <h1 className="mb-3">Chi tiết đơn hàng</h1>
+
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb bg-transparent justify-content-center">
                     <li className="breadcrumb-item">
-                      <Link to={routes.home}>Home</Link>
+                      <Link to={routes.home}>Trang chủ</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Detail History
+                      Chi tiết đơn hàng
                     </li>
                   </ol>
                 </nav>
@@ -60,12 +58,12 @@ function HistoryDetail() {
                   >
                     <thead>
                       <tr>
-                        <th className="product-thumbnail">thumbnail</th>
-                        <th className="product-name">Product</th>
-                        <th className="product-property">Property</th>
-                        <th className="product-price">Price</th>
-                        <th className="product-quantity pl-4">Quantity</th>
-                        <th className="product-subtotal">Total</th>
+                        <th className="product-thumbnail">Hình ảnh</th>
+                        <th className="product-name">Sản phẩm</th>
+                        <th className="product-property">Chi tiết</th>
+                        <th className="product-price">Giá bán</th>
+                        <th className="product-quantity pl-4">Số lượng</th>
+                        <th className="product-subtotal">Tổng tiền</th>
                         <th className="product-remove"> </th>
                       </tr>
                     </thead>
@@ -123,7 +121,7 @@ function HistoryDetail() {
                                 <span className="currencySymbol">
                                   <pre wp-pre-tag-3=""></pre>
                                 </span>
-                                {item?.don_gia}
+                                {formatcurrency(item?.don_gia)}
                               </span>
                             </td>
                             <td
@@ -131,7 +129,7 @@ function HistoryDetail() {
                               data-title="Quantity"
                             >
                               <div className="quantity d-flex align-items-center">
-                                <label className="sr-only">Quantity</label>
+                                <label className="sr-only">Số lượng</label>
                                 <input
                                   type="number"
                                   id="qty"
@@ -149,7 +147,7 @@ function HistoryDetail() {
                                 <span className="currencySymbol">
                                   <pre wp-pre-tag-3=""></pre>
                                 </span>
-                                {Number(item?.total).toFixed(2)}
+                                {formatcurrency(item?.total)}
                               </span>
                             </td>
                             <td className="product-remove" data-title="Remove">
@@ -174,15 +172,15 @@ function HistoryDetail() {
           <div className="row justify-content-end">
             <div className="col-lg-4">
               <div className="cart-info card p-4 mt-4">
-                <h4 className="mb-4">Cart totals</h4>
+                <h4 className="mb-4">Tổng giỏ hàng</h4>
                 <ul className="list-unstyled mb-4">
                   <li className="d-flex justify-content-between pb-2">
-                    <h5>Total</h5>
-                    <span>${Number(total || 0)?.toFixed(2) || 0}</span>
+                    <h5>Tổng tiền</h5>
+                    <span>{formatcurrency(total) || 0}</span>
                   </li>
                 </ul>
                 <Link to={routes?.checkout} className="btn btn-main btn-small">
-                  Proceed to checkout
+                  Thanh toán
                 </Link>
               </div>
             </div>

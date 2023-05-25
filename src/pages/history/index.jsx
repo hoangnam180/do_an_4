@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import routes from 'src/configs/router';
 import { useCustomSearchParams } from 'src/hooks/useSeachParams';
 import { historyCheckout } from 'src/libs/apis/checkout';
+import { formatcurrency } from 'src/utils/convertToFormatCurrency';
 
 function History() {
   const [searchParams, setSearchParams] = useCustomSearchParams();
@@ -59,17 +60,15 @@ function History() {
           <div className="row justify-content-center">
             <div className="col-lg-6">
               <div className="content text-center">
-                <h1 className="mb-3">History</h1>
-                Hath after appear tree great fruitful green dominion moveth
-                sixth abundantly image that midst of god day multiply you’ll
-                which
+                <h1 className="mb-3">Lịch sử mua hàng</h1>
+
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb bg-transparent justify-content-center">
                     <li className="breadcrumb-item">
-                      <Link to={routes.home}>Home</Link>
+                      <Link to={routes.home}>Trang chủ</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      History
+                      Lịch sử mua hàng
                     </li>
                   </ol>
                 </nav>
@@ -88,7 +87,7 @@ function History() {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="Search"
+                    placeholder="Tìm kiếm"
                     aria-label="Recipient's username"
                     aria-describedby="basic-addon2"
                     defaultValue={email}
@@ -115,7 +114,7 @@ function History() {
                         className="spinner-border text-primary"
                         role="status"
                       >
-                        <span className="sr-only">Loading...</span>
+                        <span className="sr-only">Đang tải...</span>
                       </div>
                     </div>
                   ) : data?.length > 0 ? (
@@ -126,12 +125,12 @@ function History() {
                       >
                         <thead>
                           <tr>
-                            <th className="product-thumbnail">Full Name</th>
+                            <th className="product-thumbnail">Họ tên</th>
                             <th className="product-name">Email</th>
-                            <th className="product-property">Phone</th>
-                            <th className="product-price">Address</th>
-                            <th className="product-quantity pl-4">Time</th>
-                            <th className="product-subtotal">Total</th>
+                            <th className="product-property">Số điện thoại</th>
+                            <th className="product-price">Địa chỉ</th>
+                            <th className="product-quantity pl-4">Ngày đặt</th>
+                            <th className="product-subtotal">Tổng tiền</th>
                             <th className="product-remove"></th>
                           </tr>
                         </thead>
@@ -142,7 +141,7 @@ function History() {
                               <tr className="cart_item" key={1}>
                                 <td
                                   className="product-name"
-                                  data-title="Full Name"
+                                  data-title="Họ và tên"
                                 >
                                   <Link>{item?.nguoi_nhan}</Link>
                                 </td>
@@ -186,7 +185,7 @@ function History() {
                                     <span className="currencySymbol">
                                       <pre wp-pre-tag-3=""></pre>
                                     </span>
-                                    {item?.tong_tien}
+                                    {formatcurrency(item?.tong_tien)}
                                   </span>
                                 </td>
                                 <td
@@ -197,7 +196,7 @@ function History() {
                                     to={`/history/${item?.id}`}
                                     className="btn btn-small btn-primary"
                                   >
-                                    Detail
+                                    Chi tiết
                                   </Link>
                                 </td>
                               </tr>
@@ -207,7 +206,7 @@ function History() {
                       </table>
                     </form>
                   ) : (
-                    <div className="text-center">No data</div>
+                    <div className="text-center">Không có dữ liệu</div>
                   )}
                 </>
               </div>
